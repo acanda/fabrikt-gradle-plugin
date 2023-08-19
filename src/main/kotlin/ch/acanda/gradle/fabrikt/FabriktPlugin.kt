@@ -9,6 +9,8 @@ class FabriktPlugin : Plugin<Project> {
         val ext = project.extensions.create("fabrikt", FabriktExtension::class.java)
         project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
             task.apiFile.set(ext.apiFile)
+            task.basePackage.set(ext.basePackage)
+            task.outputDirectory.set(ext.outputDirectory)
         }
     }
 
