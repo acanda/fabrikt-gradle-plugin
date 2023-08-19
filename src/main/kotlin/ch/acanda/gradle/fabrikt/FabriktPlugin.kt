@@ -3,10 +3,13 @@ package ch.acanda.gradle.fabrikt
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 
-class FabriktPlugin :  Plugin<Project> {
+class FabriktPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
-        project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java)
+        val ext = project.extensions.create("fabrikt", FabriktExtension::class.java)
+        project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
+            task.apiFile.set(ext.apiFile)
+        }
     }
 
 }
