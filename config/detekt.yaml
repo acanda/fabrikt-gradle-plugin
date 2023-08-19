@@ -1,0 +1,6 @@
+formatting:
+  NoBlankLineBeforeRbrace:
+    active: false
+style:
+  ForbiddenMethodCall:
+    active: true
