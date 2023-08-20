@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.provider.Property
 
 class FabriktPlugin : Plugin<Project> {
 
@@ -10,8 +11,12 @@ class FabriktPlugin : Plugin<Project> {
         project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
             task.apiFile.set(ext.apiFile)
             task.basePackage.set(ext.basePackage)
-            task.outputDirectory.set(ext.outputDirectory)
+            task.outputDirectory.setIfPresent(ext.outputDirectory)
         }
+    }
+
+    private fun <T, P : Property<T>> P.setIfPresent(value: P) {
+        if (value.isPresent) set(value)
     }
 
 }
