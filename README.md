@@ -21,7 +21,7 @@ plugins {
 
 fabrikt {
     generate("dog") {
-        apiFile.set(file("src/main/openapi/dog.yaml"))
+        apiFile(file("src/main/openapi/dog.yaml"))
         basePackage.set("com.example.api")
     }
 }
@@ -56,7 +56,7 @@ plugins {
 fabrikt {
     generate("dog") {
         // mandatory properties
-        apiFile.set(file("src/main/openapi/dog.yaml"))
+        apiFile(file("src/main/openapi/dog.yaml"))
         basePackage.set("com.example.api")
         // optional properties with their default values
         outputDirectory.set(file("build/generated/fabrikt"))

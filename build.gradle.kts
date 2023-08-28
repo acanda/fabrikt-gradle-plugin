@@ -38,7 +38,7 @@ kotlin {
 }
 
 detekt {
-    buildUponDefaultConfig = true // preconfigure defaults
+    buildUponDefaultConfig = true
     config.setFrom("$projectDir/config/detekt.yaml")
 }
 

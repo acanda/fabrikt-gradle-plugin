@@ -27,7 +27,7 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") { 
-            |      apiFile.set(file("$openapiPath"))
+            |      apiFile(file("$openapiPath"))
             |      basePackage.set("$basePackage")
             |      outputDirectory.set(file("$outputPath"))
             |  }
@@ -57,7 +57,7 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") {
-            |    apiFile.set(file("$openapiPath"))
+            |    apiFile(file("$openapiPath"))
             |    basePackage.set("$basePackage")
             |  }
             |}
@@ -86,11 +86,11 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") {
-            |    apiFile.set(file("$openapiPathDog"))
+            |    apiFile(file("$openapiPathDog"))
             |    basePackage.set("$basePackage")
             |  }
             |  generate("cat") {
-            |    apiFile.set(file("$openapiPathCat"))
+            |    apiFile(file("$openapiPathCat"))
             |    basePackage.set("$basePackage")
             |  }
             |}
