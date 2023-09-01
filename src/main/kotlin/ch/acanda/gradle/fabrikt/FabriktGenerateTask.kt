@@ -38,7 +38,7 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val apiFile: RegularFileProperty = project.objects.fileProperty()
 
     @get:Input
-    val basePackage: Property<String> = project.objects.property(String::class.java)
+    val basePackage: Property<CharSequence> = project.objects.property(CharSequence::class.java)
 
     @get:OutputDirectory
     @get:Optional

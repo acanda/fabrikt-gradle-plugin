@@ -1,7 +1,8 @@
 package ch.acanda.gradle.fabrikt.matchers
 
 import io.kotest.matchers.shouldBe
-import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.file.FileSystemLocation
+import org.gradle.api.file.FileSystemLocationProperty
 import org.gradle.api.provider.Property
 import java.io.File
 
@@ -10,7 +11,14 @@ internal infix fun <T> Property<T>.shouldContain(expected: T?): Property<T> {
     return this
 }
 
-internal infix fun RegularFileProperty.shouldContain(expected: File?): RegularFileProperty {
+internal infix fun <T : CharSequence> Property<T>.shouldContainString(expected: String?): Property<T> {
+    get().toString() shouldBe expected
+    return this
+}
+
+private typealias FslProperty<T> = FileSystemLocationProperty<T>
+
+internal infix fun <T : FileSystemLocation> FslProperty<T>.shouldContain(expected: File?): FslProperty<T> {
     get().asFile shouldBe expected
     return this
 }

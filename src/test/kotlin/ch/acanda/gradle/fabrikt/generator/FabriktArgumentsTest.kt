@@ -17,7 +17,7 @@ class FabriktArgumentsTest : StringSpec({
         checkAll(argsGen) { args ->
             val cliArgs = args.getCliArgs()
             cliArgs shouldContainInOrder listOf("--api-file", args.apiFile.absolutePathString())
-            cliArgs shouldContainInOrder listOf("--base-package", args.basePackage)
+            cliArgs shouldContainInOrder listOf("--base-package", args.basePackage.toString())
             cliArgs shouldContainInOrder listOf("--output-directory", args.outputDirectory.absolutePathString())
             cliArgs shouldContainInOrder listOf("--targets", CodeGenerationType.HTTP_MODELS.name)
         }
