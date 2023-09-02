@@ -19,7 +19,9 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf("--api-file", args.apiFile.absolutePathString())
             cliArgs shouldContainInOrder listOf("--base-package", args.basePackage.toString())
             cliArgs shouldContainInOrder listOf("--output-directory", args.outputDirectory.absolutePathString())
-            cliArgs shouldContainInOrder listOf("--targets", CodeGenerationType.HTTP_MODELS.name)
+            args.targets.forEach { target ->
+                cliArgs shouldContainInOrder listOf("--targets", target.name)
+            }
         }
     }
 
@@ -31,12 +33,22 @@ class FabriktArgumentsTest : StringSpec({
             FabriktArguments(
                 pathGen.bind(),
                 Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind(),
-                pathGen.bind()
+                pathGen.bind(),
+                enumSet<CodeGenerationType>().bind()
             )
         }
 
         private val pathGen: Arb<Path> = arbitrary {
             Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind())
+        }
+
+        private inline fun <reified T : Enum<T>> enumSet(): Arb<Set<T>> = arbitrary { randomSource ->
+            val values = T::class.java.enumConstants.toList().shuffled().toMutableList()
+            var count = randomSource.random.nextInt(0, values.size + 1)
+            while (count-- > 0) {
+                values.removeLast()
+            }
+            values.toSet()
         }
 
     }

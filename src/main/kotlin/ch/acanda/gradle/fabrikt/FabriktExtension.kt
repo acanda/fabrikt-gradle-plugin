@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt
 
+import com.cjbooms.fabrikt.cli.CodeGenerationType
 import org.gradle.api.Action
 import org.gradle.api.Named
 import org.gradle.api.NamedDomainObjectContainer
@@ -10,6 +11,7 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.provider.SetProperty
 import java.io.File
 import javax.inject.Inject
 
@@ -33,7 +35,12 @@ open class FabriktGenerateExtension @Inject constructor(
     val apiFile: RegularFileProperty = objects.fileProperty()
     val basePackage: Property<CharSequence> = objects.property(CharSequence::class.java)
     val outputDirectory: DirectoryProperty = objects.directoryProperty()
+    val targets: SetProperty<CodeGenerationType> = objects.setProperty(CodeGenerationType::class.java)
+        .convention(null as Set<CodeGenerationType>?)
 
+    // ---------------------------------------------------------------------- //
+    // Syntactic sugar for the property apiFile                               //
+    // ---------------------------------------------------------------------- //
     fun apiFile(file: File) = apiFile.set(file)
 
     @JvmName("apiFileFromFileProvider")
@@ -49,10 +56,16 @@ open class FabriktGenerateExtension @Inject constructor(
     @JvmName("apiFileFromRegularFileProvider")
     fun apiFile(file: Provider<RegularFile>) = apiFile.set(file)
 
+    // ---------------------------------------------------------------------- //
+    // Syntactic sugar for the property basePackage                           //
+    // ---------------------------------------------------------------------- //
     fun basePackage(basePackage: CharSequence) = this.basePackage.set(basePackage)
 
     fun basePackage(basePackage: Provider<out CharSequence>) = this.basePackage.set(basePackage)
 
+    // ---------------------------------------------------------------------- //
+    // Syntactic sugar for the property outputDirectory                       //
+    // ---------------------------------------------------------------------- //
     fun outputDirectory(file: File) = outputDirectory.set(file)
 
     @JvmName("outputDirectoryFromFileProvider")
@@ -68,6 +81,27 @@ open class FabriktGenerateExtension @Inject constructor(
 
     @JvmName("outputDirectoryFromDirectoryProvider")
     fun outputDirectory(directory: Provider<Directory>) = outputDirectory.set(directory)
+
+    // ---------------------------------------------------------------------- //
+    // Syntactic sugar for the property targets                               //
+    // ---------------------------------------------------------------------- //
+    fun targets(vararg targets: CodeGenerationType) = this.targets.set(targets.toSet())
+
+    fun targets(targets: Iterable<CodeGenerationType>) = this.targets.set(targets.toSet())
+
+    fun targets(targets: Provider<out Iterable<CodeGenerationType>>) = this.targets.set(targets)
+
+    @Suppress("VariableNaming", "unused")
+    val HTTP_MODELS: CodeGenerationType = CodeGenerationType.HTTP_MODELS
+
+    @Suppress("VariableNaming", "unused")
+    val CONTROLLERS: CodeGenerationType = CodeGenerationType.CONTROLLERS
+
+    @Suppress("VariableNaming", "unused")
+    val CLIENT: CodeGenerationType = CodeGenerationType.CLIENT
+
+    @Suppress("VariableNaming", "unused")
+    val QUARKUS_REFLECTION_CONFIG: CodeGenerationType = CodeGenerationType.QUARKUS_REFLECTION_CONFIG
 
 }
 

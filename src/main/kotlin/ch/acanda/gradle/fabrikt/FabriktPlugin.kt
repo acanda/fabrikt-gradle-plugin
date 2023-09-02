@@ -2,7 +2,9 @@ package ch.acanda.gradle.fabrikt
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.provider.HasMultipleValues
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.Provider
 
 class FabriktPlugin : Plugin<Project> {
 
@@ -14,6 +16,7 @@ class FabriktPlugin : Plugin<Project> {
                     apiFile.set(generate.apiFile)
                     basePackage.set(generate.basePackage)
                     outputDirectory.setIfPresent(generate.outputDirectory)
+                    targets.setIfPresent(generate.targets)
                 }
             }
             task.configurations.set(configurations)
@@ -21,6 +24,11 @@ class FabriktPlugin : Plugin<Project> {
     }
 
     private fun <T, P : Property<T>> P.setIfPresent(value: P) {
+        if (value.isPresent) set(value)
+    }
+
+    private fun <T, M, P> M.setIfPresent(value: P)
+        where M : HasMultipleValues<T>, P : Provider<out Iterable<T>> {
         if (value.isPresent) set(value)
     }
 

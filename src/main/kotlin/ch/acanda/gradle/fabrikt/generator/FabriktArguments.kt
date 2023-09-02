@@ -6,15 +6,20 @@ import java.nio.file.Path
 internal data class FabriktArguments(
     val apiFile: Path,
     val basePackage: CharSequence,
-    val outputDirectory: Path
+    val outputDirectory: Path,
+    val targets: Set<CodeGenerationType>
 ) {
     fun getCliArgs(): Array<String> {
         @Suppress("ArgumentListWrapping")
-        return arrayOf(
+        val args = mutableListOf(
             "--api-file", apiFile.toAbsolutePath().toString(),
             "--base-package", basePackage.toString(),
             "--output-directory", outputDirectory.toAbsolutePath().toString(),
-            "--targets", CodeGenerationType.HTTP_MODELS.name
         )
+        targets.forEach { target ->
+            args.add("--targets")
+            args.add(target.name)
+        }
+        return args.toTypedArray()
     }
 }

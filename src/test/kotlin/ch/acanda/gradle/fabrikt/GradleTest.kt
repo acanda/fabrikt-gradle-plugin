@@ -30,6 +30,7 @@ class GradleTest : StringSpec({
             |      apiFile(file("$openapiPath"))
             |      basePackage("$basePackage")
             |      outputDirectory(file("$outputPath"))
+            |      targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
             |  }
             |}
             """.trimMargin()
@@ -178,6 +179,7 @@ class GradleTest : StringSpec({
         private fun runFabriktGenerate(projectDir: File): BuildResult =
             GradleRunner.create()
                 .withProjectDir(projectDir)
+                .forwardOutput()
                 .withArguments("fabriktGenerate")
                 .withPluginClasspath()
                 .build()

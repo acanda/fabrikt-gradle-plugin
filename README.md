@@ -48,6 +48,9 @@ model classes will be generated in `build/generated/fabrikt/src/main/kotlin/`.
 
 ## Configuration
 
+The plugin offers the same parameters as the Fabrikt CLI, which are documented
+in the [Fabrikt Uasage Instructions](https://github.com/cjbooms/fabrikt#usage-instructions).
+
 ```kotlin
 plugins {
     id("ch.acanda.gradle.fabrikt") version "<version>"
@@ -60,6 +63,7 @@ fabrikt {
         basePackage("com.example.api")
         // optional properties with their default values
         outputDirectory("build/generated/fabrikt")
+        targets(HTTP_MODELS)
     }
 }
 ```
