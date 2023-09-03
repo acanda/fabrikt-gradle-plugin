@@ -1,15 +1,19 @@
+import ch.acanda.gradle.fabrikt.build.ExtensionGenerator
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
 plugins {
     kotlin("jvm")
     `java-gradle-plugin`
+    idea
     id("io.gitlab.arturbosch.detekt") version "1.23.1"
 }
 
 group = "ch.acanda.gradle"
 version = "0.1-SNAPSHOT"
 val pluginId = "$group.fabrikt"
+
+val generatedSources: Provider<Directory> = project.layout.buildDirectory.dir("generated/src/main/kotlin")
 
 gradlePlugin {
     plugins {
@@ -37,6 +41,21 @@ kotlin {
     jvmToolchain(17)
 }
 
+sourceSets {
+    main {
+        kotlin {
+            srcDir(generatedSources)
+        }
+    }
+}
+
+idea {
+    module {
+        sourceDirs.add(generatedSources.get().asFile)
+        generatedSourceDirs.add(generatedSources.get().asFile)
+    }
+}
+
 detekt {
     buildUponDefaultConfig = true
     config.setFrom("$projectDir/config/detekt.yaml")
@@ -59,6 +78,15 @@ testing {
 }
 
 tasks {
+
+    val generateExtensions by creating(ExtensionGenerator::class.java) {
+        outputDirectory.set(generatedSources)
+    }
+
+    compileKotlin {
+        dependsOn(generateExtensions)
+    }
+
     wrapper {
         gradleVersion = "8.3"
     }
@@ -76,4 +104,5 @@ tasks {
             md.required.set(true)
         }
     }
+
 }
