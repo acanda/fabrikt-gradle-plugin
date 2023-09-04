@@ -30,6 +30,7 @@ import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import java.io.File
+import java.nio.file.Path
 import javax.inject.Inject
 import kotlin.reflect.KClass
 import kotlin.reflect.full.memberProperties
@@ -170,6 +171,23 @@ abstract class ExtensionGenerator : DefaultTask() {
             )
             addFunction(
                 FunSpec.builder(name)
+                    .addParameter(name, Path::class)
+                    .addStatement("this.%1N.set(%1N.toFile())", name)
+                    .build()
+            )
+            addFunction(
+                FunSpec.builder(name)
+                    .jvmName("${name}FromPathProvider")
+                    .addParameter(name, provider<Path>())
+                    .addStatement(
+                        "this.%1N.set(%2N.fileProperty().fileProvider(%1N.map { it.toFile() }))",
+                        name,
+                        PROP_OBJECTS
+                    )
+                    .build()
+            )
+            addFunction(
+                FunSpec.builder(name)
                     .addParameter(name, CharSequence::class)
                     .addStatement("this.%1N.set(%2T(%1N.toString()))", name, File::class)
                     .build()
@@ -219,6 +237,23 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .jvmName("${name}FromFileProvider")
                     .addParameter(name, provider<File>())
                     .addStatement("this.%1N.set(%2N.directoryProperty().fileProvider(%1N))", name, PROP_OBJECTS)
+                    .build()
+            )
+            addFunction(
+                FunSpec.builder(name)
+                    .addParameter(name, Path::class)
+                    .addStatement("this.%1N.set(%1N.toFile())", name)
+                    .build()
+            )
+            addFunction(
+                FunSpec.builder(name)
+                    .jvmName("${name}FromPathProvider")
+                    .addParameter(name, provider<Path>())
+                    .addStatement(
+                        "this.%1N.set(%2N.directoryProperty().fileProvider(%1N.map { it.toFile() }))",
+                        name,
+                        PROP_OBJECTS
+                    )
                     .build()
             )
             addFunction(

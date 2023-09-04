@@ -43,7 +43,7 @@ fabrikt {
 ```
 
 When running `gradle fabriktGenerate`, the examples above will generate the
-model classes from the OpenAPI specification in 'src/main/openapi/dog.yaml'. The
+model classes from the OpenAPI specification in `src/main/openapi/dog.yaml`. The
 model classes will be generated in `build/generated/fabrikt/src/main/kotlin/`.
 
 ## Configuration

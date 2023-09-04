@@ -63,6 +63,7 @@ class ExtensionGeneratorTest : StringSpec({
             |package ch.acanda
             |
             |import java.io.File
+            |import java.nio.`file`.Path
             |import kotlin.CharSequence
             |import kotlin.jvm.JvmName
             |import org.gradle.api.`file`.RegularFile
@@ -79,6 +80,15 @@ class ExtensionGeneratorTest : StringSpec({
             |  @JvmName("healthRecordFromFileProvider")
             |  public fun healthRecord(healthRecord: Provider<File>) {
             |    this.healthRecord.set(objects.fileProperty().fileProvider(healthRecord))
+            |  }
+            |
+            |  public fun healthRecord(healthRecord: Path) {
+            |    this.healthRecord.set(healthRecord.toFile())
+            |  }
+            |
+            |  @JvmName("healthRecordFromPathProvider")
+            |  public fun healthRecord(healthRecord: Provider<out Path>) {
+            |    this.healthRecord.set(objects.fileProperty().fileProvider(healthRecord.map { it.toFile() }))
             |  }
             |
             |  public fun healthRecord(healthRecord: CharSequence) {
@@ -112,6 +122,7 @@ class ExtensionGeneratorTest : StringSpec({
             |package ch.acanda
             |
             |import java.io.File
+            |import java.nio.`file`.Path
             |import kotlin.CharSequence
             |import kotlin.jvm.JvmName
             |import org.gradle.api.`file`.Directory
@@ -128,6 +139,15 @@ class ExtensionGeneratorTest : StringSpec({
             |  @JvmName("picturesFromFileProvider")
             |  public fun pictures(pictures: Provider<File>) {
             |    this.pictures.set(objects.directoryProperty().fileProvider(pictures))
+            |  }
+            |
+            |  public fun pictures(pictures: Path) {
+            |    this.pictures.set(pictures.toFile())
+            |  }
+            |
+            |  @JvmName("picturesFromPathProvider")
+            |  public fun pictures(pictures: Provider<out Path>) {
+            |    this.pictures.set(objects.directoryProperty().fileProvider(pictures.map { it.toFile() }))
             |  }
             |
             |  public fun pictures(pictures: CharSequence) {
