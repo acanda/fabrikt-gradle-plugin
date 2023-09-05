@@ -6,6 +6,7 @@ import ch.acanda.gradle.fabrikt.build.generator.fileProperty
 import ch.acanda.gradle.fabrikt.build.generator.filesProperty
 import ch.acanda.gradle.fabrikt.build.generator.named
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
+import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -76,6 +77,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .stringProperty("basePackage")
             .directoryProperty("outputDirectory")
             .enumSetProperty("targets", CodeGenerationType::class)
+            .enumSetProperty("httpClientOpts", ClientCodeGenOptionType::class)
             .build()
 
         internal fun fabriktExtension(className: ClassName, valueType: TypeName) = TypeSpec.classBuilder(className)

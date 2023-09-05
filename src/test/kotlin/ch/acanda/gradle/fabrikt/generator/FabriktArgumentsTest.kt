@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
@@ -39,7 +40,8 @@ class FabriktArgumentsTest : StringSpec({
                 Arb.set(pathGen, 0..3).bind(),
                 Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind(),
                 pathGen.bind(),
-                enumSet<CodeGenerationType>().bind()
+                enumSet<CodeGenerationType>().bind(),
+                enumSet<ClientCodeGenOptionType>().bind(),
             )
         }
 

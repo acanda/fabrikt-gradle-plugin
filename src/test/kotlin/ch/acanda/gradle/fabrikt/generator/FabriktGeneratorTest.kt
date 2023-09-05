@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
@@ -43,8 +44,9 @@ class FabriktGeneratorTest : WordSpec({
             }
             val outputDir = tempdir("out").toPath()
             val targets = setOf(CodeGenerationType.HTTP_MODELS)
+            val httpClientOpts = emptySet<ClientCodeGenOptionType>()
 
-            generate(apiFile, setOf(apiFragment), "dog", outputDir, targets)
+            generate(apiFile, setOf(apiFragment), "dog", outputDir, targets, httpClientOpts)
 
             val dogModel = outputDir.resolve("src/main/kotlin/dog/models/Dog.kt")
             dogModel should exist()

@@ -65,6 +65,10 @@ class ExtensionGeneratorTest : WordSpec({
         "contain the property targets" {
             extension shouldContainOnlyOnce "public val targets: SetProperty<CodeGenerationType>"
         }
+
+        "contain the property httpClientOpts" {
+            extension shouldContainOnlyOnce "public val httpClientOpts: SetProperty<ClientCodeGenOptionType>"
+        }
     }
 
 }) {

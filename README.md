@@ -65,6 +65,7 @@ fabrikt {
         outputDirectory("build/generated/fabrikt")
         apiFragments(emptySet())
         targets(HTTP_MODELS)
+        httpClientOpts(emptySet())
     }
 }
 ```
@@ -74,5 +75,6 @@ fabrikt {
 | apiFile         | The path to an Open API v3 specification, interpreted relative to the project directory.                 |                           | CharSequence, File, Path, RegularFile, or a Provider of any of those types.                                                                              |
 | basePackage     | The base package under which all code is built.                                                          |                           | CharSequence, Provider\<CharSequence>.                                                                                                                   |
 | outputDirectory | The directory to which the generated classes are written, interpreted relative to the project directory. | `build/generated/fabrikt` | CharSequence, File, Path, RegularFile, or a Provider of any of those types.                                                                              |
-| apiFragments    | A set of paths to Open API v3 specification fragments, interpreted relative to the project directory.    | <empty set>               | Varargs or Iterable of any type supported by [Project.files(...)](https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api/-project/files.html). |
-| targets         | Targets are the parts of the application that you want to be generated.                                  | `HTTP_MODELS`             | Varargs, Iterable, or Provider\<Iterable> of Enum: `HTTP_MODELS`, `CONTROLLERS`, `CLIENT`, `QUARKUS_REFLECTION_CONFIG`                                   |
+| apiFragments    | A set of paths to Open API v3 specification fragments, interpreted relative to the project directory.    | \<empty set>              | Varargs or Iterable of any type supported by [Project.files(...)](https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api/-project/files.html). |
+| targets         | Targets are the parts of the application that you want to be generated.                                  | `HTTP_MODELS`             | Varargs, Iterable, or Provider\<Iterable> of Enum: `HTTP_MODELS`, `CONTROLLERS`, `CLIENT`, `QUARKUS_REFLECTION_CONFIG`.                                  |
+| httpClientOpts  | The options for the generated http client code.                                                          | \<empty set>              | Varargs, Iterable, or Provider\<Iterable> of Enum: `RESILIENCE4J`, `SUSPEND_MODIFIER`.                                                                   | 

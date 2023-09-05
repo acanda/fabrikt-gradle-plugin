@@ -8,6 +8,7 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import org.gradle.api.provider.SetProperty
 import kotlin.reflect.KClass
+import kotlin.reflect.KVisibility
 import kotlin.reflect.full.memberProperties
 
 internal fun TypeSpec.Builder.enumSetProperty(name: String, enumType: KClass<out Enum<*>>) = apply {
@@ -41,7 +42,7 @@ internal fun TypeSpec.Builder.enumSetProperty(name: String, enumType: KClass<out
     enumType.java.enumConstants.iterator().forEach { enumValue ->
         val spec = PropertySpec.builder(enumValue.name, enumType).initializer("%T.%N", enumType, enumValue.name)
         enumValue::class.memberProperties
-            .find { it.name == "description" }
+            .find { it.name == "description" && it.visibility != KVisibility.PRIVATE }
             ?.let {
                 spec.addKdoc(it.getter.call(enumValue) as String)
             }

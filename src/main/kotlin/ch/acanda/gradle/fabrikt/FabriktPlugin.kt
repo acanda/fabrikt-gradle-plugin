@@ -18,6 +18,7 @@ class FabriktPlugin : Plugin<Project> {
                     basePackage.set(generate.basePackage)
                     outputDirectory.setIfPresent(generate.outputDirectory)
                     targets.setIfPresent(generate.targets)
+                    httpClientOpts.setIfPresent(generate.httpClientOpts)
                 }
             }
             task.configurations.set(configurations)

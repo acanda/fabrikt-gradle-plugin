@@ -1,10 +1,14 @@
 package ch.acanda.gradle.fabrikt
 
+import com.cjbooms.fabrikt.cli.CodeGenerationType
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
+import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
+import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.gradle.testfixtures.ProjectBuilder
@@ -33,8 +37,11 @@ class FabriktPluginTest : WordSpec({
                 .configurations.get().shouldHaveSize(1)
                 .first().run {
                     this.apiFile.get().asFile shouldBe apiFile
+                    this.apiFragments.files should beEmpty()
                     this.basePackage.get() shouldBe basePackage
                     this.outputDirectory.get().asFile shouldBe outDir
+                    this.targets.get() shouldContainExactly listOf(CodeGenerationType.HTTP_MODELS)
+                    this.httpClientOpts.get() should beEmpty()
                 }
         }
     }

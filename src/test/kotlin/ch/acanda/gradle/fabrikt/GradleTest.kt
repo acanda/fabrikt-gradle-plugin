@@ -33,6 +33,7 @@ class GradleTest : StringSpec({
             |      basePackage("$basePackage")
             |      outputDirectory("$outputPath")
             |      targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
+            |      httpClientOpts(RESILIENCE4J, SUSPEND_MODIFIER)
             |  }
             |}
             """.trimMargin()
