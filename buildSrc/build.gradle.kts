@@ -29,7 +29,7 @@ testing {
         val test by getting(JvmTestSuite::class) {
             useJUnitJupiter("5.10.0")
             dependencies {
-                val kotestVersion = "5.7.1"
+                val kotestVersion = "5.7.2"
                 implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
                 implementation("io.kotest:kotest-property:$kotestVersion")
                 runtimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
