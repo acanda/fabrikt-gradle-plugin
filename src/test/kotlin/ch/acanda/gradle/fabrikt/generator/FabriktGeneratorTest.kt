@@ -22,6 +22,12 @@ class FabriktGeneratorTest : WordSpec({
                     |  title: Dog
                     |  version: 1.0.0
                     |paths: {}
+                    """.trimMargin()
+                )
+            }
+            val apiFragment = tempfile("fragment", ".yaml").toPath().apply {
+                writeText(
+                    """
                     |components:
                     |  schemas: 
                     |    Dog:
@@ -38,7 +44,7 @@ class FabriktGeneratorTest : WordSpec({
             val outputDir = tempdir("out").toPath()
             val targets = setOf(CodeGenerationType.HTTP_MODELS)
 
-            generate(apiFile, "dog", outputDir, targets)
+            generate(apiFile, setOf(apiFragment), "dog", outputDir, targets)
 
             val dogModel = outputDir.resolve("src/main/kotlin/dog/models/Dog.kt")
             dogModel should exist()

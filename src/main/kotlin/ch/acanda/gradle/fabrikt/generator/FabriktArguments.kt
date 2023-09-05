@@ -5,6 +5,7 @@ import java.nio.file.Path
 
 internal data class FabriktArguments(
     val apiFile: Path,
+    val apiFragments: Set<Path>,
     val basePackage: CharSequence,
     val outputDirectory: Path,
     val targets: Set<CodeGenerationType>
@@ -16,6 +17,10 @@ internal data class FabriktArguments(
             "--base-package", basePackage.toString(),
             "--output-directory", outputDirectory.toAbsolutePath().toString(),
         )
+        apiFragments.forEach { fragment ->
+            args.add("--api-fragment")
+            args.add(fragment.toAbsolutePath().toString())
+        }
         targets.forEach { target ->
             args.add("--targets")
             args.add(target.name)

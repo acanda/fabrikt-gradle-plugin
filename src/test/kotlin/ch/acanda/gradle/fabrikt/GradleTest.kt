@@ -19,6 +19,7 @@ class GradleTest : StringSpec({
         val basePackage = "ch.acanda"
         val outputPath = "build/generated/custom"
         val openapiPath = createSpec(projectDir)
+        val fragmentPaths = createSpecFragments(projectDir)
         projectDir.resolve("build.gradle.kts").writeText(
             """
             |plugins {
@@ -27,9 +28,10 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") { 
-            |      apiFile(file("$openapiPath"))
+            |      apiFile("$openapiPath")
+            |      apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
             |      basePackage("$basePackage")
-            |      outputDirectory(file("$outputPath"))
+            |      outputDirectory("$outputPath")
             |      targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
             |  }
             |}
@@ -159,9 +161,6 @@ class GradleTest : StringSpec({
             specFile.writeText(
                 """
                 |openapi: 3.0.3
-                |info:
-                |  title: $name
-                |  version: 1.0.0
                 |paths: {}
                 |components:
                 |  schemas: 
@@ -174,6 +173,31 @@ class GradleTest : StringSpec({
                 """.trimMargin()
             )
             return specPath
+        }
+
+        private fun createSpecFragments(projectDir: File): List<String> {
+            val infoPath = "src/main/openapi/info.yaml"
+            val infoFile = projectDir.resolve(infoPath)
+            infoFile.parentFile.mkdirs()
+            infoFile.writeText(
+                """
+                |info:
+                |  title: The API
+                |  version: 1.0.0
+                """.trimMargin()
+            )
+
+            val securityPath = "src/main/openapi/info.yaml"
+            val securityFile = projectDir.resolve(securityPath)
+            securityFile.parentFile.mkdirs()
+            securityFile.writeText(
+                """
+                |security:
+                |  - basicAuth: []
+                """.trimMargin()
+            )
+
+            return listOf(securityPath)
         }
 
         private fun runFabriktGenerate(projectDir: File): BuildResult =

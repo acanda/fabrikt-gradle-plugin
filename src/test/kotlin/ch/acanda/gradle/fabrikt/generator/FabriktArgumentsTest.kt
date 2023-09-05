@@ -5,6 +5,7 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.stringPattern
 import io.kotest.property.checkAll
 import java.nio.file.Path
@@ -22,6 +23,9 @@ class FabriktArgumentsTest : StringSpec({
             args.targets.forEach { target ->
                 cliArgs shouldContainInOrder listOf("--targets", target.name)
             }
+            args.apiFragments.forEach { fragment ->
+                cliArgs shouldContainInOrder listOf("--api-fragment", fragment.toAbsolutePath().toString())
+            }
         }
     }
 
@@ -32,6 +36,7 @@ class FabriktArgumentsTest : StringSpec({
         private val argsGen: Arb<FabriktArguments> = arbitrary {
             FabriktArguments(
                 pathGen.bind(),
+                Arb.set(pathGen, 0..3).bind(),
                 Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind(),
                 pathGen.bind(),
                 enumSet<CodeGenerationType>().bind()

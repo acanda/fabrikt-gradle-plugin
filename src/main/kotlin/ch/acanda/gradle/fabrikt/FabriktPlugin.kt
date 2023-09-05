@@ -14,6 +14,7 @@ class FabriktPlugin : Plugin<Project> {
             val configurations = extension.map { generate ->
                 GenerateTaskConfiguration(project).apply {
                     apiFile.set(generate.apiFile)
+                    apiFragments.setFrom(generate.apiFragments)
                     basePackage.set(generate.basePackage)
                     outputDirectory.setIfPresent(generate.outputDirectory)
                     targets.setIfPresent(generate.targets)
