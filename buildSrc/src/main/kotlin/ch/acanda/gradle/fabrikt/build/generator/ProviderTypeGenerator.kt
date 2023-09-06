@@ -8,7 +8,10 @@ import com.squareup.kotlinpoet.asTypeName
 import org.gradle.api.provider.Provider
 import java.io.File
 
-internal inline fun <reified T> provider() = provider(T::class.asTypeName())
+internal inline fun <reified T> provider() = when {
+    T::class.java.isEnum -> Provider::class.asClassName().parameterizedBy(T::class.asTypeName())
+    else -> provider(T::class.asTypeName())
+}
 
 internal fun provider(valueType: TypeName) =
     Provider::class.asClassName().parameterizedBy(

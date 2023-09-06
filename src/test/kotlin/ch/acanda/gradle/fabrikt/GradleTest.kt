@@ -34,6 +34,7 @@ class GradleTest : StringSpec({
             |      outputDirectory("$outputPath")
             |      targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
             |      httpClientOpts(RESILIENCE4J, SUSPEND_MODIFIER)
+            |      httpClientTarget(OPEN_FEIGN)
             |  }
             |}
             """.trimMargin()

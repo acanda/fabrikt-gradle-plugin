@@ -45,8 +45,9 @@ class FabriktGeneratorTest : WordSpec({
             val outputDir = tempdir("out").toPath()
             val targets = setOf(CodeGenerationType.HTTP_MODELS)
             val httpClientOpts = emptySet<ClientCodeGenOptionType>()
+            val httpClientTarget = null
 
-            generate(apiFile, setOf(apiFragment), "dog", outputDir, targets, httpClientOpts)
+            generate(apiFile, setOf(apiFragment), "dog", outputDir, targets, httpClientOpts, httpClientTarget)
 
             val dogModel = outputDir.resolve("src/main/kotlin/dog/models/Dog.kt")
             dogModel should exist()

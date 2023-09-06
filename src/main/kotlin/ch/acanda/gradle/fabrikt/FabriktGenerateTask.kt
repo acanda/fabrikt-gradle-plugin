@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -36,7 +37,8 @@ abstract class FabriktGenerateTask : DefaultTask() {
                     basePackage.get(),
                     outputDirectory.get().asFile.toPath(),
                     targets.get(),
-                    httpClientOpts.get()
+                    httpClientOpts.get(),
+                    httpClientTarget.getOrNull(),
                 )
             }
         }
@@ -69,5 +71,10 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val httpClientOpts: SetProperty<ClientCodeGenOptionType> =
         project.objects.setProperty(ClientCodeGenOptionType::class.java)
+
+    @get:Input
+    @get:Optional
+    val httpClientTarget: Property<ClientCodeGenTargetType> =
+        project.objects.property(ClientCodeGenTargetType::class.java)
 
 }

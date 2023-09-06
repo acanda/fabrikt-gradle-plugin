@@ -1,11 +1,14 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.enum
+import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.stringPattern
 import io.kotest.property.checkAll
@@ -42,6 +45,7 @@ class FabriktArgumentsTest : StringSpec({
                 pathGen.bind(),
                 enumSet<CodeGenerationType>().bind(),
                 enumSet<ClientCodeGenOptionType>().bind(),
+                Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind()
             )
         }
 

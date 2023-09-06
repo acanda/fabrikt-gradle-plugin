@@ -42,6 +42,7 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory.get().asFile shouldBe outDir
                     this.targets.get() shouldContainExactly listOf(CodeGenerationType.HTTP_MODELS)
                     this.httpClientOpts.get() should beEmpty()
+                    this.httpClientTarget.isPresent shouldBe false
                 }
         }
     }

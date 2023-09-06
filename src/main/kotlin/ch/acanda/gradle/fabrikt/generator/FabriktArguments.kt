@@ -1,6 +1,7 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import java.nio.file.Path
 
@@ -11,6 +12,7 @@ internal data class FabriktArguments(
     val outputDirectory: Path,
     val targets: Set<CodeGenerationType>,
     val httpClientOpts: Set<ClientCodeGenOptionType>,
+    val httpClientTarget: ClientCodeGenTargetType?,
 ) {
     fun getCliArgs(): Array<String> {
         @Suppress("ArgumentListWrapping")
@@ -30,6 +32,10 @@ internal data class FabriktArguments(
         httpClientOpts.forEach { option ->
             args.add("--http-client-opts")
             args.add(option.name)
+        }
+        httpClientTarget?.let {
+            args.add("--http-client-target")
+            args.add(it.name)
         }
         return args.toTypedArray()
     }
