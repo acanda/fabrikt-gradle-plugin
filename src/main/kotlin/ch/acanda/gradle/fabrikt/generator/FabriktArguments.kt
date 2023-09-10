@@ -1,42 +1,50 @@
 package ch.acanda.gradle.fabrikt.generator
 
-import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
-import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
+import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.CodeGenerationType
-import java.nio.file.Path
 
-internal data class FabriktArguments(
-    val apiFile: Path,
-    val apiFragments: Set<Path>,
-    val basePackage: CharSequence,
-    val outputDirectory: Path,
-    val targets: Set<CodeGenerationType>,
-    val httpClientOpts: Set<ClientCodeGenOptionType>,
-    val httpClientTarget: ClientCodeGenTargetType?,
-) {
-    fun getCliArgs(): Array<String> {
+internal const val ARG_API_FILE = "--api-file"
+internal const val ARG_BASE_PACKAGE = "--base-package"
+internal const val ARG_OUT_DIR = "--output-directory"
+internal const val ARG_API_FRAGMENT = "--api-fragment"
+internal const val ARG_TARGETS = "--targets"
+internal const val ARG_CLIENT_OPTS = "--http-client-opts"
+internal const val ARG_CLIENT_TARGET = "--http-client-target"
+
+internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
+    fun getCliArgs(): Array<String> = with(config) {
         @Suppress("ArgumentListWrapping")
         val args = mutableListOf(
-            "--api-file", apiFile.toAbsolutePath().toString(),
-            "--base-package", basePackage.toString(),
-            "--output-directory", outputDirectory.toAbsolutePath().toString(),
+            ARG_API_FILE, apiFile.asFile.get().absolutePath,
+            ARG_BASE_PACKAGE, basePackage.get().toString(),
+            ARG_OUT_DIR, outputDirectory.asFile.get().absolutePath,
         )
         apiFragments.forEach { fragment ->
-            args.add("--api-fragment")
-            args.add(fragment.toAbsolutePath().toString())
+            args.add(ARG_API_FRAGMENT)
+            args.add(fragment.absolutePath)
         }
-        targets.forEach { target ->
-            args.add("--targets")
+        targets.get().filterNot { it == CodeGenerationType.CLIENT }.forEach { target ->
+            args.add(ARG_TARGETS)
             args.add(target.name)
         }
-        httpClientOpts.forEach { option ->
-            args.add("--http-client-opts")
-            args.add(option.name)
-        }
-        httpClientTarget?.let {
-            args.add("--http-client-target")
-            args.add(it.name)
-        }
+        addClientArgs(args)
         return args.toTypedArray()
+    }
+
+    private fun GenerateTaskConfiguration.addClientArgs(args: MutableList<String>) {
+        with(client) {
+            if (enabled.get()) {
+                args.add(ARG_TARGETS)
+                args.add(CodeGenerationType.CLIENT.name)
+                options.get().forEach { option ->
+                    args.add(ARG_CLIENT_OPTS)
+                    args.add(option.name)
+                }
+                target.orNull?.let {
+                    args.add(ARG_CLIENT_TARGET)
+                    args.add(it.name)
+                }
+            }
+        }
     }
 }

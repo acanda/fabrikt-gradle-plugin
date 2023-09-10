@@ -9,6 +9,7 @@ import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.SetProperty
@@ -29,18 +30,8 @@ abstract class FabriktGenerateTask : DefaultTask() {
     @TaskAction
     fun generate() {
         configurations.get().forEach { config ->
-            with(config) {
-                logger.info("Generate ${apiFile.get()}")
-                generate(
-                    apiFile.get().asFile.toPath(),
-                    apiFragments.files.mapTo(mutableSetOf()) { it.toPath() },
-                    basePackage.get(),
-                    outputDirectory.get().asFile.toPath(),
-                    targets.get(),
-                    httpClientOpts.get(),
-                    httpClientTarget.getOrNull(),
-                )
-            }
+            logger.info("Generate ${config.apiFile.get()}")
+            generate(config)
         }
     }
 
@@ -67,14 +58,24 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val targets: SetProperty<CodeGenerationType> = project.objects.setProperty(CodeGenerationType::class.java)
         .convention(setOf(CodeGenerationType.HTTP_MODELS))
 
-    @get:Input
+    @get:Nested
     @get:Optional
-    val httpClientOpts: SetProperty<ClientCodeGenOptionType> =
-        project.objects.setProperty(ClientCodeGenOptionType::class.java)
+    val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)
+
+}
+
+open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactory) {
 
     @get:Input
     @get:Optional
-    val httpClientTarget: Property<ClientCodeGenTargetType> =
-        project.objects.property(ClientCodeGenTargetType::class.java)
+    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val options: SetProperty<ClientCodeGenOptionType> = objects.setProperty(ClientCodeGenOptionType::class.java)
+
+    @get:Input
+    @get:Optional
+    val target: Property<ClientCodeGenTargetType> = objects.property(ClientCodeGenTargetType::class.java)
 
 }

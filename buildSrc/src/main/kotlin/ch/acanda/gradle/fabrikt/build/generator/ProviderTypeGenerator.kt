@@ -17,6 +17,7 @@ internal fun provider(valueType: TypeName) =
     Provider::class.asClassName().parameterizedBy(
         when (valueType) {
             File::class.asTypeName() -> valueType
+            Boolean::class.asTypeName() -> valueType
             else -> WildcardTypeName.producerOf(valueType)
         }
     )

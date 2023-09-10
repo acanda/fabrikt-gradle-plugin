@@ -1,34 +1,46 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldNotContainAnyOf
+import io.kotest.matchers.collections.shouldNotContainInOrder
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
+import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.stringPattern
 import io.kotest.property.checkAll
-import java.nio.file.Path
+import org.gradle.testfixtures.ProjectBuilder
+import java.io.File
 import java.nio.file.Paths
-import kotlin.io.path.absolutePathString
 
 class FabriktArgumentsTest : StringSpec({
 
     "should handle any combination of arguments" {
-        checkAll(argsGen) { args ->
-            val cliArgs = args.getCliArgs()
-            cliArgs shouldContainInOrder listOf("--api-file", args.apiFile.absolutePathString())
-            cliArgs shouldContainInOrder listOf("--base-package", args.basePackage.toString())
-            cliArgs shouldContainInOrder listOf("--output-directory", args.outputDirectory.absolutePathString())
-            args.targets.forEach { target ->
-                cliArgs shouldContainInOrder listOf("--targets", target.name)
+        checkAll(generateTaskConfigGen) { config ->
+            val cliArgs = FabriktArguments(config).getCliArgs()
+            cliArgs shouldContainInOrder listOf(ARG_API_FILE, config.apiFile.asFile.get().absolutePath)
+            cliArgs shouldContainInOrder listOf(ARG_BASE_PACKAGE, config.basePackage.get().toString())
+            cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
+            config.apiFragments.forEach { fragment ->
+                cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
-            args.apiFragments.forEach { fragment ->
-                cliArgs shouldContainInOrder listOf("--api-fragment", fragment.toAbsolutePath().toString())
+            with(config.client) {
+                if (enabled.get()) {
+                    cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
+                    options.get().forEach { option ->
+                        cliArgs shouldContainInOrder listOf(ARG_CLIENT_OPTS, option.name)
+                    }
+                } else {
+                    cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
+                    cliArgs shouldNotContainAnyOf listOf(ARG_CLIENT_OPTS, ARG_CLIENT_TARGET)
+                }
             }
         }
     }
@@ -37,20 +49,22 @@ class FabriktArgumentsTest : StringSpec({
 
     companion object {
 
-        private val argsGen: Arb<FabriktArguments> = arbitrary {
-            FabriktArguments(
-                pathGen.bind(),
-                Arb.set(pathGen, 0..3).bind(),
-                Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind(),
-                pathGen.bind(),
-                enumSet<CodeGenerationType>().bind(),
-                enumSet<ClientCodeGenOptionType>().bind(),
-                Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind()
-            )
+        private val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = arbitrary {
+            val project = ProjectBuilder.builder().build()
+            GenerateTaskConfiguration(project).apply {
+                apiFile.set(pathGen.bind())
+                apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
+                basePackage.set(Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
+                outputDirectory.set(pathGen.bind())
+                targets.set(enumSet<CodeGenerationType>().bind())
+                client.enabled.set(Arb.boolean().orNull(0.2).bind())
+                client.options.set(enumSet<ClientCodeGenOptionType>().bind())
+                client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
+            }
         }
 
-        private val pathGen: Arb<Path> = arbitrary {
-            Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind())
+        private val pathGen: Arb<File> = arbitrary {
+            Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
         }
 
         private inline fun <reified T : Enum<T>> enumSet(): Arb<Set<T>> = arbitrary { randomSource ->

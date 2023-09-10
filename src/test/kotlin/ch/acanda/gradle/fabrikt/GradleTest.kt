@@ -33,8 +33,11 @@ class GradleTest : StringSpec({
             |      basePackage("$basePackage")
             |      outputDirectory("$outputPath")
             |      targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
-            |      httpClientOpts(RESILIENCE4J, SUSPEND_MODIFIER)
-            |      httpClientTarget(OPEN_FEIGN)
+            |      client {
+            |          enabled(true)
+            |          options(RESILIENCE4J, SUSPEND_MODIFIER)
+            |          target(OPEN_FEIGN)
+            |      }
             |  }
             |}
             """.trimMargin()
@@ -46,8 +49,15 @@ class GradleTest : StringSpec({
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "$outputPath/src/main/kotlin/${basePackage.replace('.', '/')}/models"
-        projectDir.resolve("$modelsPath/Dog.kt").toPath() should exist()
+        val outputs = projectDir.resolve(outputPath).walkTopDown()
+            .filter { it.isFile }
+            .map { it.toRelativeString(projectDir) }
+            .sorted()
+            .toList()
+
+        val basePath = "$outputPath/src/main/kotlin/${basePackage.replace('.', '/')}"
+        outputs shouldContain "$basePath/models/Dog.kt"
+        outputs shouldContain "$basePath/client/DogClient.kt"
     }
 
     "`gradle fabriktGenerate` with minimal configuration should run fabrikt" {
@@ -163,7 +173,16 @@ class GradleTest : StringSpec({
             specFile.writeText(
                 """
                 |openapi: 3.0.3
-                |paths: {}
+                |paths:
+                |  /${name.lowercase()}:
+                |    get:
+                |      responses:
+                |        200:
+                |          content:
+                |            application/json:
+                |              schema:
+                |                ${'$'}ref: "#/components/$name"
+                |
                 |components:
                 |  schemas: 
                 |    $name:

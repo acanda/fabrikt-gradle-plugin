@@ -1,11 +1,13 @@
 package ch.acanda.gradle.fabrikt.build
 
+import ch.acanda.gradle.fabrikt.build.generator.booleanProperty
 import ch.acanda.gradle.fabrikt.build.generator.directoryProperty
 import ch.acanda.gradle.fabrikt.build.generator.enumProperty
 import ch.acanda.gradle.fabrikt.build.generator.enumSetProperty
 import ch.acanda.gradle.fabrikt.build.generator.fileProperty
 import ch.acanda.gradle.fabrikt.build.generator.filesProperty
 import ch.acanda.gradle.fabrikt.build.generator.named
+import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
@@ -39,14 +41,17 @@ abstract class ExtensionGenerator : DefaultTask() {
 
     @TaskAction
     fun generate() {
+        val clientExtensionName = ClassName(PACKAGE, "ClientExtension")
+        val clientExtension = clientExtension(clientExtensionName)
         val fabriktGenerateExtensionName = ClassName(PACKAGE, "FabriktGenerateExtension")
-        val fabriktGenerateExtension = fabriktGenerateExtension(fabriktGenerateExtensionName)
-        val fabriktGenerateName = ClassName(PACKAGE, "FabriktExtension")
-        val fabriktExtension = fabriktExtension(fabriktGenerateName, fabriktGenerateExtensionName)
+        val fabriktGenerateExtension = fabriktGenerateExtension(fabriktGenerateExtensionName, clientExtensionName)
+        val fabriktExtensionName = ClassName(PACKAGE, "FabriktExtension")
+        val fabriktExtension = fabriktExtension(fabriktExtensionName, fabriktGenerateExtensionName)
 
-        val file = FileSpec.builder(fabriktGenerateName)
+        val file = FileSpec.builder(fabriktExtensionName)
             .addType(fabriktExtension)
             .addType(fabriktGenerateExtension)
+            .addType(clientExtension)
             .build()
 
         file.writeTo(outputDirectory.get().asFile)
@@ -58,30 +63,30 @@ abstract class ExtensionGenerator : DefaultTask() {
         internal const val PROP_NAME = "name"
         internal const val PROP_OBJECTS = "objects"
 
-        internal fun fabriktGenerateExtension(className: ClassName) = TypeSpec.classBuilder(className)
-            .addModifiers(KModifier.OPEN)
-            .named()
-            .primaryConstructor(
-                FunSpec.constructorBuilder()
-                    .addAnnotation(Inject::class)
-                    .addParameter(PROP_NAME, String::class)
-                    .addParameter(PROP_OBJECTS, ObjectFactory::class)
-                    .build()
-            )
-            .addProperty(
-                PropertySpec.builder(PROP_OBJECTS, ObjectFactory::class)
-                    .addModifiers(KModifier.PRIVATE)
-                    .initializer(PROP_OBJECTS)
-                    .build()
-            )
-            .fileProperty("apiFile")
-            .filesProperty("apiFragments")
-            .stringProperty("basePackage")
-            .directoryProperty("outputDirectory")
-            .enumSetProperty("targets", CodeGenerationType::class)
-            .enumSetProperty("httpClientOpts", ClientCodeGenOptionType::class)
-            .enumProperty("httpClientTarget", ClientCodeGenTargetType::class)
-            .build()
+        internal fun fabriktGenerateExtension(className: ClassName, clientExtName: ClassName) =
+            TypeSpec.classBuilder(className)
+                .addModifiers(KModifier.OPEN)
+                .named()
+                .primaryConstructor(
+                    FunSpec.constructorBuilder()
+                        .addAnnotation(Inject::class)
+                        .addParameter(PROP_NAME, String::class)
+                        .addParameter(PROP_OBJECTS, ObjectFactory::class)
+                        .build()
+                )
+                .addProperty(
+                    PropertySpec.builder(PROP_OBJECTS, ObjectFactory::class)
+                        .addModifiers(KModifier.PRIVATE)
+                        .initializer(PROP_OBJECTS)
+                        .build()
+                )
+                .fileProperty("apiFile")
+                .filesProperty("apiFragments")
+                .stringProperty("basePackage")
+                .directoryProperty("outputDirectory")
+                .enumSetProperty("targets", CodeGenerationType::class)
+                .nestedProperty("client", clientExtName)
+                .build()
 
         internal fun fabriktExtension(className: ClassName, valueType: TypeName) = TypeSpec.classBuilder(className)
             .addModifiers(KModifier.OPEN)
@@ -110,6 +115,25 @@ abstract class ExtensionGenerator : DefaultTask() {
             )
             .build()
 
-    }
+        internal fun clientExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addModifiers(KModifier.OPEN)
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addAnnotation(Inject::class)
+                    .addParameter(PROP_OBJECTS, ObjectFactory::class)
+                    .build()
+            )
+            .addProperty(
+                PropertySpec.builder(PROP_OBJECTS, ObjectFactory::class)
+                    .addModifiers(KModifier.PRIVATE)
+                    .initializer(PROP_OBJECTS)
+                    .build()
+            )
+            .booleanProperty("enabled")
+            .enumSetProperty("options", ClientCodeGenOptionType::class)
+            .enumProperty("target", ClientCodeGenTargetType::class)
+            .build()
 
+    }
+    
 }

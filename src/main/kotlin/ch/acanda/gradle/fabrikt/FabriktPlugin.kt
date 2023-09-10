@@ -18,8 +18,11 @@ class FabriktPlugin : Plugin<Project> {
                     basePackage.set(generate.basePackage)
                     outputDirectory.setIfPresent(generate.outputDirectory)
                     targets.setIfPresent(generate.targets)
-                    httpClientOpts.setIfPresent(generate.httpClientOpts)
-                    httpClientTarget.setIfPresent(generate.httpClientTarget)
+                    with(client) {
+                        enabled.setIfPresent(generate.client.enabled)
+                        options.setIfPresent(generate.client.options)
+                        target.setIfPresent(generate.client.target)
+                    }
                 }
             }
             task.configurations.set(configurations)

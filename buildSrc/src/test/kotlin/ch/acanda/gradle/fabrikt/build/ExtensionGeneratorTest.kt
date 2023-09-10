@@ -8,7 +8,6 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.shouldBe
 import io.kotest.matchers.string.shouldContainOnlyOnce
 
-
 class ExtensionGeneratorTest : WordSpec({
 
     "fabriktExtension(name, type)" should {
@@ -35,14 +34,15 @@ class ExtensionGeneratorTest : WordSpec({
             |  }
             |}
             |
-        """.trimMargin()
+            """.trimMargin()
         }
     }
 
     "fabriktGenerateExtension(name)" should {
         val typeSpec =
             ExtensionGenerator.fabriktGenerateExtension(
-                ClassName("ch.acanda", "FabriktGenerateExtension")
+                ClassName("ch.acanda", "FabriktGenerateExtension"),
+                ClassName("ch.acanda", "ClientExtension")
             )
         val extension = typeSpec.writeToString()
 
@@ -66,12 +66,29 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public val targets: SetProperty<CodeGenerationType>"
         }
 
-        "contain the property httpClientOpts" {
-            extension shouldContainOnlyOnce "public val httpClientOpts: SetProperty<ClientCodeGenOptionType>"
+        "contain the property client" {
+            extension shouldContainOnlyOnce "public val client: ClientExtension"
         }
 
-        "contain the property httpClientTarget" {
-            extension shouldContainOnlyOnce "public val httpClientTarget: Property<ClientCodeGenTargetType>"
+        "contain the function client(action)" {
+            extension shouldContainOnlyOnce "public fun client(action: Action<ClientExtension>)"
+        }
+
+    }
+
+    "clientExtension(name)" should {
+
+        val typeSpec = ExtensionGenerator.clientExtension(
+            ClassName("ch.acanda", "ClientExtension")
+        )
+        val extension = typeSpec.writeToString()
+
+        "contain the property options" {
+            extension shouldContainOnlyOnce "public val options: SetProperty<ClientCodeGenOptionType>"
+        }
+
+        "contain the property target" {
+            extension shouldContainOnlyOnce "public val target: Property<ClientCodeGenTargetType>"
         }
     }
 
@@ -89,5 +106,3 @@ class ExtensionGeneratorTest : WordSpec({
     }
 
 }
-
-

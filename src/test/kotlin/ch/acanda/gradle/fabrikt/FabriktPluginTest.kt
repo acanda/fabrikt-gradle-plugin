@@ -41,8 +41,8 @@ class FabriktPluginTest : WordSpec({
                     this.basePackage.get() shouldBe basePackage
                     this.outputDirectory.get().asFile shouldBe outDir
                     this.targets.get() shouldContainExactly listOf(CodeGenerationType.HTTP_MODELS)
-                    this.httpClientOpts.get() should beEmpty()
-                    this.httpClientTarget.isPresent shouldBe false
+                    this.client.options.get() should beEmpty()
+                    this.client.target.isPresent shouldBe false
                 }
         }
     }
