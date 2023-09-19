@@ -11,9 +11,9 @@ import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
-import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
+import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -47,9 +47,16 @@ abstract class ExtensionGenerator : DefaultTask() {
         val clientExtension = clientExtension(clientExtensionName)
         val controllerExtensionName = ClassName(PACKAGE, "ControllerExtension")
         val controllerExtension = controllerExtension(controllerExtensionName)
+        val modelExtensionName = ClassName(PACKAGE, "ModelExtension")
+        val modelExtension = modelExtension(modelExtensionName)
         val fabriktGenerateExtensionName = ClassName(PACKAGE, "FabriktGenerateExtension")
         val fabriktGenerateExtension =
-            fabriktGenerateExtension(fabriktGenerateExtensionName, clientExtensionName, controllerExtensionName)
+            fabriktGenerateExtension(
+                fabriktGenerateExtensionName,
+                clientExtensionName,
+                controllerExtensionName,
+                modelExtensionName
+            )
         val fabriktExtensionName = ClassName(PACKAGE, "FabriktExtension")
         val fabriktExtension = fabriktExtension(fabriktExtensionName, fabriktGenerateExtensionName)
 
@@ -58,6 +65,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .addType(fabriktGenerateExtension)
             .addType(clientExtension)
             .addType(controllerExtension)
+            .addType(modelExtension)
             .build()
 
         file.writeTo(outputDirectory.get().asFile)
@@ -72,7 +80,8 @@ abstract class ExtensionGenerator : DefaultTask() {
         internal fun fabriktGenerateExtension(
             className: ClassName,
             clientExtName: ClassName,
-            controllerExtName: ClassName
+            controllerExtName: ClassName,
+            modelExtName: ClassName
         ) =
             TypeSpec.classBuilder(className)
                 .addModifiers(KModifier.OPEN)
@@ -94,9 +103,9 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .filesProperty("apiFragments")
                 .stringProperty("basePackage")
                 .directoryProperty("outputDirectory")
-                .enumSetProperty("targets", CodeGenerationType::class)
                 .nestedProperty("client", clientExtName)
                 .nestedProperty("controller", controllerExtName)
+                .nestedProperty("model", modelExtName)
                 .build()
 
         internal fun fabriktExtension(className: ClassName, valueType: TypeName) = TypeSpec.classBuilder(className)
@@ -162,6 +171,24 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("enabled")
             .enumSetProperty("options", ControllerCodeGenOptionType::class)
             .enumProperty("target", ControllerCodeGenTargetType::class)
+            .build()
+
+        internal fun modelExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addModifiers(KModifier.OPEN)
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addAnnotation(Inject::class)
+                    .addParameter(PROP_OBJECTS, ObjectFactory::class)
+                    .build()
+            )
+            .addProperty(
+                PropertySpec.builder(PROP_OBJECTS, ObjectFactory::class)
+                    .addModifiers(KModifier.PRIVATE)
+                    .initializer(PROP_OBJECTS)
+                    .build()
+            )
+            .booleanProperty("enabled")
+            .enumSetProperty("options", ModelCodeGenOptionType::class)
             .build()
 
     }

@@ -1,7 +1,6 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
-import com.cjbooms.fabrikt.cli.CodeGenerationType
 import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
@@ -23,7 +22,6 @@ class FabriktGeneratorTest : WordSpec({
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
-            config.targets.set(setOf(CodeGenerationType.HTTP_MODELS))
             generate(config)
 
             val outputs = outputDir.walkTopDown()

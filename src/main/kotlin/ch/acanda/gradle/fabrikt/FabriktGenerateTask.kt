@@ -3,9 +3,9 @@ package ch.acanda.gradle.fabrikt
 import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
-import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
+import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -55,19 +55,19 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val outputDirectory: DirectoryProperty = project.objects.directoryProperty()
         .convention(project.layout.buildDirectory.dir("generated/fabrikt"))
 
-    @get:Input
-    @get:Optional
-    val targets: SetProperty<CodeGenerationType> = project.objects.setProperty(CodeGenerationType::class.java)
-        .convention(setOf(CodeGenerationType.HTTP_MODELS))
-
     @get:Nested
     @get:Optional
     val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)
 
     @get:Nested
     @get:Optional
-    val controller: GenerateControllersConfiguration =
-        project.objects.newInstance(GenerateControllersConfiguration::class.java)
+    val controller: GenerateControllerConfiguration =
+        project.objects.newInstance(GenerateControllerConfiguration::class.java)
+
+    @get:Nested
+    @get:Optional
+    val model: GenerateModelConfiguration =
+        project.objects.newInstance(GenerateModelConfiguration::class.java)
 
 }
 
@@ -88,7 +88,7 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
 
 }
 
-open class GenerateControllersConfiguration @Inject constructor(objects: ObjectFactory) {
+open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFactory) {
 
     @get:Input
     @get:Optional
@@ -102,5 +102,17 @@ open class GenerateControllersConfiguration @Inject constructor(objects: ObjectF
     @get:Optional
     val target: Property<ControllerCodeGenTargetType> = objects.property(ControllerCodeGenTargetType::class.java)
         .convention(ControllerCodeGenTargetType.SPRING)
+
+}
+
+open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory) {
+
+    @get:Input
+    @get:Optional
+    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+
+    @get:Input
+    @get:Optional
+    val options: SetProperty<ModelCodeGenOptionType> = objects.setProperty(ModelCodeGenOptionType::class.java)
 
 }

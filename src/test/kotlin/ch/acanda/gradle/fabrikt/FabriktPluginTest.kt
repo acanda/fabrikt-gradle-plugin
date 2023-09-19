@@ -6,9 +6,9 @@ import ch.acanda.gradle.fabrikt.matchers.shouldContainExactly
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
-import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
+import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
@@ -44,7 +44,6 @@ class FabriktPluginTest : WordSpec({
                     it.apiFragments(apiFragment)
                     it.basePackage(basePackage)
                     it.outputDirectory(outDir)
-                    it.targets(it.CLIENT)
                     with(it.client) {
                         enabled(true)
                         options(RESILIENCE4J)
@@ -54,6 +53,10 @@ class FabriktPluginTest : WordSpec({
                         enabled(true)
                         options(AUTHENTICATION)
                         target(MICRONAUT)
+                    }
+                    with(it.model) {
+                        enabled(false)
+                        options(JAVA_SERIALIZATION)
                     }
                 }
             }
@@ -67,7 +70,6 @@ class FabriktPluginTest : WordSpec({
                     this.apiFragments.files shouldContainExactly listOf(apiFragment)
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outDir
-                    this.targets shouldContainExactly CodeGenerationType.CLIENT
                     with(client) {
                         enabled shouldContain true
                         options shouldContainExactly ClientCodeGenOptionType.RESILIENCE4J
@@ -77,6 +79,10 @@ class FabriktPluginTest : WordSpec({
                         enabled shouldContain true
                         options shouldContainExactly ControllerCodeGenOptionType.AUTHENTICATION
                         target shouldContain ControllerCodeGenTargetType.MICRONAUT
+                    }
+                    with(model) {
+                        enabled shouldContain false
+                        options shouldContainExactly ModelCodeGenOptionType.JAVA_SERIALIZATION
                     }
                 }
         }
@@ -105,7 +111,6 @@ class FabriktPluginTest : WordSpec({
                     this.apiFragments.files should beEmpty()
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outDir
-                    this.targets shouldContainExactly CodeGenerationType.HTTP_MODELS
                     with(client) {
                         enabled shouldContain false
                         options.shouldBeEmpty()
@@ -115,6 +120,10 @@ class FabriktPluginTest : WordSpec({
                         enabled shouldContain false
                         options.shouldBeEmpty()
                         target shouldContain ControllerCodeGenTargetType.SPRING
+                    }
+                    with(model) {
+                        enabled shouldContain true
+                        options.shouldBeEmpty()
                     }
                 }
         }

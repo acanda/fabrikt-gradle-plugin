@@ -32,7 +32,6 @@ class GradleTest : StringSpec({
             |    apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
             |    basePackage("$basePackage")
             |    outputDirectory("$outputPath")
-            |    targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
             |    client {
             |      enabled(true)
             |      options(RESILIENCE4J, SUSPEND_MODIFIER)
@@ -42,6 +41,18 @@ class GradleTest : StringSpec({
             |      enabled(true)
             |      options(SUSPEND_MODIFIER, AUTHENTICATION)
             |      target(MICRONAUT)
+            |    }
+            |    model {
+            |      enabled(true)
+            |      options(
+            |        X_EXTENSIBLE_ENUMS,
+            |        JAVA_SERIALIZATION,
+            |        QUARKUS_REFLECTION,
+            |        MICRONAUT_INTROSPECTION,
+            |        MICRONAUT_REFLECTION,
+            |        INCLUDE_COMPANION_OBJECT,
+            |        SEALED_INTERFACES_FOR_ONE_OF
+            |      )
             |    }
             |  }
             |}

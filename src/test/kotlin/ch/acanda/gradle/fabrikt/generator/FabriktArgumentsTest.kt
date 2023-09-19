@@ -6,6 +6,7 @@ import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
+import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
@@ -81,13 +82,14 @@ class FabriktArgumentsTest : StringSpec({
                 apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
                 basePackage.set(Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
                 outputDirectory.set(pathGen.bind())
-                targets.set(enumSet<CodeGenerationType>().bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.options.set(enumSet<ClientCodeGenOptionType>().bind())
                 client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
                 controller.enabled.set(Arb.boolean().orNull(0.2).bind())
                 controller.options.set(enumSet<ControllerCodeGenOptionType>().bind())
                 controller.target.set(Arb.enum<ControllerCodeGenTargetType>().orNull(0.2).bind())
+                model.enabled.set(Arb.boolean().orNull(0.2).bind())
+                model.options.set(enumSet<ModelCodeGenOptionType>().bind())
             }
         }
 

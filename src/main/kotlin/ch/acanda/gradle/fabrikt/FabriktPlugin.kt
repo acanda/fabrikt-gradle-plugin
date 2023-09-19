@@ -17,7 +17,6 @@ class FabriktPlugin : Plugin<Project> {
                     apiFragments.setFrom(generate.apiFragments)
                     basePackage.set(generate.basePackage)
                     outputDirectory.setIfPresent(generate.outputDirectory)
-                    targets.setIfPresent(generate.targets)
                     with(client) {
                         enabled.setIfPresent(generate.client.enabled)
                         options.setIfPresent(generate.client.options)
@@ -27,6 +26,10 @@ class FabriktPlugin : Plugin<Project> {
                         enabled.setIfPresent(generate.controller.enabled)
                         options.setIfPresent(generate.controller.options)
                         target.setIfPresent(generate.controller.target)
+                    }
+                    with(model) {
+                        enabled.setIfPresent(generate.model.enabled)
+                        options.setIfPresent(generate.model.options)
                     }
                 }
             }
