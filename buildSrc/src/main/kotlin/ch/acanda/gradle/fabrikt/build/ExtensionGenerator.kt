@@ -12,6 +12,8 @@ import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -43,8 +45,11 @@ abstract class ExtensionGenerator : DefaultTask() {
     fun generate() {
         val clientExtensionName = ClassName(PACKAGE, "ClientExtension")
         val clientExtension = clientExtension(clientExtensionName)
+        val controllerExtensionName = ClassName(PACKAGE, "ControllerExtension")
+        val controllerExtension = controllerExtension(controllerExtensionName)
         val fabriktGenerateExtensionName = ClassName(PACKAGE, "FabriktGenerateExtension")
-        val fabriktGenerateExtension = fabriktGenerateExtension(fabriktGenerateExtensionName, clientExtensionName)
+        val fabriktGenerateExtension =
+            fabriktGenerateExtension(fabriktGenerateExtensionName, clientExtensionName, controllerExtensionName)
         val fabriktExtensionName = ClassName(PACKAGE, "FabriktExtension")
         val fabriktExtension = fabriktExtension(fabriktExtensionName, fabriktGenerateExtensionName)
 
@@ -52,6 +57,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .addType(fabriktExtension)
             .addType(fabriktGenerateExtension)
             .addType(clientExtension)
+            .addType(controllerExtension)
             .build()
 
         file.writeTo(outputDirectory.get().asFile)
@@ -63,7 +69,11 @@ abstract class ExtensionGenerator : DefaultTask() {
         internal const val PROP_NAME = "name"
         internal const val PROP_OBJECTS = "objects"
 
-        internal fun fabriktGenerateExtension(className: ClassName, clientExtName: ClassName) =
+        internal fun fabriktGenerateExtension(
+            className: ClassName,
+            clientExtName: ClassName,
+            controllerExtName: ClassName
+        ) =
             TypeSpec.classBuilder(className)
                 .addModifiers(KModifier.OPEN)
                 .named()
@@ -86,6 +96,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .directoryProperty("outputDirectory")
                 .enumSetProperty("targets", CodeGenerationType::class)
                 .nestedProperty("client", clientExtName)
+                .nestedProperty("controller", controllerExtName)
                 .build()
 
         internal fun fabriktExtension(className: ClassName, valueType: TypeName) = TypeSpec.classBuilder(className)
@@ -132,6 +143,25 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("enabled")
             .enumSetProperty("options", ClientCodeGenOptionType::class)
             .enumProperty("target", ClientCodeGenTargetType::class)
+            .build()
+
+        internal fun controllerExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addModifiers(KModifier.OPEN)
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addAnnotation(Inject::class)
+                    .addParameter(PROP_OBJECTS, ObjectFactory::class)
+                    .build()
+            )
+            .addProperty(
+                PropertySpec.builder(PROP_OBJECTS, ObjectFactory::class)
+                    .addModifiers(KModifier.PRIVATE)
+                    .initializer(PROP_OBJECTS)
+                    .build()
+            )
+            .booleanProperty("enabled")
+            .enumSetProperty("options", ControllerCodeGenOptionType::class)
+            .enumProperty("target", ControllerCodeGenTargetType::class)
             .build()
 
     }

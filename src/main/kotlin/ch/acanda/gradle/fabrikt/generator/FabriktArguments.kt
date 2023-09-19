@@ -10,6 +10,8 @@ internal const val ARG_API_FRAGMENT = "--api-fragment"
 internal const val ARG_TARGETS = "--targets"
 internal const val ARG_CLIENT_OPTS = "--http-client-opts"
 internal const val ARG_CLIENT_TARGET = "--http-client-target"
+internal const val ARG_CONTROLLER_OPTS = "--http-controller-opts"
+internal const val ARG_CONTROLLER_TARGET = "--http-controller-target"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
     fun getCliArgs(): Array<String> = with(config) {
@@ -23,11 +25,14 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_API_FRAGMENT)
             args.add(fragment.absolutePath)
         }
-        targets.get().filterNot { it == CodeGenerationType.CLIENT }.forEach { target ->
-            args.add(ARG_TARGETS)
-            args.add(target.name)
-        }
+        targets.get()
+            .filterNot { it == CodeGenerationType.CLIENT || it == CodeGenerationType.CONTROLLERS }
+            .forEach { target ->
+                args.add(ARG_TARGETS)
+                args.add(target.name)
+            }
         addClientArgs(args)
+        addControllerArgs(args)
         return args.toTypedArray()
     }
 
@@ -47,4 +52,22 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             }
         }
     }
+
+    private fun GenerateTaskConfiguration.addControllerArgs(args: MutableList<String>) {
+        with(controller) {
+            if (enabled.get()) {
+                args.add(ARG_TARGETS)
+                args.add(CodeGenerationType.CONTROLLERS.name)
+                options.get().forEach { option ->
+                    args.add(ARG_CONTROLLER_OPTS)
+                    args.add(option.name)
+                }
+                target.orNull?.let {
+                    args.add(ARG_CONTROLLER_TARGET)
+                    args.add(it.name)
+                }
+            }
+        }
+    }
+
 }

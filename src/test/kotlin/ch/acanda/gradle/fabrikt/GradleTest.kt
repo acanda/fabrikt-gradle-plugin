@@ -28,16 +28,21 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") { 
-            |      apiFile("$openapiPath")
-            |      apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
-            |      basePackage("$basePackage")
-            |      outputDirectory("$outputPath")
-            |      targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
-            |      client {
-            |          enabled(true)
-            |          options(RESILIENCE4J, SUSPEND_MODIFIER)
-            |          target(OPEN_FEIGN)
-            |      }
+            |    apiFile("$openapiPath")
+            |    apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
+            |    basePackage("$basePackage")
+            |    outputDirectory("$outputPath")
+            |    targets(HTTP_MODELS, CONTROLLERS, CLIENT, QUARKUS_REFLECTION_CONFIG)
+            |    client {
+            |      enabled(true)
+            |      options(RESILIENCE4J, SUSPEND_MODIFIER)
+            |      target(OPEN_FEIGN)
+            |    }
+            |    controller {
+            |      enabled(true)
+            |      options(SUSPEND_MODIFIER, AUTHENTICATION)
+            |      target(MICRONAUT)
+            |    }
             |  }
             |}
             """.trimMargin()
@@ -58,6 +63,7 @@ class GradleTest : StringSpec({
         val basePath = "$outputPath/src/main/kotlin/${basePackage.replace('.', '/')}"
         outputs shouldContain "$basePath/models/Dog.kt"
         outputs shouldContain "$basePath/client/DogClient.kt"
+        outputs shouldContain "$basePath/controllers/DogController.kt"
     }
 
     "`gradle fabriktGenerate` with minimal configuration should run fabrikt" {

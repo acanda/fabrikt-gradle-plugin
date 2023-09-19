@@ -1,6 +1,9 @@
 package ch.acanda.gradle.fabrikt
 
+import ch.acanda.gradle.fabrikt.matchers.shouldContain
+import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
@@ -41,8 +44,16 @@ class FabriktPluginTest : WordSpec({
                     this.basePackage.get() shouldBe basePackage
                     this.outputDirectory.get().asFile shouldBe outDir
                     this.targets.get() shouldContainExactly listOf(CodeGenerationType.HTTP_MODELS)
-                    this.client.options.get() should beEmpty()
-                    this.client.target.isPresent shouldBe false
+                    with(client) {
+                        enabled shouldContain false
+                        options.get() should beEmpty()
+                        target shouldContain ClientCodeGenTargetType.OK_HTTP
+                    }
+                    with(controller) {
+                        enabled shouldContain false
+                        options.get() should beEmpty()
+                        target shouldContain ControllerCodeGenTargetType.SPRING
+                    }
                 }
         }
     }

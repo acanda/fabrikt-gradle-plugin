@@ -23,6 +23,11 @@ class FabriktPlugin : Plugin<Project> {
                         options.setIfPresent(generate.client.options)
                         target.setIfPresent(generate.client.target)
                     }
+                    with(controller) {
+                        enabled.setIfPresent(generate.controller.enabled)
+                        options.setIfPresent(generate.controller.options)
+                        target.setIfPresent(generate.controller.target)
+                    }
                 }
             }
             task.configurations.set(configurations)

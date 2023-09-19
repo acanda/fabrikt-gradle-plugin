@@ -4,6 +4,8 @@ import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -62,6 +64,11 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)
 
+    @get:Nested
+    @get:Optional
+    val controller: GenerateControllersConfiguration =
+        project.objects.newInstance(GenerateControllersConfiguration::class.java)
+
 }
 
 open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactory) {
@@ -77,5 +84,23 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
     @get:Input
     @get:Optional
     val target: Property<ClientCodeGenTargetType> = objects.property(ClientCodeGenTargetType::class.java)
+        .convention(ClientCodeGenTargetType.OK_HTTP)
+
+}
+
+open class GenerateControllersConfiguration @Inject constructor(objects: ObjectFactory) {
+
+    @get:Input
+    @get:Optional
+    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val options: SetProperty<ControllerCodeGenOptionType> = objects.setProperty(ControllerCodeGenOptionType::class.java)
+
+    @get:Input
+    @get:Optional
+    val target: Property<ControllerCodeGenTargetType> = objects.property(ControllerCodeGenTargetType::class.java)
+        .convention(ControllerCodeGenTargetType.SPRING)
 
 }

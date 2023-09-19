@@ -4,8 +4,11 @@ import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.collections.shouldNotContainInOrder
 import io.kotest.property.Arb
@@ -37,9 +40,31 @@ class FabriktArgumentsTest : StringSpec({
                     options.get().forEach { option ->
                         cliArgs shouldContainInOrder listOf(ARG_CLIENT_OPTS, option.name)
                     }
+                    if (target.isPresent) {
+                        cliArgs shouldContainInOrder listOf(ARG_CLIENT_TARGET, target.get().name)
+                    } else {
+                        cliArgs shouldNotContain ARG_CLIENT_TARGET
+                    }
+
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
                     cliArgs shouldNotContainAnyOf listOf(ARG_CLIENT_OPTS, ARG_CLIENT_TARGET)
+                }
+            }
+            with(config.controller) {
+                if (enabled.get()) {
+                    cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
+                    options.get().forEach { option ->
+                        cliArgs shouldContainInOrder listOf(ARG_CONTROLLER_OPTS, option.name)
+                    }
+                    if (target.isPresent) {
+                        cliArgs shouldContainInOrder listOf(ARG_CONTROLLER_TARGET, target.get().name)
+                    } else {
+                        cliArgs shouldNotContain ARG_CONTROLLER_TARGET
+                    }
+                } else {
+                    cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
+                    cliArgs shouldNotContainAnyOf listOf(ARG_CONTROLLER_OPTS, ARG_CONTROLLER_TARGET)
                 }
             }
         }
@@ -60,6 +85,9 @@ class FabriktArgumentsTest : StringSpec({
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.options.set(enumSet<ClientCodeGenOptionType>().bind())
                 client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
+                controller.enabled.set(Arb.boolean().orNull(0.2).bind())
+                controller.options.set(enumSet<ControllerCodeGenOptionType>().bind())
+                controller.target.set(Arb.enum<ControllerCodeGenTargetType>().orNull(0.2).bind())
             }
         }
 

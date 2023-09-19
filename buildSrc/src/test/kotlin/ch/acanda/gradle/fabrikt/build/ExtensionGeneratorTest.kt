@@ -42,7 +42,8 @@ class ExtensionGeneratorTest : WordSpec({
         val typeSpec =
             ExtensionGenerator.fabriktGenerateExtension(
                 ClassName("ch.acanda", "FabriktGenerateExtension"),
-                ClassName("ch.acanda", "ClientExtension")
+                ClassName("ch.acanda", "ClientExtension"),
+                ClassName("ch.acanda", "ControllersExtension"),
             )
         val extension = typeSpec.writeToString()
 
@@ -74,10 +75,17 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public fun client(action: Action<ClientExtension>)"
         }
 
+        "contain the property controller" {
+            extension shouldContainOnlyOnce "public val controller: ControllersExtension"
+        }
+
+        "contain the function controller(action)" {
+            extension shouldContainOnlyOnce "public fun controller(action: Action<ControllersExtension>)"
+        }
+
     }
 
     "clientExtension(name)" should {
-
         val typeSpec = ExtensionGenerator.clientExtension(
             ClassName("ch.acanda", "ClientExtension")
         )
@@ -89,6 +97,21 @@ class ExtensionGeneratorTest : WordSpec({
 
         "contain the property target" {
             extension shouldContainOnlyOnce "public val target: Property<ClientCodeGenTargetType>"
+        }
+    }
+
+    "controllersExtension(name)" should {
+        val typeSpec = ExtensionGenerator.controllerExtension(
+            ClassName("ch.acanda", "ControllersExtension")
+        )
+        val extension = typeSpec.writeToString()
+
+        "contain the property options" {
+            extension shouldContainOnlyOnce "public val options: SetProperty<ControllerCodeGenOptionType>"
+        }
+
+        "contain the property target" {
+            extension shouldContainOnlyOnce "public val target: Property<ControllerCodeGenTargetType>"
         }
     }
 
