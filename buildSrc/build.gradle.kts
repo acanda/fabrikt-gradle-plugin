@@ -1,3 +1,6 @@
+import io.gitlab.arturbosch.detekt.Detekt
+import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
+
 plugins {
     kotlin("jvm")
     `java-gradle-plugin`
@@ -38,3 +41,20 @@ testing {
     }
 }
 
+tasks {
+
+    withType<Detekt>().configureEach {
+        val compilation =
+            project.extensions.getByType<KotlinJvmProjectExtension>().target.compilations.getByName("test")
+        classpath.setFrom(compilation.output.classesDirs, compilation.compileDependencyFiles)
+
+        reports {
+            xml.required.set(false)
+            html.required.set(false)
+            txt.required.set(false)
+            sarif.required.set(false)
+            md.required.set(true)
+        }
+    }
+
+}

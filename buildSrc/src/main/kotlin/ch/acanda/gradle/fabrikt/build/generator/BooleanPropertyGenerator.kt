@@ -2,13 +2,10 @@ package ch.acanda.gradle.fabrikt.build.generator
 
 import ch.acanda.gradle.fabrikt.build.ExtensionGenerator
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.SetProperty
-import kotlin.reflect.KClass
 
 internal fun TypeSpec.Builder.booleanProperty(name: String) = apply {
     addProperty(

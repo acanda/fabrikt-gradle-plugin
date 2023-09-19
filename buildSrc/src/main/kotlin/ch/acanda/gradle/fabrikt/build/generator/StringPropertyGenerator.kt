@@ -26,4 +26,3 @@ internal fun TypeSpec.Builder.stringProperty(name: String) = apply {
             .build()
     )
 }
-

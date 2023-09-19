@@ -23,4 +23,3 @@ internal fun TypeSpec.Builder.named() = apply {
             .build()
     )
 }
-

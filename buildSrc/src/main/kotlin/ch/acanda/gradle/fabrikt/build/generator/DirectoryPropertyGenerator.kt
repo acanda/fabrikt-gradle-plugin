@@ -10,6 +10,7 @@ import org.gradle.api.file.DirectoryProperty
 import java.io.File
 import java.nio.file.Path
 
+@Suppress("LongMethod")
 internal fun TypeSpec.Builder.directoryProperty(name: String) = apply {
     addProperty(
         PropertySpec.builder(name, DirectoryProperty::class)
@@ -27,7 +28,8 @@ internal fun TypeSpec.Builder.directoryProperty(name: String) = apply {
             .jvmName("${name}FromFileProvider")
             .addParameter(name, provider<File>())
             .addStatement(
-                "this.%1N.set(%2N.directoryProperty().fileProvider(%1N))", name,
+                "this.%1N.set(%2N.directoryProperty().fileProvider(%1N))",
+                name,
                 ExtensionGenerator.PROP_OBJECTS
             )
             .build()

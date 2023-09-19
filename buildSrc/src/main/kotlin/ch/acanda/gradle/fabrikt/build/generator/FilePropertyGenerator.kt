@@ -10,6 +10,7 @@ import org.gradle.api.file.RegularFileProperty
 import java.io.File
 import java.nio.file.Path
 
+@Suppress("LongMethod")
 internal fun TypeSpec.Builder.fileProperty(name: String) = apply {
     addProperty(
         PropertySpec.builder(name, RegularFileProperty::class)
