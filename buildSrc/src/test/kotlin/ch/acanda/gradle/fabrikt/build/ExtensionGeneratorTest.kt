@@ -72,6 +72,10 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public val resourcesPath: Property<CharSequence>"
         }
 
+        "contain the property typeOverrides" {
+            extension shouldContainOnlyOnce "public val typeOverrides: Property<CodeGenTypeOverride>"
+        }
+
         "contain the property client" {
             extension shouldContainOnlyOnce "public val client: ClientExtension"
         }

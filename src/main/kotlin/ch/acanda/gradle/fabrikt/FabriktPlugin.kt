@@ -19,6 +19,7 @@ class FabriktPlugin : Plugin<Project> {
                     outputDirectory.setIfPresent(generate.outputDirectory)
                     sourcesPath.setIfPresent(generate.sourcesPath)
                     resourcesPath.setIfPresent(generate.resourcesPath)
+                    typeOverrides.setIfPresent(generate.typeOverrides)
                     with(client) {
                         enabled.setIfPresent(generate.client.enabled)
                         options.setIfPresent(generate.client.options)

@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt
 import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
+import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
@@ -65,6 +66,10 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val resourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
         .convention("src/main/resources")
 
+    @get:Input
+    @get:Optional
+    val typeOverrides: Property<CodeGenTypeOverride> = project.objects.property(CodeGenTypeOverride::class.java)
+
     @get:Nested
     @get:Optional
     val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)
@@ -78,6 +83,10 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val model: GenerateModelConfiguration =
         project.objects.newInstance(GenerateModelConfiguration::class.java)
+
+    @get:Input
+    @get:Optional
+    val options: SetProperty<CodeGenTypeOverride> = project.objects.setProperty(CodeGenTypeOverride::class.java)
 
 }
 

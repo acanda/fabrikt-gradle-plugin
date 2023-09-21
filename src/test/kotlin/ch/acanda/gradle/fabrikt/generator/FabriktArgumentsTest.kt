@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt.generator
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
+import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
@@ -20,6 +21,7 @@ import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.stringPattern
 import io.kotest.property.checkAll
+import org.gradle.api.provider.Provider
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 import java.nio.file.Paths
@@ -34,6 +36,7 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
+            cliArgs.shouldContainOptionally(config.typeOverrides, ARG_TYPE_OVERRIDES)
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
@@ -43,11 +46,7 @@ class FabriktArgumentsTest : StringSpec({
                     options.get().forEach { option ->
                         cliArgs shouldContainInOrder listOf(ARG_CLIENT_OPTS, option.name)
                     }
-                    if (target.isPresent) {
-                        cliArgs shouldContainInOrder listOf(ARG_CLIENT_TARGET, target.get().name)
-                    } else {
-                        cliArgs shouldNotContain ARG_CLIENT_TARGET
-                    }
+                    cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
 
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
@@ -60,14 +59,21 @@ class FabriktArgumentsTest : StringSpec({
                     options.get().forEach { option ->
                         cliArgs shouldContainInOrder listOf(ARG_CONTROLLER_OPTS, option.name)
                     }
-                    if (target.isPresent) {
-                        cliArgs shouldContainInOrder listOf(ARG_CONTROLLER_TARGET, target.get().name)
-                    } else {
-                        cliArgs shouldNotContain ARG_CONTROLLER_TARGET
-                    }
+                    cliArgs.shouldContainOptionally(target, ARG_CONTROLLER_TARGET)
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
                     cliArgs shouldNotContainAnyOf listOf(ARG_CONTROLLER_OPTS, ARG_CONTROLLER_TARGET)
+                }
+            }
+            with(config.model) {
+                if (enabled.get()) {
+                    cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
+                    options.get().forEach { option ->
+                        cliArgs shouldContainInOrder listOf(ARG_MODEL_OPTS, option.name)
+                    }
+                } else {
+                    cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
+                    cliArgs shouldNotContain ARG_MODEL_OPTS
                 }
             }
         }
@@ -86,6 +92,7 @@ class FabriktArgumentsTest : StringSpec({
                 outputDirectory.set(pathGen.bind())
                 sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
+                typeOverrides.set(Arb.enum<CodeGenTypeOverride>().orNull(0.2).bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.options.set(enumSet<ClientCodeGenOptionType>().bind())
                 client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
@@ -108,6 +115,14 @@ class FabriktArgumentsTest : StringSpec({
                 values.removeLast()
             }
             values.toSet()
+        }
+
+        private fun <E : Enum<E>> Array<String>.shouldContainOptionally(valueProvider: Provider<E>, arg: String) {
+            if (valueProvider.isPresent) {
+                this shouldContainInOrder listOf(arg, valueProvider.get().name)
+            } else {
+                this shouldNotContain arg
+            }
         }
 
     }

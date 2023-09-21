@@ -11,6 +11,7 @@ import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
+import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
@@ -105,6 +106,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .directoryProperty("outputDirectory")
                 .stringProperty("sourcesPath")
                 .stringProperty("resourcesPath")
+                .enumProperty("typeOverrides", CodeGenTypeOverride::class)
                 .nestedProperty("client", clientExtName)
                 .nestedProperty("controller", controllerExtName)
                 .nestedProperty("model", modelExtName)

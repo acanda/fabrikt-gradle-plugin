@@ -6,6 +6,7 @@ import ch.acanda.gradle.fabrikt.matchers.shouldContainExactly
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
+import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
@@ -48,6 +49,7 @@ class FabriktPluginTest : WordSpec({
                     it.outputDirectory(outDir)
                     it.sourcesPath(srcDir)
                     it.resourcesPath(resDir)
+                    it.typeOverrides(it.DATETIME_AS_INSTANT)
                     with(it.client) {
                         enabled(true)
                         options(RESILIENCE4J)
@@ -76,6 +78,7 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory shouldContain outDir
                     this.sourcesPath shouldContainString srcDir
                     this.resourcesPath shouldContainString resDir
+                    this.typeOverrides shouldContain CodeGenTypeOverride.DATETIME_AS_INSTANT
                     with(client) {
                         enabled shouldContain true
                         options shouldContainExactly ClientCodeGenOptionType.RESILIENCE4J
