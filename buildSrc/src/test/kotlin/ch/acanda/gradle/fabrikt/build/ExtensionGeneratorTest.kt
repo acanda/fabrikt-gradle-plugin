@@ -138,8 +138,12 @@ class ExtensionGeneratorTest : WordSpec({
         )
         val extension = typeSpec.writeToString()
 
-        "contain the property options" {
-            extension shouldContainOnlyOnce "public val options: SetProperty<ControllerCodeGenOptionType>"
+        "contain the property authentication" {
+            extension shouldContainOnlyOnce "public val authentication: Property<Boolean>"
+        }
+
+        "contain the property suspendModifier" {
+            extension shouldContainOnlyOnce "public val suspendModifier: Property<Boolean>"
         }
 
         "contain the property target" {

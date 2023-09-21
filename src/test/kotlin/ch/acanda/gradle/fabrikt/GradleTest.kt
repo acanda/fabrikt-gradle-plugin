@@ -47,7 +47,8 @@ class GradleTest : StringSpec({
             |    }
             |    controller {
             |      enabled(true)
-            |      options(SUSPEND_MODIFIER, AUTHENTICATION)
+            |      authentication(enabled)
+            |      suspendModifier(enabled)
             |      target(MICRONAUT)
             |    }
             |    model {

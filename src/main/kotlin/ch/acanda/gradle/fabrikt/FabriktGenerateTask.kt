@@ -3,7 +3,6 @@ package ch.acanda.gradle.fabrikt
 import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
-import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
@@ -136,7 +135,11 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
 
     @get:Input
     @get:Optional
-    val options: SetProperty<ControllerCodeGenOptionType> = objects.setProperty(ControllerCodeGenOptionType::class.java)
+    val authentication: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
     @get:Input
     @get:Optional

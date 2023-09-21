@@ -6,7 +6,6 @@ import ch.acanda.gradle.fabrikt.matchers.shouldContainExactly
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
-import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
@@ -55,14 +54,15 @@ class FabriktPluginTest : WordSpec({
                     it.quarkusReflectionConfig(it.enabled)
                     with(it.client) {
                         enabled(true)
+                        target(OPEN_FEIGN)
                         resilience4j(it.enabled)
                         suspendModifier(it.enabled)
-                        target(OPEN_FEIGN)
                     }
                     with(it.controller) {
                         enabled(true)
-                        options(AUTHENTICATION)
                         target(MICRONAUT)
+                        authentication(it.enabled)
+                        suspendModifier(it.enabled)
                     }
                     with(it.model) {
                         enabled(false)
@@ -93,7 +93,8 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(controller) {
                         enabled shouldContain true
-                        options shouldContainExactly ControllerCodeGenOptionType.AUTHENTICATION
+                        authentication shouldContain true
+                        suspendModifier shouldContain true
                         target shouldContain ControllerCodeGenTargetType.MICRONAUT
                     }
                     with(model) {
@@ -134,12 +135,14 @@ class FabriktPluginTest : WordSpec({
                     this.quarkusReflectionConfig shouldContain false
                     with(client) {
                         enabled shouldContain false
-                        options.shouldBeEmpty()
+                        resilience4j shouldContain false
+                        suspendModifier shouldContain false
                         target shouldContain ClientCodeGenTargetType.OK_HTTP
                     }
                     with(controller) {
                         enabled shouldContain false
-                        options.shouldBeEmpty()
+                        authentication shouldContain false
+                        suspendModifier shouldContain false
                         target shouldContain ControllerCodeGenTargetType.SPRING
                     }
                     with(model) {

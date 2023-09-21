@@ -12,7 +12,6 @@ import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
-import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
@@ -178,7 +177,8 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .build()
             )
             .booleanProperty("enabled")
-            .enumSetProperty("options", ControllerCodeGenOptionType::class)
+            .booleanProperty("authentication")
+            .booleanProperty("suspendModifier")
             .enumProperty("target", ControllerCodeGenTargetType::class)
             .build()
 

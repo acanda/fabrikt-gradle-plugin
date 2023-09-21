@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt.generator
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
+import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
@@ -76,10 +77,8 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (enabled.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CONTROLLERS.name)
-            options.get().forEach { option ->
-                args.add(ARG_CONTROLLER_OPTS)
-                args.add(option.name)
-            }
+            args.addIfEnabled(authentication, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.AUTHENTICATION)
+            args.addIfEnabled(suspendModifier, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.SUSPEND_MODIFIER)
             target.orNull?.let {
                 args.add(ARG_CONTROLLER_TARGET)
                 args.add(it.name)

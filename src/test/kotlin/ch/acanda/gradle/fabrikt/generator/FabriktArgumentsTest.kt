@@ -73,9 +73,16 @@ class FabriktArgumentsTest : StringSpec({
             with(config.controller) {
                 if (enabled.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
-                    options.get().forEach { option ->
-                        cliArgs shouldContainInOrder listOf(ARG_CONTROLLER_OPTS, option.name)
-                    }
+                    cliArgs.shouldContainOptionally(
+                        authentication,
+                        ARG_CONTROLLER_OPTS,
+                        ControllerCodeGenOptionType.AUTHENTICATION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        suspendModifier,
+                        ARG_CONTROLLER_OPTS,
+                        ControllerCodeGenOptionType.SUSPEND_MODIFIER
+                    )
                     cliArgs.shouldContainOptionally(target, ARG_CONTROLLER_TARGET)
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
@@ -116,7 +123,8 @@ class FabriktArgumentsTest : StringSpec({
                 client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
                 client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
                 controller.enabled.set(Arb.boolean().orNull(0.2).bind())
-                controller.options.set(enumSet<ControllerCodeGenOptionType>().bind())
+                controller.authentication.set(Arb.boolean().orNull(0.2).bind())
+                controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
                 controller.target.set(Arb.enum<ControllerCodeGenTargetType>().orNull(0.2).bind())
                 model.enabled.set(Arb.boolean().orNull(0.2).bind())
                 model.options.set(enumSet<ModelCodeGenOptionType>().bind())

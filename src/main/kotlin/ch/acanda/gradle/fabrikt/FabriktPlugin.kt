@@ -30,7 +30,8 @@ class FabriktPlugin : Plugin<Project> {
                     }
                     with(controller) {
                         enabled.setIfPresent(generate.controller.enabled)
-                        options.setIfPresent(generate.controller.options)
+                        authentication.setIfPresent(generate.controller.authentication)
+                        suspendModifier.setIfPresent(generate.controller.suspendModifier)
                         target.setIfPresent(generate.controller.target)
                     }
                     with(model) {
