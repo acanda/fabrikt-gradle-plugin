@@ -21,6 +21,7 @@ class FabriktPlugin : Plugin<Project> {
                     resourcesPath.setIfPresent(generate.resourcesPath)
                     typeOverrides.setIfPresent(generate.typeOverrides)
                     validationLibrary.setIfPresent(generate.validationLibrary)
+                    quarkusReflectionConfig.setIfPresent(generate.quarkusReflectionConfig)
                     with(client) {
                         enabled.setIfPresent(generate.client.enabled)
                         options.setIfPresent(generate.client.options)

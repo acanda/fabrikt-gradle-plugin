@@ -53,6 +53,7 @@ class FabriktPluginTest : WordSpec({
                     it.resourcesPath(resDir)
                     it.typeOverrides(it.DATETIME_AS_INSTANT)
                     it.validationLibrary(it.JAVAX_VALIDATION)
+                    it.quarkusReflectionConfig(it.enabled)
                     with(it.client) {
                         enabled(true)
                         options(RESILIENCE4J)
@@ -83,6 +84,7 @@ class FabriktPluginTest : WordSpec({
                     this.resourcesPath shouldContainString resDir
                     this.typeOverrides shouldContain CodeGenTypeOverride.DATETIME_AS_INSTANT
                     this.validationLibrary shouldContain ValidationLibrary.JAVAX_VALIDATION
+                    this.quarkusReflectionConfig shouldContain true
                     with(client) {
                         enabled shouldContain true
                         options shouldContainExactly ClientCodeGenOptionType.RESILIENCE4J
@@ -128,6 +130,7 @@ class FabriktPluginTest : WordSpec({
                     this.resourcesPath shouldContain "src/main/resources"
                     this.typeOverrides.isPresent shouldBe false
                     this.validationLibrary shouldContain ValidationLibrary.JAKARTA_VALIDATION
+                    this.quarkusReflectionConfig shouldContain false
                     with(client) {
                         enabled shouldContain false
                         options.shouldBeEmpty()

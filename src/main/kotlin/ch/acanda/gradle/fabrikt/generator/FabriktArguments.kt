@@ -47,8 +47,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_VALIDATION_LIB)
             args.add(library.name)
         }
-        args.add(ARG_TARGETS)
-        args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
+        if (quarkusReflectionConfig.get()) {
+            args.add(ARG_TARGETS)
+            args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
+        }
         addClientArgs(args)
         addControllerArgs(args)
         addModelArgs(args)

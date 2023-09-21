@@ -38,6 +38,7 @@ class GradleTest : StringSpec({
             |    resourcesPath("$resourcePath")
             |    typeOverrides(DATETIME_AS_INSTANT)
             |    validationLibrary(JAKARTA_VALIDATION)
+            |    quarkusReflectionConfig(enabled)
             |    client {
             |      enabled(true)
             |      options(RESILIENCE4J, SUSPEND_MODIFIER)

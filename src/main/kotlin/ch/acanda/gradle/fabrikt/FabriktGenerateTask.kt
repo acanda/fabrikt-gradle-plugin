@@ -76,6 +76,11 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val validationLibrary: Property<ValidationLibrary> = project.objects.property(ValidationLibrary::class.java)
         .convention(ValidationLibrary.JAKARTA_VALIDATION)
 
+    @get:Input
+    @get:Optional
+    val quarkusReflectionConfig: Property<Boolean> = project.objects.property(Boolean::class.java)
+        .convention(false)
+
     @get:Nested
     @get:Optional
     val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)

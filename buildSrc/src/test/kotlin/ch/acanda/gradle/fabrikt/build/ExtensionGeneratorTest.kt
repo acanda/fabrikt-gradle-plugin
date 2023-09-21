@@ -48,6 +48,14 @@ class ExtensionGeneratorTest : WordSpec({
             )
         val extension = typeSpec.writeToString()
 
+        "contain the value enabled" {
+            extension shouldContainOnlyOnce "public val enabled: Boolean = true"
+        }
+
+        "contain the value disabled" {
+            extension shouldContainOnlyOnce "public val disabled: Boolean = false"
+        }
+
         "contain the property apiFile" {
             extension shouldContainOnlyOnce "public val apiFile: RegularFileProperty"
         }
@@ -78,6 +86,10 @@ class ExtensionGeneratorTest : WordSpec({
 
         "contain the property typeOverrides" {
             extension shouldContainOnlyOnce "public val validationLibrary: Property<ValidationLibrary>"
+        }
+
+        "contain the property typeOverrides" {
+            extension shouldContainOnlyOnce "public val quarkusReflectionConfig: Property<Boolean>"
         }
 
         "contain the property client" {

@@ -40,6 +40,11 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
             cliArgs.shouldContainOptionally(config.typeOverrides, ARG_TYPE_OVERRIDES)
             cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
+            if (config.quarkusReflectionConfig.get()) {
+                cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
+            } else {
+                cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
+            }
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }

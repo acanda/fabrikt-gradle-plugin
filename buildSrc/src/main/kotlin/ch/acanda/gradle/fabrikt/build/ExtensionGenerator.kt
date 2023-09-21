@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt.build
 
 import ch.acanda.gradle.fabrikt.build.generator.booleanProperty
 import ch.acanda.gradle.fabrikt.build.generator.directoryProperty
+import ch.acanda.gradle.fabrikt.build.generator.enabledValues
 import ch.acanda.gradle.fabrikt.build.generator.enumProperty
 import ch.acanda.gradle.fabrikt.build.generator.enumSetProperty
 import ch.acanda.gradle.fabrikt.build.generator.fileProperty
@@ -101,6 +102,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                         .initializer(PROP_OBJECTS)
                         .build()
                 )
+                .enabledValues()
                 .fileProperty("apiFile")
                 .filesProperty("apiFragments")
                 .stringProperty("basePackage")
@@ -109,6 +111,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .stringProperty("resourcesPath")
                 .enumProperty("typeOverrides", CodeGenTypeOverride::class)
                 .enumProperty("validationLibrary", ValidationLibrary::class)
+                .booleanProperty("quarkusReflectionConfig")
                 .nestedProperty("client", clientExtName)
                 .nestedProperty("controller", controllerExtName)
                 .nestedProperty("model", modelExtName)
