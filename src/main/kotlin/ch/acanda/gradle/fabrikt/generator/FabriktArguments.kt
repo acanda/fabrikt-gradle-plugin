@@ -6,6 +6,8 @@ import com.cjbooms.fabrikt.cli.CodeGenerationType
 internal const val ARG_API_FILE = "--api-file"
 internal const val ARG_BASE_PACKAGE = "--base-package"
 internal const val ARG_OUT_DIR = "--output-directory"
+internal const val ARG_SRC_PATH = "--src-path"
+internal const val ARG_RESOURCES_PATH = "--resources-path"
 internal const val ARG_API_FRAGMENT = "--api-fragment"
 internal const val ARG_TARGETS = "--targets"
 internal const val ARG_CLIENT_OPTS = "--http-client-opts"
@@ -27,6 +29,16 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_API_FRAGMENT)
             args.add(fragment.absolutePath)
         }
+        sourcesPath.orNull?.let { path ->
+            args.add(ARG_SRC_PATH)
+            args.add(path.toString())
+        }
+        resourcesPath.orNull?.let { path ->
+            args.add(ARG_RESOURCES_PATH)
+            args.add(path.toString())
+        }
+        args.add(ARG_TARGETS)
+        args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
         addClientArgs(args)
         addControllerArgs(args)
         addModelArgs(args)

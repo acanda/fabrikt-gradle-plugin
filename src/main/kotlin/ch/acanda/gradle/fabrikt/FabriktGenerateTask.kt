@@ -55,6 +55,16 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val outputDirectory: DirectoryProperty = project.objects.directoryProperty()
         .convention(project.layout.buildDirectory.dir("generated/fabrikt"))
 
+    @get:Input
+    @get:Optional
+    val sourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+        .convention("src/main/kotlin")
+
+    @get:Input
+    @get:Optional
+    val resourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+        .convention("src/main/resources")
+
     @get:Nested
     @get:Optional
     val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)

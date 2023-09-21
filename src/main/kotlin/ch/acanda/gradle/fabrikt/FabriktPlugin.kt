@@ -17,6 +17,8 @@ class FabriktPlugin : Plugin<Project> {
                     apiFragments.setFrom(generate.apiFragments)
                     basePackage.set(generate.basePackage)
                     outputDirectory.setIfPresent(generate.outputDirectory)
+                    sourcesPath.setIfPresent(generate.sourcesPath)
+                    resourcesPath.setIfPresent(generate.resourcesPath)
                     with(client) {
                         enabled.setIfPresent(generate.client.enabled)
                         options.setIfPresent(generate.client.options)

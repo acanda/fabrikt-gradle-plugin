@@ -64,6 +64,14 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public val outputDirectory: DirectoryProperty"
         }
 
+        "contain the property sourcesPath" {
+            extension shouldContainOnlyOnce "public val sourcesPath: Property<CharSequence>"
+        }
+
+        "contain the property resourcesPath" {
+            extension shouldContainOnlyOnce "public val resourcesPath: Property<CharSequence>"
+        }
+
         "contain the property client" {
             extension shouldContainOnlyOnce "public val client: ClientExtension"
         }

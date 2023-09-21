@@ -36,6 +36,8 @@ class FabriktPluginTest : WordSpec({
             val apiFragment = tempfile("apiFragment", ".yaml")
             val basePackage = "ch.acanda"
             val outDir = tempdir("out")
+            val srcDir = "src/fabrikt/kotlin"
+            val resDir = "src/fabrikt/res"
 
             project.pluginManager.apply("ch.acanda.gradle.fabrikt")
             project.extensions.configure(FabriktExtension::class.java) { ext ->
@@ -44,6 +46,8 @@ class FabriktPluginTest : WordSpec({
                     it.apiFragments(apiFragment)
                     it.basePackage(basePackage)
                     it.outputDirectory(outDir)
+                    it.sourcesPath(srcDir)
+                    it.resourcesPath(resDir)
                     with(it.client) {
                         enabled(true)
                         options(RESILIENCE4J)
@@ -70,6 +74,8 @@ class FabriktPluginTest : WordSpec({
                     this.apiFragments.files shouldContainExactly listOf(apiFragment)
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outDir
+                    this.sourcesPath shouldContainString srcDir
+                    this.resourcesPath shouldContainString resDir
                     with(client) {
                         enabled shouldContain true
                         options shouldContainExactly ClientCodeGenOptionType.RESILIENCE4J
@@ -111,6 +117,8 @@ class FabriktPluginTest : WordSpec({
                     this.apiFragments.files should beEmpty()
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outDir
+                    this.sourcesPath shouldContain "src/main/kotlin"
+                    this.resourcesPath shouldContain "src/main/resources"
                     with(client) {
                         enabled shouldContain false
                         options.shouldBeEmpty()

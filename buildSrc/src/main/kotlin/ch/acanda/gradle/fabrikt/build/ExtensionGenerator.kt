@@ -103,6 +103,8 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .filesProperty("apiFragments")
                 .stringProperty("basePackage")
                 .directoryProperty("outputDirectory")
+                .stringProperty("sourcesPath")
+                .stringProperty("resourcesPath")
                 .nestedProperty("client", clientExtName)
                 .nestedProperty("controller", controllerExtName)
                 .nestedProperty("model", modelExtName)

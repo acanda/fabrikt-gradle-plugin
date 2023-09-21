@@ -18,6 +18,8 @@ class GradleTest : StringSpec({
         val projectDir = tempdir("project")
         val basePackage = "ch.acanda"
         val outputPath = "build/generated/custom"
+        val sourcePath = "src/fabrikt/kotlin"
+        val resourcePath = "src/fabrikt/res"
         val openapiPath = createSpec(projectDir)
         val fragmentPaths = createSpecFragments(projectDir)
         projectDir.resolve("build.gradle.kts").writeText(
@@ -32,6 +34,8 @@ class GradleTest : StringSpec({
             |    apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
             |    basePackage("$basePackage")
             |    outputDirectory("$outputPath")
+            |    sourcesPath("$sourcePath")
+            |    resourcesPath("$resourcePath")
             |    client {
             |      enabled(true)
             |      options(RESILIENCE4J, SUSPEND_MODIFIER)
@@ -71,10 +75,11 @@ class GradleTest : StringSpec({
             .sorted()
             .toList()
 
-        val basePath = "$outputPath/src/main/kotlin/${basePackage.replace('.', '/')}"
+        val basePath = "$outputPath/$sourcePath/${basePackage.replace('.', '/')}"
         outputs shouldContain "$basePath/models/Dog.kt"
         outputs shouldContain "$basePath/client/DogClient.kt"
         outputs shouldContain "$basePath/controllers/DogController.kt"
+        outputs shouldContain "$outputPath/$resourcePath/reflection-config.json"
     }
 
     "`gradle fabriktGenerate` with minimal configuration should run fabrikt" {
