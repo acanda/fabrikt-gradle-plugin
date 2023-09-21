@@ -37,6 +37,7 @@ class GradleTest : StringSpec({
             |    sourcesPath("$sourcePath")
             |    resourcesPath("$resourcePath")
             |    typeOverrides(DATETIME_AS_INSTANT)
+            |    validationLibrary(JAKARTA_VALIDATION)
             |    client {
             |      enabled(true)
             |      options(RESILIENCE4J, SUSPEND_MODIFIER)

@@ -15,6 +15,7 @@ import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ValidationLibrary
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -107,6 +108,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .stringProperty("sourcesPath")
                 .stringProperty("resourcesPath")
                 .enumProperty("typeOverrides", CodeGenTypeOverride::class)
+                .enumProperty("validationLibrary", ValidationLibrary::class)
                 .nestedProperty("client", clientExtName)
                 .nestedProperty("controller", controllerExtName)
                 .nestedProperty("model", modelExtName)

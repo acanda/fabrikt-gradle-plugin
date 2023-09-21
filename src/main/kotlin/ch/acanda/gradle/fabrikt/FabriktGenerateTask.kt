@@ -7,6 +7,7 @@ import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ValidationLibrary
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -69,6 +70,11 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Input
     @get:Optional
     val typeOverrides: Property<CodeGenTypeOverride> = project.objects.property(CodeGenTypeOverride::class.java)
+
+    @get:Input
+    @get:Optional
+    val validationLibrary: Property<ValidationLibrary> = project.objects.property(ValidationLibrary::class.java)
+        .convention(ValidationLibrary.JAKARTA_VALIDATION)
 
     @get:Nested
     @get:Optional

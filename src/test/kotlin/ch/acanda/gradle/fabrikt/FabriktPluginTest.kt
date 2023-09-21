@@ -10,6 +10,7 @@ import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
@@ -18,6 +19,7 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.gradle.testfixtures.ProjectBuilder
 
@@ -50,6 +52,7 @@ class FabriktPluginTest : WordSpec({
                     it.sourcesPath(srcDir)
                     it.resourcesPath(resDir)
                     it.typeOverrides(it.DATETIME_AS_INSTANT)
+                    it.validationLibrary(it.JAVAX_VALIDATION)
                     with(it.client) {
                         enabled(true)
                         options(RESILIENCE4J)
@@ -79,6 +82,7 @@ class FabriktPluginTest : WordSpec({
                     this.sourcesPath shouldContainString srcDir
                     this.resourcesPath shouldContainString resDir
                     this.typeOverrides shouldContain CodeGenTypeOverride.DATETIME_AS_INSTANT
+                    this.validationLibrary shouldContain ValidationLibrary.JAVAX_VALIDATION
                     with(client) {
                         enabled shouldContain true
                         options shouldContainExactly ClientCodeGenOptionType.RESILIENCE4J
@@ -122,6 +126,8 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory shouldContain outDir
                     this.sourcesPath shouldContain "src/main/kotlin"
                     this.resourcesPath shouldContain "src/main/resources"
+                    this.typeOverrides.isPresent shouldBe false
+                    this.validationLibrary shouldContain ValidationLibrary.JAKARTA_VALIDATION
                     with(client) {
                         enabled shouldContain false
                         options.shouldBeEmpty()

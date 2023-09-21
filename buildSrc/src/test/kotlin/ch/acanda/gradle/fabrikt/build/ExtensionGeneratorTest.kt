@@ -76,6 +76,10 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public val typeOverrides: Property<CodeGenTypeOverride>"
         }
 
+        "contain the property typeOverrides" {
+            extension shouldContainOnlyOnce "public val validationLibrary: Property<ValidationLibrary>"
+        }
+
         "contain the property client" {
             extension shouldContainOnlyOnce "public val client: ClientExtension"
         }
@@ -91,7 +95,6 @@ class ExtensionGeneratorTest : WordSpec({
         "contain the function controller(action)" {
             extension shouldContainOnlyOnce "public fun controller(action: Action<ControllerExtension>)"
         }
-
     }
 
     "clientExtension(name)" should {

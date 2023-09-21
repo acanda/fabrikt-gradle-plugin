@@ -10,6 +10,7 @@ internal const val ARG_OUT_DIR = "--output-directory"
 internal const val ARG_SRC_PATH = "--src-path"
 internal const val ARG_RESOURCES_PATH = "--resources-path"
 internal const val ARG_TYPE_OVERRIDES = "--type-overrides"
+internal const val ARG_VALIDATION_LIB = "--validation-library"
 internal const val ARG_TARGETS = "--targets"
 internal const val ARG_CLIENT_OPTS = "--http-client-opts"
 internal const val ARG_CLIENT_TARGET = "--http-client-target"
@@ -41,6 +42,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         typeOverrides.orNull?.let { override ->
             args.add(ARG_TYPE_OVERRIDES)
             args.add(override.name)
+        }
+        validationLibrary.orNull?.let { library ->
+            args.add(ARG_VALIDATION_LIB)
+            args.add(library.name)
         }
         args.add(ARG_TARGETS)
         args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)

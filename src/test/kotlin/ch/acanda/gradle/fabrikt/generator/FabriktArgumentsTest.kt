@@ -8,6 +8,7 @@ import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
@@ -31,12 +32,14 @@ class FabriktArgumentsTest : StringSpec({
     "should handle any combination of arguments" {
         checkAll(generateTaskConfigGen) { config ->
             val cliArgs = FabriktArguments(config).getCliArgs()
+            cliArgs shouldNotContain "null"
             cliArgs shouldContainInOrder listOf(ARG_API_FILE, config.apiFile.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_BASE_PACKAGE, config.basePackage.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
             cliArgs.shouldContainOptionally(config.typeOverrides, ARG_TYPE_OVERRIDES)
+            cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
@@ -93,6 +96,7 @@ class FabriktArgumentsTest : StringSpec({
                 sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 typeOverrides.set(Arb.enum<CodeGenTypeOverride>().orNull(0.2).bind())
+                validationLibrary.set(Arb.enum<ValidationLibrary>().orNull(0.2).bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.options.set(enumSet<ClientCodeGenOptionType>().bind())
                 client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
