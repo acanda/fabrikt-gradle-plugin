@@ -24,7 +24,8 @@ class FabriktPlugin : Plugin<Project> {
                     quarkusReflectionConfig.setIfPresent(generate.quarkusReflectionConfig)
                     with(client) {
                         enabled.setIfPresent(generate.client.enabled)
-                        options.setIfPresent(generate.client.options)
+                        resilience4j.setIfPresent(generate.client.resilience4j)
+                        suspendModifier.setIfPresent(generate.client.suspendModifier)
                         target.setIfPresent(generate.client.target)
                     }
                     with(controller) {

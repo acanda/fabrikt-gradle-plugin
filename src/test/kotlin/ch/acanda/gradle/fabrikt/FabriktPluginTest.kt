@@ -4,7 +4,6 @@ import ch.acanda.gradle.fabrikt.matchers.shouldBeEmpty
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import ch.acanda.gradle.fabrikt.matchers.shouldContainExactly
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
-import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
@@ -56,7 +55,8 @@ class FabriktPluginTest : WordSpec({
                     it.quarkusReflectionConfig(it.enabled)
                     with(it.client) {
                         enabled(true)
-                        options(RESILIENCE4J)
+                        resilience4j(it.enabled)
+                        suspendModifier(it.enabled)
                         target(OPEN_FEIGN)
                     }
                     with(it.controller) {
@@ -87,7 +87,8 @@ class FabriktPluginTest : WordSpec({
                     this.quarkusReflectionConfig shouldContain true
                     with(client) {
                         enabled shouldContain true
-                        options shouldContainExactly ClientCodeGenOptionType.RESILIENCE4J
+                        resilience4j shouldContain true
+                        suspendModifier shouldContain true
                         target shouldContain ClientCodeGenTargetType.OPEN_FEIGN
                     }
                     with(controller) {

@@ -1,7 +1,9 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
+import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
+import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
 internal const val ARG_API_FRAGMENT = "--api-fragment"
@@ -61,10 +63,8 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (enabled.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CLIENT.name)
-            options.get().forEach { option ->
-                args.add(ARG_CLIENT_OPTS)
-                args.add(option.name)
-            }
+            args.addIfEnabled(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
+            args.addIfEnabled(suspendModifier, ARG_CLIENT_OPTS, ClientCodeGenOptionType.SUSPEND_MODIFIER)
             target.orNull?.let {
                 args.add(ARG_CLIENT_TARGET)
                 args.add(it.name)
@@ -95,6 +95,13 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 args.add(ARG_MODEL_OPTS)
                 args.add(option.name)
             }
+        }
+    }
+
+    private fun MutableList<String>.addIfEnabled(provider: Provider<Boolean>, argName: String, argValue: Enum<*>) {
+        if (provider.getOrElse(false)) {
+            this.add(argName)
+            this.add(argValue.name)
         }
     }
 

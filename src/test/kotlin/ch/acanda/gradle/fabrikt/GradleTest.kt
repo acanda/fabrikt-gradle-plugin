@@ -41,8 +41,9 @@ class GradleTest : StringSpec({
             |    quarkusReflectionConfig(enabled)
             |    client {
             |      enabled(true)
-            |      options(RESILIENCE4J, SUSPEND_MODIFIER)
             |      target(OPEN_FEIGN)
+            |      resilience4j(enabled)
+            |      suspendModifier(enabled)
             |    }
             |    controller {
             |      enabled(true)

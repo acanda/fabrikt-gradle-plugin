@@ -9,11 +9,17 @@ import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
+import io.kotest.assertions.print.print
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.Matcher
+import io.kotest.matchers.MatcherResult
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.collections.shouldNotContainAnyOf
 import io.kotest.matchers.collections.shouldNotContainInOrder
+import io.kotest.matchers.neverNullMatcher
+import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
@@ -40,20 +46,23 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
             cliArgs.shouldContainOptionally(config.typeOverrides, ARG_TYPE_OVERRIDES)
             cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
-            if (config.quarkusReflectionConfig.get()) {
-                cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
-            } else {
-                cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
-            }
+            cliArgs.shouldContainOptionally(
+                config.quarkusReflectionConfig,
+                ARG_TARGETS,
+                CodeGenerationType.QUARKUS_REFLECTION_CONFIG
+            )
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
             with(config.client) {
                 if (enabled.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
-                    options.get().forEach { option ->
-                        cliArgs shouldContainInOrder listOf(ARG_CLIENT_OPTS, option.name)
-                    }
+                    cliArgs.shouldContainOptionally(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
+                    cliArgs.shouldContainOptionally(
+                        suspendModifier,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.SUSPEND_MODIFIER
+                    )
                     cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
 
                 } else {
@@ -103,7 +112,8 @@ class FabriktArgumentsTest : StringSpec({
                 typeOverrides.set(Arb.enum<CodeGenTypeOverride>().orNull(0.2).bind())
                 validationLibrary.set(Arb.enum<ValidationLibrary>().orNull(0.2).bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
-                client.options.set(enumSet<ClientCodeGenOptionType>().bind())
+                client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
+                client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
                 client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
                 controller.enabled.set(Arb.boolean().orNull(0.2).bind())
                 controller.options.set(enumSet<ControllerCodeGenOptionType>().bind())
@@ -133,6 +143,37 @@ class FabriktArgumentsTest : StringSpec({
                 this shouldNotContain arg
             }
         }
+
+        private fun Array<String>.shouldContainOptionally(
+            valueProvider: Provider<Boolean>,
+            argName: String,
+            argValue: Enum<*>
+        ) {
+            val containArgument = containsArgument(argName, argValue.name)
+            if (valueProvider.getOrElse(false)) {
+                this should containArgument
+            } else {
+                this shouldNot containArgument
+            }
+        }
+
+        private fun containsArgument(name: String, value: String): Matcher<Array<String>> =
+            neverNullMatcher { actual ->
+                val actualIterator = actual.iterator()
+
+                var contains = false
+                while (actualIterator.hasNext() && !contains) {
+                    if (actualIterator.next() == name && actualIterator.hasNext() && actualIterator.next() == value) {
+                        contains = true
+                    }
+                }
+
+                MatcherResult(
+                    contains,
+                    { "${actual.print().value} did not contain the argument $name $value" },
+                    { "${actual.print().value} should not contain the argument $name $value" }
+                )
+            }
 
     }
 

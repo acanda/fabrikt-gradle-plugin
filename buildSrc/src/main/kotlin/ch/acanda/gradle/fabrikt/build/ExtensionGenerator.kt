@@ -10,7 +10,6 @@ import ch.acanda.gradle.fabrikt.build.generator.filesProperty
 import ch.acanda.gradle.fabrikt.build.generator.named
 import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
-import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
@@ -159,7 +158,8 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .build()
             )
             .booleanProperty("enabled")
-            .enumSetProperty("options", ClientCodeGenOptionType::class)
+            .booleanProperty("resilience4j")
+            .booleanProperty("suspendModifier")
             .enumProperty("target", ClientCodeGenTargetType::class)
             .build()
 

@@ -1,7 +1,6 @@
 package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.generator.generate
-import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
@@ -99,6 +98,10 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val options: SetProperty<CodeGenTypeOverride> = project.objects.setProperty(CodeGenTypeOverride::class.java)
 
+    override fun toString(): String {
+        return """{ "client": $client }"""
+    }
+
 }
 
 open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactory) {
@@ -109,13 +112,20 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
 
     @get:Input
     @get:Optional
-    val options: SetProperty<ClientCodeGenOptionType> = objects.setProperty(ClientCodeGenOptionType::class.java)
+    val resilience4j: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
     @get:Input
     @get:Optional
     val target: Property<ClientCodeGenTargetType> = objects.property(ClientCodeGenTargetType::class.java)
         .convention(ClientCodeGenTargetType.OK_HTTP)
 
+    override fun toString(): String {
+        return """{ "suspendModifier": ${suspendModifier.orNull} }"""
+    }
 }
 
 open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFactory) {
