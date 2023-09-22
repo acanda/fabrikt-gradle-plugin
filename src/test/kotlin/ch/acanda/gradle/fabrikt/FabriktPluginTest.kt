@@ -70,6 +70,7 @@ class FabriktPluginTest : WordSpec({
                         micronautReflection(it.enabled)
                         includeCompanionObject(it.enabled)
                         sealedInterfacesForOneOf(it.enabled)
+                        ignoreUnknownProperties(it.enabled)
                     }
                 }
             }
@@ -109,6 +110,7 @@ class FabriktPluginTest : WordSpec({
                         micronautReflection shouldContain true
                         includeCompanionObject shouldContain true
                         sealedInterfacesForOneOf shouldContain true
+                        ignoreUnknownProperties shouldContain true
                     }
                 }
         }

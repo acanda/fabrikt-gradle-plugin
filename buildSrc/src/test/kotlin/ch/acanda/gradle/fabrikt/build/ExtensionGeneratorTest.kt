@@ -183,6 +183,9 @@ class ExtensionGeneratorTest : WordSpec({
         "contain the property sealedInterfacesForOneOf" {
             extension shouldContainOnlyOnce "public val sealedInterfacesForOneOf: Property<Boolean>"
         }
+        "contain the property ignoreUnknownProperties" {
+            extension shouldContainOnlyOnce "public val ignoreUnknownProperties: Property<Boolean>"
+        }
     }
 
 }) {

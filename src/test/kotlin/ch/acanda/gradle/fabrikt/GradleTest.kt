@@ -60,6 +60,7 @@ class GradleTest : StringSpec({
             |      micronautReflection(enabled)
             |      includeCompanionObject(enabled)
             |      sealedInterfacesForOneOf(enabled)
+            |      ignoreUnknownProperties(enabled)
             |    }
             |  }
             |}

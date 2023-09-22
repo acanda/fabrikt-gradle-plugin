@@ -6,6 +6,7 @@ import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.string.shouldContain
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 
@@ -31,6 +32,21 @@ class FabriktGeneratorTest : WordSpec({
                 .toList()
 
             outputs shouldContain "src/main/kotlin/dog/models/Dog.kt"
+        }
+
+        "postprocess model classes" {
+            val outputDir = tempdir("out")
+
+            val project = ProjectBuilder.builder().build()
+            val config = GenerateTaskConfiguration(project)
+            config.apiFile.set(apiFile())
+            config.apiFragments.setFrom(apiFragment())
+            config.basePackage.set("dog")
+            config.outputDirectory.set(outputDir)
+            config.model.ignoreUnknownProperties.set(true)
+            generate(config)
+
+            outputDir.resolve("src/main/kotlin/dog/models/Dog.kt").readText() shouldContain "JsonIgnoreProperties"
         }
 
         "generate client classes" {

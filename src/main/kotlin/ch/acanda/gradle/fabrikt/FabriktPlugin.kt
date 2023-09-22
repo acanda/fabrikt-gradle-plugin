@@ -41,6 +41,7 @@ class FabriktPlugin : Plugin<Project> {
                         micronautReflection.setIfPresent(generate.model.micronautReflection)
                         includeCompanionObject.setIfPresent(generate.model.includeCompanionObject)
                         sealedInterfacesForOneOf.setIfPresent(generate.model.sealedInterfacesForOneOf)
+                        ignoreUnknownProperties.setIfPresent(generate.model.ignoreUnknownProperties)
                     }
                 }
             }

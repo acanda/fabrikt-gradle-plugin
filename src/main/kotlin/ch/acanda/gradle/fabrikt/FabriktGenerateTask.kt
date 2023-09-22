@@ -174,4 +174,8 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
     @get:Optional
     val sealedInterfacesForOneOf: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
+    @get:Input
+    @get:Optional
+    val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
 }

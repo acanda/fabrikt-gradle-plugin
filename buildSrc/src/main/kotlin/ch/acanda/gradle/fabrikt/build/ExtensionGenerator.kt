@@ -202,6 +202,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("micronautReflection")
             .booleanProperty("includeCompanionObject")
             .booleanProperty("sealedInterfacesForOneOf")
+            .booleanProperty("ignoreUnknownProperties")
             .build()
 
     }

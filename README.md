@@ -87,6 +87,7 @@ fabrikt {
             micronautReflection(disabled)
             includeCompanionObject(disabled)
             sealedInterfacesForOneOf(disabled)
+            ignoreUnknownProperties(disabled)
         }
     }
 }
@@ -119,3 +120,4 @@ fabrikt {
 | model.micronautReflection      | Enables adding `@ReflectiveAccess` to the generated models. Requires the dependency `io.micronaut:micronaut-core:+`.                                 | `disabled`                | Boolean: `enabled`, `disabled`, `true`, `false`.                                                                                                         |                                                                                                         
 | model.includeCompanionObject   | Enables adding a companion object to the generated models.                                                                                           | `disabled`                | Boolean: `enabled`, `disabled`, `true`, `false`.                                                                                                         |                                                                                                         
 | model.sealedInterfacesForOneOf | Enables the generation of interfaces for discriminated `oneOf` types.                                                                                | `disabled`                | Boolean: `enabled`, `disabled`, `true`, `false`.                                                                                                         |                                                                                                         
+| model.ignoreUnknownProperties  | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.                                                             | `disabled`                | Boolean: `enabled`, `disabled`, `true`, `false`.                                                                                                         |                                                                                                         
