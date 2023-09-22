@@ -157,8 +157,31 @@ class ExtensionGeneratorTest : WordSpec({
         )
         val extension = typeSpec.writeToString()
 
-        "contain the property options" {
-            extension shouldContainOnlyOnce "public val options: SetProperty<ModelCodeGenOptionType>"
+        "contain the property extensibleEnums" {
+            extension shouldContainOnlyOnce "public val extensibleEnums: Property<Boolean>"
+        }
+
+        "contain the property javaSerialization" {
+            extension shouldContainOnlyOnce "public val javaSerialization: Property<Boolean>"
+        }
+
+        "contain the property quarkusReflection" {
+            extension shouldContainOnlyOnce "public val quarkusReflection: Property<Boolean>"
+        }
+
+        "contain the property micronautIntrospection" {
+            extension shouldContainOnlyOnce "public val micronautIntrospection: Property<Boolean>"
+        }
+
+        "contain the property micronautReflection" {
+            extension shouldContainOnlyOnce "public val micronautReflection: Property<Boolean>"
+        }
+
+        "contain the property includeCompanionObject" {
+            extension shouldContainOnlyOnce "public val includeCompanionObject: Property<Boolean>"
+        }
+        "contain the property sealedInterfacesForOneOf" {
+            extension shouldContainOnlyOnce "public val sealedInterfacesForOneOf: Property<Boolean>"
         }
     }
 

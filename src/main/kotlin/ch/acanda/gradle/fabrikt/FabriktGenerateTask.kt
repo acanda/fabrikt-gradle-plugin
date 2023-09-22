@@ -4,7 +4,6 @@ import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
-import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
@@ -97,10 +96,6 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val options: SetProperty<CodeGenTypeOverride> = project.objects.setProperty(CodeGenTypeOverride::class.java)
 
-    override fun toString(): String {
-        return """{ "client": $client }"""
-    }
-
 }
 
 open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactory) {
@@ -122,9 +117,6 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
     val target: Property<ClientCodeGenTargetType> = objects.property(ClientCodeGenTargetType::class.java)
         .convention(ClientCodeGenTargetType.OK_HTTP)
 
-    override fun toString(): String {
-        return """{ "suspendModifier": ${suspendModifier.orNull} }"""
-    }
 }
 
 open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFactory) {
@@ -156,6 +148,30 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
 
     @get:Input
     @get:Optional
-    val options: SetProperty<ModelCodeGenOptionType> = objects.setProperty(ModelCodeGenOptionType::class.java)
+    val extensibleEnums: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val javaSerialization: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val quarkusReflection: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val micronautIntrospection: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val micronautReflection: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val includeCompanionObject: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val sealedInterfacesForOneOf: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
 }

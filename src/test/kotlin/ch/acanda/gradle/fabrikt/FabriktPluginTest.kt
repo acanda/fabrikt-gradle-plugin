@@ -1,13 +1,10 @@
 package ch.acanda.gradle.fabrikt
 
-import ch.acanda.gradle.fabrikt.matchers.shouldBeEmpty
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
-import ch.acanda.gradle.fabrikt.matchers.shouldContainExactly
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
-import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
@@ -66,7 +63,13 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(it.model) {
                         enabled(false)
-                        options(JAVA_SERIALIZATION)
+                        extensibleEnums(it.enabled)
+                        javaSerialization(it.enabled)
+                        quarkusReflection(it.enabled)
+                        micronautIntrospection(it.enabled)
+                        micronautReflection(it.enabled)
+                        includeCompanionObject(it.enabled)
+                        sealedInterfacesForOneOf(it.enabled)
                     }
                 }
             }
@@ -99,7 +102,13 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(model) {
                         enabled shouldContain false
-                        options shouldContainExactly ModelCodeGenOptionType.JAVA_SERIALIZATION
+                        extensibleEnums shouldContain true
+                        javaSerialization shouldContain true
+                        quarkusReflection shouldContain true
+                        micronautIntrospection shouldContain true
+                        micronautReflection shouldContain true
+                        includeCompanionObject shouldContain true
+                        sealedInterfacesForOneOf shouldContain true
                     }
                 }
         }
@@ -135,19 +144,25 @@ class FabriktPluginTest : WordSpec({
                     this.quarkusReflectionConfig shouldContain false
                     with(client) {
                         enabled shouldContain false
+                        target shouldContain ClientCodeGenTargetType.OK_HTTP
                         resilience4j shouldContain false
                         suspendModifier shouldContain false
-                        target shouldContain ClientCodeGenTargetType.OK_HTTP
                     }
                     with(controller) {
                         enabled shouldContain false
+                        target shouldContain ControllerCodeGenTargetType.SPRING
                         authentication shouldContain false
                         suspendModifier shouldContain false
-                        target shouldContain ControllerCodeGenTargetType.SPRING
                     }
                     with(model) {
                         enabled shouldContain true
-                        options.shouldBeEmpty()
+                        extensibleEnums shouldContain false
+                        javaSerialization shouldContain false
+                        quarkusReflection shouldContain false
+                        micronautIntrospection shouldContain false
+                        micronautReflection shouldContain false
+                        includeCompanionObject shouldContain false
+                        sealedInterfacesForOneOf shouldContain false
                     }
                 }
         }

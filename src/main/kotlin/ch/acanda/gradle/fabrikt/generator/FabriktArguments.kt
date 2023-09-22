@@ -4,6 +4,7 @@ import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
+import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
@@ -90,10 +91,17 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (enabled.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.HTTP_MODELS.name)
-            options.get().forEach { option ->
-                args.add(ARG_MODEL_OPTS)
-                args.add(option.name)
-            }
+            args.addIfEnabled(extensibleEnums, ARG_MODEL_OPTS, ModelCodeGenOptionType.X_EXTENSIBLE_ENUMS)
+            args.addIfEnabled(javaSerialization, ARG_MODEL_OPTS, ModelCodeGenOptionType.JAVA_SERIALIZATION)
+            args.addIfEnabled(quarkusReflection, ARG_MODEL_OPTS, ModelCodeGenOptionType.QUARKUS_REFLECTION)
+            args.addIfEnabled(micronautIntrospection, ARG_MODEL_OPTS, ModelCodeGenOptionType.MICRONAUT_INTROSPECTION)
+            args.addIfEnabled(micronautReflection, ARG_MODEL_OPTS, ModelCodeGenOptionType.MICRONAUT_REFLECTION)
+            args.addIfEnabled(includeCompanionObject, ARG_MODEL_OPTS, ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT)
+            args.addIfEnabled(
+                sealedInterfacesForOneOf,
+                ARG_MODEL_OPTS,
+                ModelCodeGenOptionType.SEALED_INTERFACES_FOR_ONE_OF
+            )
         }
     }
 

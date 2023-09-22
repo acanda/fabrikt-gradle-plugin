@@ -4,7 +4,6 @@ import ch.acanda.gradle.fabrikt.build.generator.booleanProperty
 import ch.acanda.gradle.fabrikt.build.generator.directoryProperty
 import ch.acanda.gradle.fabrikt.build.generator.enabledValues
 import ch.acanda.gradle.fabrikt.build.generator.enumProperty
-import ch.acanda.gradle.fabrikt.build.generator.enumSetProperty
 import ch.acanda.gradle.fabrikt.build.generator.fileProperty
 import ch.acanda.gradle.fabrikt.build.generator.filesProperty
 import ch.acanda.gradle.fabrikt.build.generator.named
@@ -13,7 +12,6 @@ import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
-import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -197,7 +195,13 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .build()
             )
             .booleanProperty("enabled")
-            .enumSetProperty("options", ModelCodeGenOptionType::class)
+            .booleanProperty("extensibleEnums")
+            .booleanProperty("javaSerialization")
+            .booleanProperty("quarkusReflection")
+            .booleanProperty("micronautIntrospection")
+            .booleanProperty("micronautReflection")
+            .booleanProperty("includeCompanionObject")
+            .booleanProperty("sealedInterfacesForOneOf")
             .build()
 
     }

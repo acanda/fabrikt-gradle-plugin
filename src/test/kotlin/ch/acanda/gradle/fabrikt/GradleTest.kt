@@ -53,15 +53,13 @@ class GradleTest : StringSpec({
             |    }
             |    model {
             |      enabled(true)
-            |      options(
-            |        X_EXTENSIBLE_ENUMS,
-            |        JAVA_SERIALIZATION,
-            |        QUARKUS_REFLECTION,
-            |        MICRONAUT_INTROSPECTION,
-            |        MICRONAUT_REFLECTION,
-            |        INCLUDE_COMPANION_OBJECT,
-            |        SEALED_INTERFACES_FOR_ONE_OF
-            |      )
+            |      extensibleEnums(enabled)
+            |      javaSerialization(enabled)
+            |      quarkusReflection(enabled)
+            |      micronautIntrospection(enabled)
+            |      micronautReflection(enabled)
+            |      includeCompanionObject(enabled)
+            |      sealedInterfacesForOneOf(enabled)
             |    }
             |  }
             |}

@@ -92,9 +92,41 @@ class FabriktArgumentsTest : StringSpec({
             with(config.model) {
                 if (enabled.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
-                    options.get().forEach { option ->
-                        cliArgs shouldContainInOrder listOf(ARG_MODEL_OPTS, option.name)
-                    }
+                    cliArgs.shouldContainOptionally(
+                        extensibleEnums,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.X_EXTENSIBLE_ENUMS
+                    )
+                    cliArgs.shouldContainOptionally(
+                        javaSerialization,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.JAVA_SERIALIZATION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        quarkusReflection,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.QUARKUS_REFLECTION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        micronautIntrospection,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.MICRONAUT_INTROSPECTION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        micronautReflection,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.MICRONAUT_REFLECTION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        includeCompanionObject,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT
+                    )
+                    cliArgs.shouldContainOptionally(
+                        sealedInterfacesForOneOf,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.SEALED_INTERFACES_FOR_ONE_OF
+                    )
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs shouldNotContain ARG_MODEL_OPTS
@@ -127,21 +159,18 @@ class FabriktArgumentsTest : StringSpec({
                 controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
                 controller.target.set(Arb.enum<ControllerCodeGenTargetType>().orNull(0.2).bind())
                 model.enabled.set(Arb.boolean().orNull(0.2).bind())
-                model.options.set(enumSet<ModelCodeGenOptionType>().bind())
+                model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())
+                model.javaSerialization.set(Arb.boolean().orNull(0.2).bind())
+                model.quarkusReflection.set(Arb.boolean().orNull(0.2).bind())
+                model.micronautIntrospection.set(Arb.boolean().orNull(0.2).bind())
+                model.micronautReflection.set(Arb.boolean().orNull(0.2).bind())
+                model.includeCompanionObject.set(Arb.boolean().orNull(0.2).bind())
+                model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
             }
         }
 
         private val pathGen: Arb<File> = arbitrary {
             Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
-        }
-
-        private inline fun <reified T : Enum<T>> enumSet(): Arb<Set<T>> = arbitrary { randomSource ->
-            val values = T::class.java.enumConstants.toList().shuffled().toMutableList()
-            var count = randomSource.random.nextInt(0, values.size + 1)
-            while (count-- > 0) {
-                values.removeLast()
-            }
-            values.toSet()
         }
 
         private fun <E : Enum<E>> Array<String>.shouldContainOptionally(valueProvider: Provider<E>, arg: String) {
