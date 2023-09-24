@@ -67,23 +67,19 @@ class GradleTest : StringSpec({
             """.trimMargin()
         )
 
-        val result = runFabriktGenerate(projectDir)
+        val result = runGradle(projectDir)
 
         result.task(":fabriktGenerate")
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val outputs = projectDir.resolve(outputPath).walkTopDown()
-            .filter { it.isFile }
-            .map { it.toRelativeString(projectDir) }
-            .sorted()
-            .toList()
+        val outputs = projectDir.resolve(outputPath).listFilesRelative()
 
-        val basePath = "$outputPath/$sourcePath/${basePackage.replace('.', '/')}"
+        val basePath = "$sourcePath/${basePackage.packageToPath()}"
         outputs shouldContain "$basePath/models/Dog.kt"
         outputs shouldContain "$basePath/client/DogClient.kt"
         outputs shouldContain "$basePath/controllers/DogController.kt"
-        outputs shouldContain "$outputPath/$resourcePath/reflection-config.json"
+        outputs shouldContain "$resourcePath/reflection-config.json"
     }
 
     "`gradle fabriktGenerate` with minimal configuration should run fabrikt" {
@@ -104,13 +100,13 @@ class GradleTest : StringSpec({
             |}
             """.trimMargin()
         )
-        val result = runFabriktGenerate(projectDir)
+        val result = runGradle(projectDir)
 
         result.task(":fabriktGenerate")
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.replace('.', '/')}/models"
+        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
         projectDir.resolve("$modelsPath/Dog.kt").toPath() should exist()
     }
 
@@ -137,13 +133,13 @@ class GradleTest : StringSpec({
             |}
             """.trimMargin()
         )
-        val result = runFabriktGenerate(projectDir)
+        val result = runGradle(projectDir)
 
         result.task(":fabriktGenerate")
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.replace('.', '/')}/models"
+        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
         val files = projectDir.resolve(modelsPath).walkTopDown().toList()
         files shouldContain projectDir.resolve("$modelsPath/Dog.kt")
         files shouldContain projectDir.resolve("$modelsPath/Cat.kt")
@@ -174,18 +170,61 @@ class GradleTest : StringSpec({
             |}
             """.trimMargin()
         )
-        val result = runFabriktGenerate(projectDir)
+        val result = runGradle(projectDir)
 
         result.task(":fabriktGenerate")
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.replace('.', '/')}/models"
+        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
         val files = projectDir.resolve(modelsPath).walkTopDown().toList()
         files shouldContain projectDir.resolve("$modelsPath/Dog.kt")
         files shouldContain projectDir.resolve("$modelsPath/Cat.kt")
         projectDir.resolve("$modelsPath/Dog.kt").toPath() should exist()
         projectDir.resolve("$modelsPath/Cat.kt").toPath() should exist()
+    }
+
+    "`gradle compileKotlin` should run fabrikt" {
+        val projectDir = projectDir("compileKotlin")
+        val basePackage = "ch.acanda"
+        val openapiPath = createSpec(projectDir)
+        projectDir.resolve("build.gradle.kts").writeText(
+            """
+            |plugins {
+            |  kotlin("jvm") version "1.9.0"
+            |  id("ch.acanda.gradle.fabrikt")
+            |}
+            |
+            |repositories {
+            |  mavenCentral()
+            |}
+            |
+            |dependencies {
+            |  implementation("com.fasterxml.jackson.core:jackson-annotations:2.15.2")
+            |  implementation("jakarta.validation:jakarta.validation-api:3.0.2")
+            |}
+            |
+            |fabrikt {
+            |  generate("dog") {
+            |    apiFile(file("$openapiPath"))
+            |    basePackage("$basePackage")
+            |  }
+            |}
+            """.trimMargin()
+        )
+        val result = runGradle(projectDir, "compileKotlin")
+
+        result.task(":fabriktGenerate")
+            .shouldNotBeNull()
+            .outcome shouldBe TaskOutcome.SUCCESS
+
+        result.task(":compileKotlin")
+            .shouldNotBeNull()
+            .outcome shouldBe TaskOutcome.SUCCESS
+
+        val modelsPath = "build/classes/kotlin/main/${basePackage.packageToPath()}/models"
+        projectDir.resolve("$modelsPath/Dog.class").toPath() should exist()
+
     }
 
 }) {
@@ -247,14 +286,29 @@ class GradleTest : StringSpec({
             return listOf(securityPath)
         }
 
-        private fun runFabriktGenerate(projectDir: File): BuildResult =
+        private fun runGradle(
+            projectDir: File,
+            vararg arguments: String = arrayOf("fabriktGenerate")
+        ): BuildResult =
             GradleRunner.create()
                 .withProjectDir(projectDir)
                 .forwardOutput()
-                .withArguments("fabriktGenerate")
+                .withArguments(*arguments)
                 .withPluginClasspath()
                 .build()
 
+        private fun projectDir(name: String): File {
+            val projectDir = File("build/gradle-tests/$name")
+            projectDir.deleteRecursivelyExcept(".gradle")
+            projectDir.mkdirs()
+            projectDir.resolve("settings.gradle.kts").writeText("")
+            return projectDir
+        }
+
+        private fun File.deleteRecursivelyExcept(path: String) {
+            val except = resolve(path)
+            listFiles { file -> file != except }?.forEach { it.deleteRecursively() }
+        }
     }
 
 }

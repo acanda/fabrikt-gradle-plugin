@@ -24,6 +24,8 @@ import org.gradle.testfixtures.ProjectBuilder
  * - registers the task "fabriktGenerate"
  *     - sets all its properties correctly
  *     - uses the proper defaults where the properties are not set
+ *
+ * It does not test the output of the task "fabriktGenerate".
  */
 class FabriktPluginTest : WordSpec({
 
@@ -168,6 +170,7 @@ class FabriktPluginTest : WordSpec({
                     }
                 }
         }
+
     }
 
 })
