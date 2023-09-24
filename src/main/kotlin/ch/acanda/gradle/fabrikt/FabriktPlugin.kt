@@ -2,50 +2,87 @@ package ch.acanda.gradle.fabrikt
 
 import org.gradle.api.Plugin
 import org.gradle.api.Project
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
+import org.gradle.api.tasks.SourceSetContainer
+import org.gradle.api.tasks.TaskProvider
 
 class FabriktPlugin : Plugin<Project> {
 
     override fun apply(project: Project) {
         val extension = project.extensions.create("fabrikt", FabriktExtension::class.java)
-        project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
-            val configurations = extension.map { generate ->
-                GenerateTaskConfiguration(project).apply {
-                    apiFile.set(generate.apiFile)
-                    apiFragments.setFrom(generate.apiFragments)
-                    basePackage.set(generate.basePackage)
-                    outputDirectory.setIfPresent(generate.outputDirectory)
-                    sourcesPath.setIfPresent(generate.sourcesPath)
-                    resourcesPath.setIfPresent(generate.resourcesPath)
-                    typeOverrides.setIfPresent(generate.typeOverrides)
-                    validationLibrary.setIfPresent(generate.validationLibrary)
-                    quarkusReflectionConfig.setIfPresent(generate.quarkusReflectionConfig)
-                    with(client) {
-                        enabled.setIfPresent(generate.client.enabled)
-                        resilience4j.setIfPresent(generate.client.resilience4j)
-                        suspendModifier.setIfPresent(generate.client.suspendModifier)
-                        target.setIfPresent(generate.client.target)
-                    }
-                    with(controller) {
-                        enabled.setIfPresent(generate.controller.enabled)
-                        authentication.setIfPresent(generate.controller.authentication)
-                        suspendModifier.setIfPresent(generate.controller.suspendModifier)
-                        target.setIfPresent(generate.controller.target)
-                    }
-                    with(model) {
-                        enabled.setIfPresent(generate.model.enabled)
-                        extensibleEnums.setIfPresent(generate.model.extensibleEnums)
-                        javaSerialization.setIfPresent(generate.model.javaSerialization)
-                        quarkusReflection.setIfPresent(generate.model.quarkusReflection)
-                        micronautIntrospection.setIfPresent(generate.model.micronautIntrospection)
-                        micronautReflection.setIfPresent(generate.model.micronautReflection)
-                        includeCompanionObject.setIfPresent(generate.model.includeCompanionObject)
-                        sealedInterfacesForOneOf.setIfPresent(generate.model.sealedInterfacesForOneOf)
-                        ignoreUnknownProperties.setIfPresent(generate.model.ignoreUnknownProperties)
-                    }
-                }
-            }
+
+        val fabriktGenerateTask = project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
+            val configurations = extension.map { project.createGenerateTaskConfiguration(it) }
             task.configurations.set(configurations)
+            project.addOutputDirectoryToKotlinSourceSet(configurations)
+        }
+
+        project.addCompileKotlinDependesOn(fabriktGenerateTask)
+    }
+
+    private fun Project.createGenerateTaskConfiguration(ext: FabriktGenerateExtension) =
+        GenerateTaskConfiguration(project).apply {
+            apiFile.set(ext.apiFile)
+            apiFragments.setFrom(ext.apiFragments)
+            basePackage.set(ext.basePackage)
+            outputDirectory.setIfPresent(ext.outputDirectory)
+            sourcesPath.setIfPresent(ext.sourcesPath)
+            resourcesPath.setIfPresent(ext.resourcesPath)
+            typeOverrides.setIfPresent(ext.typeOverrides)
+            validationLibrary.setIfPresent(ext.validationLibrary)
+            quarkusReflectionConfig.setIfPresent(ext.quarkusReflectionConfig)
+            with(client) {
+                enabled.setIfPresent(ext.client.enabled)
+                resilience4j.setIfPresent(ext.client.resilience4j)
+                suspendModifier.setIfPresent(ext.client.suspendModifier)
+                target.setIfPresent(ext.client.target)
+            }
+            with(controller) {
+                enabled.setIfPresent(ext.controller.enabled)
+                authentication.setIfPresent(ext.controller.authentication)
+                suspendModifier.setIfPresent(ext.controller.suspendModifier)
+                target.setIfPresent(ext.controller.target)
+            }
+            with(model) {
+                enabled.setIfPresent(ext.model.enabled)
+                extensibleEnums.setIfPresent(ext.model.extensibleEnums)
+                javaSerialization.setIfPresent(ext.model.javaSerialization)
+                quarkusReflection.setIfPresent(ext.model.quarkusReflection)
+                micronautIntrospection.setIfPresent(ext.model.micronautIntrospection)
+                micronautReflection.setIfPresent(ext.model.micronautReflection)
+                includeCompanionObject.setIfPresent(ext.model.includeCompanionObject)
+                sealedInterfacesForOneOf.setIfPresent(ext.model.sealedInterfacesForOneOf)
+                ignoreUnknownProperties.setIfPresent(ext.model.ignoreUnknownProperties)
+            }
+        }
+
+    private fun Project.addOutputDirectoryToKotlinSourceSet(configurations: List<GenerateTaskConfiguration>) {
+        val sourceSets = project.extensions.findByName("sourceSets") as SourceSetContainer?
+        val srcDirSet = sourceSets
+            ?.findByName("main")
+            ?.extensions
+            ?.findByName("kotlin") as SourceDirectorySet?
+
+        if (srcDirSet == null) {
+            val msg = "Unable to find the source set \"main/kotlin\" and add the Fabrikt output directories."
+            project.logger.info(msg)
+        } else {
+            val srcDirs = configurations.map { config ->
+                config.outputDirectory.flatMap { it.dir(config.sourcesPath) }
+            }
+            srcDirSet.srcDirs(srcDirs)
+        }
+    }
+
+    private fun Project.addCompileKotlinDependesOn(task: TaskProvider<FabriktGenerateTask>) {
+        val compileKotlinTask = project.tasks.findByName("compileKotlin")
+        if (compileKotlinTask == null) {
+            val msg = "Unable to find the task kotlinCompile and" +
+                " register the dependency kotlinCompile -> fabriktGenerate."
+            project.logger.info(msg)
+        } else {
+            compileKotlinTask.dependsOn(task)
         }
     }
 

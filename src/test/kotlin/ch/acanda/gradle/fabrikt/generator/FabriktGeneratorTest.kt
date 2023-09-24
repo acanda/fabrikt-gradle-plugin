@@ -1,6 +1,7 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
+import ch.acanda.gradle.fabrikt.listFilesRelative
 import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
@@ -16,27 +17,21 @@ class FabriktGeneratorTest : WordSpec({
 
         "generate model classes" {
             val outputDir = tempdir("out")
-
             val project = ProjectBuilder.builder().build()
             val config = GenerateTaskConfiguration(project)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
+
             generate(config)
 
-            val outputs = outputDir.walkTopDown()
-                .filter { it.isFile }
-                .map { it.toRelativeString(outputDir) }
-                .sorted()
-                .toList()
-
+            val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/models/Dog.kt"
         }
 
         "postprocess model classes" {
             val outputDir = tempdir("out")
-
             val project = ProjectBuilder.builder().build()
             val config = GenerateTaskConfiguration(project)
             config.apiFile.set(apiFile())
@@ -44,6 +39,7 @@ class FabriktGeneratorTest : WordSpec({
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
             config.model.ignoreUnknownProperties.set(true)
+
             generate(config)
 
             outputDir.resolve("src/main/kotlin/dog/models/Dog.kt").readText() shouldContain "JsonIgnoreProperties"
@@ -61,12 +57,7 @@ class FabriktGeneratorTest : WordSpec({
 
             generate(config)
 
-            val outputs = outputDir.walkTopDown()
-                .filter { it.isFile }
-                .map { it.toRelativeString(outputDir) }
-                .sorted()
-                .toList()
-
+            val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/client/DogsClient.kt"
         }
 
@@ -82,12 +73,7 @@ class FabriktGeneratorTest : WordSpec({
 
             generate(config)
 
-            val outputs = outputDir.walkTopDown()
-                .filter { it.isFile }
-                .map { it.toRelativeString(outputDir) }
-                .sorted()
-                .toList()
-
+            val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/controllers/DogsController.kt"
         }
 
