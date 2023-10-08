@@ -293,7 +293,7 @@ class GradleTest : StringSpec({
             GradleRunner.create()
                 .withProjectDir(projectDir)
                 .forwardOutput()
-                .withArguments(*arguments)
+                .withArguments(*(arrayOf("--console=plain", "-i") + arguments))
                 .withPluginClasspath()
                 .build()
 

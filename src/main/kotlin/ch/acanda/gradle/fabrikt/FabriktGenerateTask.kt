@@ -31,7 +31,6 @@ abstract class FabriktGenerateTask : DefaultTask() {
     @TaskAction
     fun generate() {
         configurations.get().forEach { config ->
-            logger.info("Generate ${config.apiFile.get()}")
             generate(config)
         }
     }
