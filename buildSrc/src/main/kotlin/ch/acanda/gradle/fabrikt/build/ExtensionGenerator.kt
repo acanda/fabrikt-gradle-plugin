@@ -13,6 +13,7 @@ import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
+import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -32,6 +33,7 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import javax.annotation.processing.Generated
 import javax.inject.Inject
 
 @CacheableTask
@@ -60,6 +62,7 @@ abstract class ExtensionGenerator : DefaultTask() {
         val fabriktExtension = fabriktExtension(fabriktExtensionName, fabriktGenerateExtensionName)
 
         val file = FileSpec.builder(fabriktExtensionName)
+            .addAnnotation(generated())
             .addType(fabriktExtension)
             .addType(fabriktGenerateExtension)
             .addType(clientExtension)
@@ -83,6 +86,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             modelExtName: ClassName
         ) =
             TypeSpec.classBuilder(className)
+                .addAnnotation(generated())
                 .addModifiers(KModifier.OPEN)
                 .named()
                 .primaryConstructor(
@@ -114,6 +118,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .build()
 
         internal fun fabriktExtension(className: ClassName, valueType: TypeName) = TypeSpec.classBuilder(className)
+            .addAnnotation(generated())
             .addModifiers(KModifier.OPEN)
             .addSuperinterface(
                 NamedDomainObjectContainer::class.asClassName().parameterizedBy(valueType),
@@ -141,6 +146,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .build()
 
         internal fun clientExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addAnnotation(generated())
             .addModifiers(KModifier.OPEN)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -161,6 +167,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .build()
 
         internal fun controllerExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addAnnotation(generated())
             .addModifiers(KModifier.OPEN)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -181,6 +188,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .build()
 
         internal fun modelExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addAnnotation(generated())
             .addModifiers(KModifier.OPEN)
             .primaryConstructor(
                 FunSpec.constructorBuilder()
@@ -203,6 +211,10 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("includeCompanionObject")
             .booleanProperty("sealedInterfacesForOneOf")
             .booleanProperty("ignoreUnknownProperties")
+            .build()
+
+        internal fun generated() = AnnotationSpec.builder(Generated::class)
+            .addMember("\"${ExtensionGenerator::class.qualifiedName}\"")
             .build()
 
     }
