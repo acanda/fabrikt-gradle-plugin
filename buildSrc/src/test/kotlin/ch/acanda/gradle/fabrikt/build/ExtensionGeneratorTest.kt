@@ -20,12 +20,14 @@ class ExtensionGeneratorTest : WordSpec({
             typeSpec.writeToString() shouldBe """
             |package ch.acanda
             |
+            |import javax.`annotation`.processing.Generated
             |import javax.inject.Inject
             |import kotlin.String
             |import org.gradle.api.Action
             |import org.gradle.api.NamedDomainObjectContainer
             |import org.gradle.api.model.ObjectFactory
             |
+            |@Generated("ch.acanda.gradle.fabrikt.build.ExtensionGenerator")
             |public open class FabriktExtension @Inject constructor(
             |  private val objects: ObjectFactory,
             |) : NamedDomainObjectContainer<String> by objects.domainObjectContainer(String::class.java) {
@@ -47,6 +49,10 @@ class ExtensionGeneratorTest : WordSpec({
                 ClassName("ch.acanda", "ModelExtension")
             )
         val extension = typeSpec.writeToString()
+
+        "be annotated with @Generated" {
+            extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
+        }
 
         "contain the value enabled" {
             extension shouldContainOnlyOnce "public val enabled: Boolean = true"
@@ -115,6 +121,10 @@ class ExtensionGeneratorTest : WordSpec({
         )
         val extension = typeSpec.writeToString()
 
+        "be annotated with @Generated" {
+            extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
+        }
+
         "contain the property enabled" {
             extension shouldContainOnlyOnce "public val enabled: Property<Boolean>"
         }
@@ -138,6 +148,10 @@ class ExtensionGeneratorTest : WordSpec({
         )
         val extension = typeSpec.writeToString()
 
+        "be annotated with @Generated" {
+            extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
+        }
+
         "contain the property authentication" {
             extension shouldContainOnlyOnce "public val authentication: Property<Boolean>"
         }
@@ -156,6 +170,10 @@ class ExtensionGeneratorTest : WordSpec({
             ClassName("ch.acanda", "ModelExtension")
         )
         val extension = typeSpec.writeToString()
+
+        "be annotated with @Generated" {
+            extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
+        }
 
         "contain the property extensibleEnums" {
             extension shouldContainOnlyOnce "public val extensibleEnums: Property<Boolean>"
