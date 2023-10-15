@@ -51,7 +51,6 @@ sourceSets {
 
 idea {
     module {
-        sourceDirs.add(generatedSources.get().asFile)
         generatedSourceDirs.add(generatedSources.get().asFile)
     }
 }
