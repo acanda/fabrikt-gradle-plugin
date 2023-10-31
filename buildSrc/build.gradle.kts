@@ -14,7 +14,7 @@ repositories {
 dependencies {
     implementation("com.cjbooms:fabrikt:11.0.0")
     implementation("com.squareup:kotlinpoet:1.14.2")
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.1")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.3")
 }
 
 kotlin {
