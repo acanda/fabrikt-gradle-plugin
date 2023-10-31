@@ -6,7 +6,7 @@ plugins {
     kotlin("jvm")
     `java-gradle-plugin`
     idea
-    id("io.gitlab.arturbosch.detekt") version "1.23.1"
+    id("io.gitlab.arturbosch.detekt") version "1.23.3"
 }
 
 group = "ch.acanda.gradle"
