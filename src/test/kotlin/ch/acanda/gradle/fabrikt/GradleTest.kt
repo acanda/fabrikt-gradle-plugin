@@ -1,11 +1,8 @@
 package ch.acanda.gradle.fabrikt
 
 import io.kotest.core.spec.style.StringSpec
-import io.kotest.engine.spec.tempdir
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
-import io.kotest.matchers.paths.exist
-import io.kotest.matchers.should
 import io.kotest.matchers.shouldBe
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -15,7 +12,7 @@ import java.io.File
 class GradleTest : StringSpec({
 
     "`gradle fabriktGenerate` with full configuration should run fabrikt" {
-        val projectDir = tempdir("project")
+        val projectDir = projectDir("full-configuration")
         val basePackage = "ch.acanda"
         val outputPath = "build/generated/custom"
         val sourcePath = "src/fabrikt/kotlin"
@@ -83,7 +80,7 @@ class GradleTest : StringSpec({
     }
 
     "`gradle fabriktGenerate` with minimal configuration should run fabrikt" {
-        val projectDir = tempdir("project")
+        val projectDir = projectDir("minimal-configuration")
         val basePackage = "ch.acanda"
         val openapiPath = createSpec(projectDir)
         projectDir.resolve("build.gradle.kts").writeText(
@@ -107,11 +104,12 @@ class GradleTest : StringSpec({
             .outcome shouldBe TaskOutcome.SUCCESS
 
         val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
-        projectDir.resolve("$modelsPath/Dog.kt").toPath() should exist()
+        val files = projectDir.resolve(modelsPath).listFilesRelative()
+        files shouldContain "Dog.kt"
     }
 
     "`gradle fabriktGenerate` with multiple kotlin configurations should run fabrikt" {
-        val projectDir = tempdir("project")
+        val projectDir = projectDir("multi-config")
         val basePackage = "ch.acanda"
         val openapiPathDog = createSpec(projectDir, "Dog")
         val openapiPathCat = createSpec(projectDir, "Cat")
@@ -140,15 +138,14 @@ class GradleTest : StringSpec({
             .outcome shouldBe TaskOutcome.SUCCESS
 
         val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
-        val files = projectDir.resolve(modelsPath).walkTopDown().toList()
-        files shouldContain projectDir.resolve("$modelsPath/Dog.kt")
-        files shouldContain projectDir.resolve("$modelsPath/Cat.kt")
-        projectDir.resolve("$modelsPath/Dog.kt").toPath() should exist()
-        projectDir.resolve("$modelsPath/Cat.kt").toPath() should exist()
+
+        val files = projectDir.resolve(modelsPath).listFilesRelative()
+        files shouldContain "Dog.kt"
+        files shouldContain "Cat.kt"
     }
 
     "`gradle fabriktGenerate` with multiple groovy configurations should run fabrikt" {
-        val projectDir = tempdir("project")
+        val projectDir = projectDir("groovy-config")
         val basePackage = "ch.acanda"
         val openapiPathDog = createSpec(projectDir, "Dog")
         val openapiPathCat = createSpec(projectDir, "Cat")
@@ -177,11 +174,9 @@ class GradleTest : StringSpec({
             .outcome shouldBe TaskOutcome.SUCCESS
 
         val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
-        val files = projectDir.resolve(modelsPath).walkTopDown().toList()
-        files shouldContain projectDir.resolve("$modelsPath/Dog.kt")
-        files shouldContain projectDir.resolve("$modelsPath/Cat.kt")
-        projectDir.resolve("$modelsPath/Dog.kt").toPath() should exist()
-        projectDir.resolve("$modelsPath/Cat.kt").toPath() should exist()
+        val files = projectDir.resolve(modelsPath).listFilesRelative()
+        files shouldContain "Dog.kt"
+        files shouldContain "Cat.kt"
     }
 
     "`gradle compileKotlin` should run fabrikt" {
@@ -223,8 +218,8 @@ class GradleTest : StringSpec({
             .outcome shouldBe TaskOutcome.SUCCESS
 
         val modelsPath = "build/classes/kotlin/main/${basePackage.packageToPath()}/models"
-        projectDir.resolve("$modelsPath/Dog.class").toPath() should exist()
-
+        val files = projectDir.resolve(modelsPath).listFilesRelative()
+        files shouldContain "Dog.class"
     }
 
 }) {
@@ -238,15 +233,19 @@ class GradleTest : StringSpec({
             specFile.writeText(
                 """
                 |openapi: 3.0.3
+                |info:
+                |  title: Test $name API
+                |  version: "1.0"
                 |paths:
                 |  /${name.lowercase()}:
                 |    get:
                 |      responses:
                 |        200:
+                |          description: get $name
                 |          content:
                 |            application/json:
                 |              schema:
-                |                ${'$'}ref: "#/components/$name"
+                |                ${'$'}ref: "#/components/schemas/$name"
                 |
                 |components:
                 |  schemas: 
@@ -309,6 +308,7 @@ class GradleTest : StringSpec({
             val except = resolve(path)
             listFiles { file -> file != except }?.forEach { it.deleteRecursively() }
         }
+
     }
 
 }
