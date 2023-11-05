@@ -35,7 +35,7 @@ testing {
                 val kotestVersion = "5.8.0"
                 implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
                 implementation("io.kotest:kotest-property:$kotestVersion")
-                runtimeOnly("org.junit.platform:junit-platform-launcher:1.10.0")
+                runtimeOnly("org.junit.platform:junit-platform-launcher:1.10.1")
             }
         }
     }
