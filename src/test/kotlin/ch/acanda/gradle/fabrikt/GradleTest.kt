@@ -193,7 +193,7 @@ class GradleTest : StringSpec({
         projectDir.resolve("build.gradle.kts").writeText(
             """
             |plugins {
-            |  kotlin("jvm") version "1.9.0"
+            |  kotlin("jvm")
             |  id("ch.acanda.gradle.fabrikt")
             |}
             |
@@ -236,7 +236,7 @@ class GradleTest : StringSpec({
         projectDir.resolve("build.gradle.kts").writeText(
             """
             |plugins {
-            |  kotlin("jvm") version "1.9.20"
+            |  kotlin("jvm")
             |  idea
             |  id("ch.acanda.gradle.fabrikt")
             |}
@@ -348,7 +348,15 @@ class GradleTest : StringSpec({
             val projectDir = File("build/gradle-tests/$name")
             projectDir.deleteRecursivelyExcept(".gradle")
             projectDir.mkdirs()
-            projectDir.resolve("settings.gradle.kts").writeText("")
+            projectDir.resolve("settings.gradle.kts").writeText(
+                """
+                |pluginManagement {
+                |  plugins {
+                |      kotlin("jvm") version "1.9.22"
+                |  }
+                |}
+                """.trimMargin()
+            )
             return projectDir
         }
 
