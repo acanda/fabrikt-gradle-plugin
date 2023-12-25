@@ -19,7 +19,7 @@ class FabriktPlugin : Plugin<Project> {
             project.addOutputDirectoryToKotlinSourceSet(configurations)
         }
 
-        project.addCompileKotlinDependesOn(fabriktGenerateTask)
+        project.addCompileKotlinDependsOn(fabriktGenerateTask)
         project.addGeneratedDirectoriesToIdea(extension)
     }
 
@@ -77,7 +77,7 @@ class FabriktPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.addCompileKotlinDependesOn(task: TaskProvider<FabriktGenerateTask>) {
+    private fun Project.addCompileKotlinDependsOn(task: TaskProvider<FabriktGenerateTask>) {
         val compileKotlinTask = project.tasks.findByName("compileKotlin")
         if (compileKotlinTask == null) {
             val msg = "Unable to find the task kotlinCompile and" +
