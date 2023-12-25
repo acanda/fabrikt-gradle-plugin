@@ -6,6 +6,7 @@ import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
+import org.gradle.plugins.ide.idea.model.IdeaModel
 
 class FabriktPlugin : Plugin<Project> {
 
@@ -19,6 +20,7 @@ class FabriktPlugin : Plugin<Project> {
         }
 
         project.addCompileKotlinDependesOn(fabriktGenerateTask)
+        project.addGeneratedDirectoriesToIdea(extension)
     }
 
     private fun Project.createGenerateTaskConfiguration(ext: FabriktGenerateExtension) =
@@ -88,6 +90,18 @@ class FabriktPlugin : Plugin<Project> {
 
     private fun <T, P : Property<T>> P.setIfPresent(value: P) {
         if (value.isPresent) set(value)
+    }
+
+    private fun Project.addGeneratedDirectoriesToIdea(extension: FabriktExtension) {
+        this.afterEvaluate { project ->
+            val idea = project.extensions.findByType(IdeaModel::class.java)
+            if (idea != null) {
+                extension.map { project.createGenerateTaskConfiguration(it) }.forEach { config ->
+                    val dir = config.outputDirectory.dir(config.sourcesPath).get().asFile
+                    idea.module.generatedSourceDirs.add(dir)
+                }
+            }
+        }
     }
 
 }

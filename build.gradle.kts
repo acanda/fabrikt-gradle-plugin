@@ -9,17 +9,16 @@ plugins {
     id("io.gitlab.arturbosch.detekt") version "1.23.4"
 }
 
-group = "ch.acanda.gradle"
+group = "ch.acanda.gradle.fabrikt"
 version = "0.1-SNAPSHOT"
-val pluginId = "$group.fabrikt"
 
 val generatedSources: Provider<Directory> = project.layout.buildDirectory.dir("generated/src/main/kotlin")
 
 gradlePlugin {
     plugins {
         create("fabriktPlugin") {
-            id = pluginId
-            implementationClass = "$pluginId.FabriktPlugin"
+            id = project.name
+            implementationClass = "$group.FabriktPlugin"
             displayName = "Fabrikt Gradle Plugin"
             description = "Generates Kotlin code from an OpenAPI 3 specification."
             tags.set(listOf("openapi", "openapi-3.0", "codegen", "kotlin", "fabrikt"))

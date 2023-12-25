@@ -51,6 +51,9 @@ model classes will be generated in `build/generated/fabrikt/src/main/kotlin/`.
 ```kotlin
 plugins {
     id("ch.acanda.gradle.fabrikt") version "<version>"
+    // If you are using IntelliJ IDEA, the plugin will automatically add the
+    // output directory as a generated sources directory.
+    idea
 }
 
 fabrikt {

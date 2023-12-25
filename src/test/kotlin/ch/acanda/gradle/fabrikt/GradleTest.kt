@@ -4,10 +4,17 @@ import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import org.gradle.internal.classpath.DefaultClassPath
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
 import org.gradle.testkit.runner.TaskOutcome
+import org.gradle.testkit.runner.internal.PluginUnderTestMetadataReading
+import org.gradle.tooling.GradleConnector
+import org.gradle.tooling.ProjectConnection
+import org.gradle.tooling.internal.consumer.DefaultModelBuilder
+import org.gradle.tooling.model.idea.IdeaProject
 import java.io.File
+import kotlin.reflect.KClass
 
 class GradleTest : StringSpec({
 
@@ -222,6 +229,47 @@ class GradleTest : StringSpec({
         files shouldContain "Dog.class"
     }
 
+    "should add the output directory as a generated source directory in IntelliJ IDEA" {
+        val projectDir = projectDir("idea")
+        val basePackage = "ch.acanda"
+        val openapiPath = createSpec(projectDir)
+        projectDir.resolve("build.gradle.kts").writeText(
+            """
+            |plugins {
+            |  kotlin("jvm") version "1.9.20"
+            |  idea
+            |  id("ch.acanda.gradle.fabrikt")
+            |}
+            |
+            |fabrikt {
+            |  generate("dog") {
+            |    apiFile(file("$openapiPath"))
+            |    basePackage("$basePackage")
+            |  }
+            |}
+            """.trimMargin()
+        )
+
+        GradleConnector.newConnector()
+            .forProjectDirectory(projectDir)
+            .useBuildDistribution()
+            .connect()
+            .use { connection ->
+                val ideaProject = connection.getModel(IdeaProject::class)
+                val srcDirs = ideaProject.modules
+                    .flatMap { module -> module.contentRoots }
+                    .flatMap { root -> root.sourceDirectories }
+                    .map { srcDir ->
+                        val dir = srcDir.directory.relativeTo(projectDir.absoluteFile).path.replace('\\', '/')
+                        val gen = if (srcDir.isGenerated) " (gen)" else ""
+                        "$dir$gen"
+                    }
+
+                srcDirs shouldContain "build/generated/fabrikt/src/main/kotlin (gen)"
+            }
+
+    }
+
 }) {
 
     companion object {
@@ -307,6 +355,13 @@ class GradleTest : StringSpec({
         private fun File.deleteRecursivelyExcept(path: String) {
             val except = resolve(path)
             listFiles { file -> file != except }?.forEach { it.deleteRecursively() }
+        }
+
+        private fun <M : Any> ProjectConnection.getModel(modelClass: KClass<M>): M {
+            val classpath = DefaultClassPath.of(PluginUnderTestMetadataReading.readImplementationClasspath())
+            return (model(modelClass.java) as DefaultModelBuilder)
+                .withInjectedClassPath(classpath)
+                .get()
         }
 
     }
