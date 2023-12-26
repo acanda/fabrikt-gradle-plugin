@@ -45,7 +45,7 @@ class FabriktPluginTest : WordSpec({
                     it.apiFile.set(apiFile)
                     it.apiFragments.setFrom(apiFragment)
                     it.basePackage.set(basePackage)
-                    it.outputDirectory(outDir)
+                    it.outputDirectory.set(outDir)
                     it.sourcesPath.set(srcDir)
                     it.resourcesPath.set(resDir)
                     it.typeOverrides(it.DATETIME_AS_INSTANT)
@@ -128,7 +128,7 @@ class FabriktPluginTest : WordSpec({
                 ext.generate("api") {
                     it.apiFile.set(apiFile)
                     it.basePackage.set(basePackage)
-                    it.outputDirectory(outDir)
+                    it.outputDirectory.set(outDir)
                 }
             }
 

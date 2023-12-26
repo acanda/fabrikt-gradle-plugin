@@ -37,7 +37,7 @@ class GradleTest : StringSpec({
             |    apiFile = file("$openapiPath")
             |    apiFragments = files(${fragmentPaths.joinToString { "\"$it\"" }})
             |    basePackage = "$basePackage"
-            |    outputDirectory("$outputPath")
+            |    outputDirectory = file("$outputPath")
             |    sourcesPath = "$sourcePath"
             |    resourcesPath = "$resourcePath"
             |    typeOverrides(DATETIME_AS_INSTANT)
