@@ -17,7 +17,6 @@ class EnumPropertyGeneratorTest : StringSpec({
             |
             |import ch.acanda.gradle.fabrikt.build.ExtensionGeneratorTest
             |import org.gradle.api.provider.Property
-            |import org.gradle.api.provider.Provider
             |
             |public class Dog {
             |  public val size: Property<ExtensionGeneratorTest.Companion.Size> =
@@ -34,14 +33,6 @@ class EnumPropertyGeneratorTest : StringSpec({
             |   */
             |  public val LARGE: ExtensionGeneratorTest.Companion.Size =
             |      ExtensionGeneratorTest.Companion.Size.LARGE
-            |
-            |  public fun size(size: ExtensionGeneratorTest.Companion.Size) {
-            |    this.size.set(size)
-            |  }
-            |
-            |  public fun size(size: Provider<ExtensionGeneratorTest.Companion.Size>) {
-            |    this.size.set(size)
-            |  }
             |}
             |
         """.trimMargin()

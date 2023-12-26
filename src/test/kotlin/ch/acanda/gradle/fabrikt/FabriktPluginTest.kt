@@ -48,18 +48,18 @@ class FabriktPluginTest : WordSpec({
                     it.outputDirectory.set(outDir)
                     it.sourcesPath.set(srcDir)
                     it.resourcesPath.set(resDir)
-                    it.typeOverrides(it.DATETIME_AS_INSTANT)
-                    it.validationLibrary(it.JAVAX_VALIDATION)
+                    it.typeOverrides.set(it.DATETIME_AS_INSTANT)
+                    it.validationLibrary.set(it.JAVAX_VALIDATION)
                     it.quarkusReflectionConfig.set(it.enabled)
                     with(it.client) {
                         enabled.set(true)
-                        target(OPEN_FEIGN)
+                        target.set(OPEN_FEIGN)
                         resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
                     }
                     with(it.controller) {
                         enabled.set(true)
-                        target(MICRONAUT)
+                        target.set(MICRONAUT)
                         authentication.set(it.enabled)
                         suspendModifier.set(it.enabled)
                     }

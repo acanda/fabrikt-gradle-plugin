@@ -66,12 +66,12 @@ fabrikt {
         outputDirectory = file("build/generated/fabrikt")
         sourcesPath = "src/main/kotlin"
         resourcesPath = "src/main/resources"
-        typeOverrides(null)
-        validationLibrary(JAKARTA_VALIDATION)
+        typeOverrides = null
+        validationLibrary = JAKARTA_VALIDATION
         quarkusReflectionConfig = enabled
         client {
             enabled = false
-            target(OK_HTTP)
+            target = OK_HTTP
             resilience4j = disabled
             suspendModifier = disabled
         }
@@ -79,7 +79,7 @@ fabrikt {
             enabled = false
             authentication = disabled
             suspendModifier = disabled
-            target(SPRING)
+            target = SPRING
         }
         model {
             enabled = true
@@ -104,7 +104,7 @@ fabrikt {
 | outputDirectory                | The directory to which the generated classes are written, interpreted relative to the project directory.                                             | `build/generated/fabrikt` | File, Directory, Provider\<Directory>Path, usually created with [file(...)](https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api/-project/file.html |
 | sourcesPath                    | The path for generated source files, interpreted relative to the output directory.                                                                   | `src/main/kotlin`         | CharSequence, Provider\<CharSequence>.                                                                                                                          |
 | resourcesPath                  | The path for generated resource files, interpreted relative to the output directory.                                                                 | `src/main/resources`      | CharSequence, Provider\<CharSequence>.                                                                                                                          |
-| typeOverrides                  | Specifies non-default kotlin types for certain OAS types, e.g. generate `Instant` instead of `OffsetDateTime` for the OAS type `date`.               | not set                   | Enum: `DATETIME_AS_INSTANT`, `DATETIME_AS_INSTANT`.                                                                                                             |
+| typeOverrides                  | Specifies non-default kotlin types for certain OAS types, e.g. generate `Instant` instead of `OffsetDateTime` for the OAS type `date`.               | not set                   | Enum: `DATETIME_AS_INSTANT`, `DATETIME_AS_LOCALDATETIME`.                                                                                                       |
 | validationLibrary              | Specifies the validation library used for annotations in generated model classes.                                                                    | `JAKARTA_VALIDATION`      | Enum: `JAVAX_VALIDATION`, `JAKARTA_VALIDATION`.                                                                                                                 |
 | quarkusReflectionConfig        | Enableds generating the reflection-config.json file for quarkus integration projects.                                                                | `enabled`                 | Boolean: `enabled`, `disabled`, `true`, `false`.                                                                                                                |
 | client.enabled                 | Enables generating the http client code.                                                                                                             | `false`                   | Boolean: `true`, `false`.                                                                                                                                       |

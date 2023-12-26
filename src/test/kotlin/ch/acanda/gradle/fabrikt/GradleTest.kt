@@ -40,12 +40,12 @@ class GradleTest : StringSpec({
             |    outputDirectory = file("$outputPath")
             |    sourcesPath = "$sourcePath"
             |    resourcesPath = "$resourcePath"
-            |    typeOverrides(DATETIME_AS_INSTANT)
-            |    validationLibrary(JAKARTA_VALIDATION)
+            |    typeOverrides = DATETIME_AS_INSTANT
+            |    validationLibrary = JAKARTA_VALIDATION
             |    quarkusReflectionConfig = enabled
             |    client {
             |      enabled = true
-            |      target(OPEN_FEIGN)
+            |      target = OPEN_FEIGN
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |    }
@@ -53,7 +53,7 @@ class GradleTest : StringSpec({
             |      enabled = true
             |      authentication = enabled
             |      suspendModifier = enabled
-            |      target(MICRONAUT)
+            |      target = MICRONAUT
             |    }
             |    model {
             |      enabled = true
