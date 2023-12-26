@@ -44,10 +44,10 @@ class FabriktPluginTest : WordSpec({
                 ext.generate("api") {
                     it.apiFile(apiFile)
                     it.apiFragments(apiFragment)
-                    it.basePackage(basePackage)
+                    it.basePackage.set(basePackage)
                     it.outputDirectory(outDir)
-                    it.sourcesPath(srcDir)
-                    it.resourcesPath(resDir)
+                    it.sourcesPath.set(srcDir)
+                    it.resourcesPath.set(resDir)
                     it.typeOverrides(it.DATETIME_AS_INSTANT)
                     it.validationLibrary(it.JAVAX_VALIDATION)
                     it.quarkusReflectionConfig(it.enabled)
@@ -127,7 +127,7 @@ class FabriktPluginTest : WordSpec({
             project.extensions.configure(FabriktExtension::class.java) { ext ->
                 ext.generate("api") {
                     it.apiFile(apiFile)
-                    it.basePackage(basePackage)
+                    it.basePackage.set(basePackage)
                     it.outputDirectory(outDir)
                 }
             }

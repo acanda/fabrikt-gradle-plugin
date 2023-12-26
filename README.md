@@ -60,12 +60,12 @@ fabrikt {
     generate("dog") {
         // mandatory properties
         apiFile("src/main/openapi/dog.yaml")
-        basePackage("com.example.api")
+        basePackage = "com.example.api"
         // optional properties with their default values
         apiFragments(emptySet())
         outputDirectory("build/generated/fabrikt")
-        sourcesPath("src/main/kotlin")
-        resourcesPath("src/main/resources")
+        sourcesPath = "src/main/kotlin"
+        resourcesPath = "src/main/resources"
         typeOverrides(null)
         validationLibrary(JAKARTA_VALIDATION)
         quarkusReflectionConfig(enabled)
@@ -102,8 +102,8 @@ fabrikt {
 | apiFragments                   | A set of paths to Open API v3 specification fragments, interpreted relative to the project directory.                                                | \<empty set>              | Varargs or Iterable of any type supported by [Project.files(...)](https://docs.gradle.org/current/kotlin-dsl/gradle/org.gradle.api/-project/files.html). |
 | basePackage                    | The base package under which all code is built.                                                                                                      |                           | CharSequence, Provider\<CharSequence>.                                                                                                                   |
 | outputDirectory                | The directory to which the generated classes are written, interpreted relative to the project directory.                                             | `build/generated/fabrikt` | CharSequence, File, Path, RegularFile, or a Provider of any of those types.                                                                              |
-| sourcesPath                    | The path for generated source files, interpreted relative to the output directory.                                                                   | `src/main/kotlin`         | CharSequence, File, Path, RegularFile, or a Provider of any of those types.                                                                              |
-| resourcesPath                  | The path for generated resource files, interpreted relative to the output directory.                                                                 | `src/main/resources`      | CharSequence, File, Path, RegularFile, or a Provider of any of those types.                                                                              |
+| sourcesPath                    | The path for generated source files, interpreted relative to the output directory.                                                                   | `src/main/kotlin`         | CharSequence, Provider\<CharSequence>.                                                                                                                   |
+| resourcesPath                  | The path for generated resource files, interpreted relative to the output directory.                                                                 | `src/main/resources`      | CharSequence, Provider\<CharSequence>.                                                                                                                   |
 | typeOverrides                  | Specifies non-default kotlin types for certain OAS types, e.g. generate `Instant` instead of `OffsetDateTime` for the OAS type `date`.               | not set                   | Enum: `DATETIME_AS_INSTANT`, `DATETIME_AS_INSTANT`.                                                                                                      |
 | validationLibrary              | Specifies the validation library used for annotations in generated model classes.                                                                    | `JAKARTA_VALIDATION`      | Enum: `JAVAX_VALIDATION`, `JAKARTA_VALIDATION`.                                                                                                          |
 | quarkusReflectionConfig        | Enableds generating the reflection-config.json file for quarkus integration projects.                                                                | `enabled`                 | Boolean: `enabled`, `disabled`, `true`, `false`.                                                                                                         |

@@ -16,18 +16,9 @@ class StringPropertyGeneratorTest : StringSpec({
             |
             |import kotlin.CharSequence
             |import org.gradle.api.provider.Property
-            |import org.gradle.api.provider.Provider
             |
             |public class Dog {
             |  public val breed: Property<CharSequence> = objects.property(CharSequence::class.java)
-            |
-            |  public fun breed(breed: CharSequence) {
-            |    this.breed.set(breed)
-            |  }
-            |
-            |  public fun breed(breed: Provider<out CharSequence>) {
-            |    this.breed.set(breed)
-            |  }
             |}
             |
         """.trimMargin()

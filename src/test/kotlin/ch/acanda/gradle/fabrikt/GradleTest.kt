@@ -36,10 +36,10 @@ class GradleTest : StringSpec({
             |  generate("dog") { 
             |    apiFile("$openapiPath")
             |    apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
-            |    basePackage("$basePackage")
+            |    basePackage = "$basePackage"
             |    outputDirectory("$outputPath")
-            |    sourcesPath("$sourcePath")
-            |    resourcesPath("$resourcePath")
+            |    sourcesPath = "$sourcePath"
+            |    resourcesPath = "$resourcePath"
             |    typeOverrides(DATETIME_AS_INSTANT)
             |    validationLibrary(JAKARTA_VALIDATION)
             |    quarkusReflectionConfig(enabled)
@@ -99,7 +99,7 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  generate("dog") {
             |    apiFile(file("$openapiPath"))
-            |    basePackage("$basePackage")
+            |    basePackage = "$basePackage"
             |  }
             |}
             """.trimMargin()
@@ -129,11 +129,11 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  generate("dog") {
             |    apiFile(file("$openapiPathDog"))
-            |    basePackage("$basePackage")
+            |    basePackage = "$basePackage"
             |  }
             |  generate("cat") {
             |    apiFile(file("$openapiPathCat"))
-            |    basePackage("$basePackage")
+            |    basePackage = "$basePackage"
             |  }
             |}
             """.trimMargin()
@@ -209,7 +209,7 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  generate("dog") {
             |    apiFile(file("$openapiPath"))
-            |    basePackage("$basePackage")
+            |    basePackage = "$basePackage"
             |  }
             |}
             """.trimMargin()
@@ -244,7 +244,7 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  generate("dog") {
             |    apiFile(file("$openapiPath"))
-            |    basePackage("$basePackage")
+            |    basePackage = "$basePackage"
             |  }
             |}
             """.trimMargin()
