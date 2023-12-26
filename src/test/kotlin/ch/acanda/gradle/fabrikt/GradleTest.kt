@@ -34,7 +34,7 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") { 
-            |    apiFile("$openapiPath")
+            |    apiFile = file("$openapiPath")
             |    apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
             |    basePackage = "$basePackage"
             |    outputDirectory("$outputPath")
@@ -98,7 +98,7 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") {
-            |    apiFile(file("$openapiPath"))
+            |    apiFile = file("$openapiPath")
             |    basePackage = "$basePackage"
             |  }
             |}
@@ -128,11 +128,11 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") {
-            |    apiFile(file("$openapiPathDog"))
+            |    apiFile = file("$openapiPathDog")
             |    basePackage = "$basePackage"
             |  }
             |  generate("cat") {
-            |    apiFile(file("$openapiPathCat"))
+            |    apiFile = file("$openapiPathCat")
             |    basePackage = "$basePackage"
             |  }
             |}
@@ -208,7 +208,7 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") {
-            |    apiFile(file("$openapiPath"))
+            |    apiFile = file("$openapiPath")
             |    basePackage = "$basePackage"
             |  }
             |}
@@ -243,7 +243,7 @@ class GradleTest : StringSpec({
             |
             |fabrikt {
             |  generate("dog") {
-            |    apiFile(file("$openapiPath"))
+            |    apiFile = file("$openapiPath")
             |    basePackage = "$basePackage"
             |  }
             |}

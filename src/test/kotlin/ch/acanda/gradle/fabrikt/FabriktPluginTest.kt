@@ -42,7 +42,7 @@ class FabriktPluginTest : WordSpec({
             project.pluginManager.apply("ch.acanda.gradle.fabrikt")
             project.extensions.configure(FabriktExtension::class.java) { ext ->
                 ext.generate("api") {
-                    it.apiFile(apiFile)
+                    it.apiFile.set(apiFile)
                     it.apiFragments(apiFragment)
                     it.basePackage.set(basePackage)
                     it.outputDirectory(outDir)
@@ -126,7 +126,7 @@ class FabriktPluginTest : WordSpec({
             project.pluginManager.apply("ch.acanda.gradle.fabrikt")
             project.extensions.configure(FabriktExtension::class.java) { ext ->
                 ext.generate("api") {
-                    it.apiFile(apiFile)
+                    it.apiFile.set(apiFile)
                     it.basePackage.set(basePackage)
                     it.outputDirectory(outDir)
                 }
