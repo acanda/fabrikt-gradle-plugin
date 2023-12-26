@@ -50,29 +50,29 @@ class FabriktPluginTest : WordSpec({
                     it.resourcesPath.set(resDir)
                     it.typeOverrides(it.DATETIME_AS_INSTANT)
                     it.validationLibrary(it.JAVAX_VALIDATION)
-                    it.quarkusReflectionConfig(it.enabled)
+                    it.quarkusReflectionConfig.set(it.enabled)
                     with(it.client) {
-                        enabled(true)
+                        enabled.set(true)
                         target(OPEN_FEIGN)
-                        resilience4j(it.enabled)
-                        suspendModifier(it.enabled)
+                        resilience4j.set(it.enabled)
+                        suspendModifier.set(it.enabled)
                     }
                     with(it.controller) {
-                        enabled(true)
+                        enabled.set(true)
                         target(MICRONAUT)
-                        authentication(it.enabled)
-                        suspendModifier(it.enabled)
+                        authentication.set(it.enabled)
+                        suspendModifier.set(it.enabled)
                     }
                     with(it.model) {
-                        enabled(false)
-                        extensibleEnums(it.enabled)
-                        javaSerialization(it.enabled)
-                        quarkusReflection(it.enabled)
-                        micronautIntrospection(it.enabled)
-                        micronautReflection(it.enabled)
-                        includeCompanionObject(it.enabled)
-                        sealedInterfacesForOneOf(it.enabled)
-                        ignoreUnknownProperties(it.enabled)
+                        enabled.set(false)
+                        extensibleEnums.set(it.enabled)
+                        javaSerialization.set(it.enabled)
+                        quarkusReflection.set(it.enabled)
+                        micronautIntrospection.set(it.enabled)
+                        micronautReflection.set(it.enabled)
+                        includeCompanionObject.set(it.enabled)
+                        sealedInterfacesForOneOf.set(it.enabled)
+                        ignoreUnknownProperties.set(it.enabled)
                     }
                 }
             }

@@ -68,29 +68,29 @@ fabrikt {
         resourcesPath = "src/main/resources"
         typeOverrides(null)
         validationLibrary(JAKARTA_VALIDATION)
-        quarkusReflectionConfig(enabled)
+        quarkusReflectionConfig = enabled
         client {
-            enabled(false)
+            enabled = false
             target(OK_HTTP)
-            resilience4j(disabled)
-            suspendModifier(disabled)
+            resilience4j = disabled
+            suspendModifier = disabled
         }
         controller {
-            enabled(false)
-            authentication(disabled)
-            suspendModifier(disabled)
+            enabled = false
+            authentication = disabled
+            suspendModifier = disabled
             target(SPRING)
         }
         model {
-            enabled(true)
-            extensibleEnums(disabled)
-            javaSerialization(disabled)
-            quarkusReflection(disabled)
-            micronautIntrospection(disabled)
-            micronautReflection(disabled)
-            includeCompanionObject(disabled)
-            sealedInterfacesForOneOf(disabled)
-            ignoreUnknownProperties(disabled)
+            enabled = true
+            extensibleEnums = disabled
+            javaSerialization = disabled
+            quarkusReflection = disabled
+            micronautIntrospection = disabled
+            micronautReflection = disabled
+            includeCompanionObject = disabled
+            sealedInterfacesForOneOf = disabled
+            ignoreUnknownProperties = disabled
         }
     }
 }

@@ -16,18 +16,9 @@ class BooleanPropertyGeneratorTest : StringSpec({
             |
             |import kotlin.Boolean
             |import org.gradle.api.provider.Property
-            |import org.gradle.api.provider.Provider
             |
             |public class Dog {
             |  public val isGoodBoy: Property<Boolean> = objects.property(Boolean::class.java)
-            |
-            |  public fun isGoodBoy(isGoodBoy: Boolean) {
-            |    this.isGoodBoy.set(isGoodBoy)
-            |  }
-            |
-            |  public fun isGoodBoy(isGoodBoy: Provider<Boolean>) {
-            |    this.isGoodBoy.set(isGoodBoy)
-            |  }
             |}
             |
         """.trimMargin()

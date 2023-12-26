@@ -42,29 +42,29 @@ class GradleTest : StringSpec({
             |    resourcesPath = "$resourcePath"
             |    typeOverrides(DATETIME_AS_INSTANT)
             |    validationLibrary(JAKARTA_VALIDATION)
-            |    quarkusReflectionConfig(enabled)
+            |    quarkusReflectionConfig = enabled
             |    client {
-            |      enabled(true)
+            |      enabled = true
             |      target(OPEN_FEIGN)
-            |      resilience4j(enabled)
-            |      suspendModifier(enabled)
+            |      resilience4j = enabled
+            |      suspendModifier = enabled
             |    }
             |    controller {
-            |      enabled(true)
-            |      authentication(enabled)
-            |      suspendModifier(enabled)
+            |      enabled = true
+            |      authentication = enabled
+            |      suspendModifier = enabled
             |      target(MICRONAUT)
             |    }
             |    model {
-            |      enabled(true)
-            |      extensibleEnums(enabled)
-            |      javaSerialization(enabled)
-            |      quarkusReflection(enabled)
-            |      micronautIntrospection(enabled)
-            |      micronautReflection(enabled)
-            |      includeCompanionObject(enabled)
-            |      sealedInterfacesForOneOf(enabled)
-            |      ignoreUnknownProperties(enabled)
+            |      enabled = true
+            |      extensibleEnums = enabled
+            |      javaSerialization = enabled
+            |      quarkusReflection = enabled
+            |      micronautIntrospection = enabled
+            |      micronautReflection = enabled
+            |      includeCompanionObject = enabled
+            |      sealedInterfacesForOneOf = enabled
+            |      ignoreUnknownProperties = enabled
             |    }
             |  }
             |}
