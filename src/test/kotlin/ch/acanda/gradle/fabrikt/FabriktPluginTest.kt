@@ -43,7 +43,7 @@ class FabriktPluginTest : WordSpec({
             project.extensions.configure(FabriktExtension::class.java) { ext ->
                 ext.generate("api") {
                     it.apiFile.set(apiFile)
-                    it.apiFragments(apiFragment)
+                    it.apiFragments.setFrom(apiFragment)
                     it.basePackage.set(basePackage)
                     it.outputDirectory(outDir)
                     it.sourcesPath.set(srcDir)

@@ -35,7 +35,7 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  generate("dog") { 
             |    apiFile = file("$openapiPath")
-            |    apiFragments(${fragmentPaths.joinToString { "\"$it\"" }})
+            |    apiFragments = files(${fragmentPaths.joinToString { "\"$it\"" }})
             |    basePackage = "$basePackage"
             |    outputDirectory("$outputPath")
             |    sourcesPath = "$sourcePath"
