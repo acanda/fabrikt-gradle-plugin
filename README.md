@@ -10,7 +10,7 @@ contract and code always match, even as your APIs evolve in complexity.
 
 ## Usage
 
-The plugin requires at least Gradle 8.3 and Java 17.
+The plugin requires at least Gradle 8.4 and Java 17.
 
 To use it with the Kotlin DSL (build.gradle.kts):
 
@@ -21,8 +21,8 @@ plugins {
 
 fabrikt {
     generate("dog") {
-        apiFile("src/main/openapi/dog.yaml")
-        basePackage("com.example.api")
+        apiFile = file("src/main/openapi/dog.yaml")
+        basePackage = "com.example.api"
     }
 }
 ```
