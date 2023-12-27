@@ -5,13 +5,13 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 
 /**
- * Adds the public values `enabled` and `disabled` to a type so they can be used
+ * Adds the public values `enabled` and `disabled` to a type, so they can be used
  * as values for configuration properties, e.g.:
  * ```kotlin
  *  controller {
  *    options {
- *      authentication(enabled)
- *      suspendModifier(disabled)
+ *      authentication = enabled
+ *      suspendModifier = disabled
  *    }
  *  }
  * ```
