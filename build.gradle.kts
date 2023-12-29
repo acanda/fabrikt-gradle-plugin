@@ -7,6 +7,7 @@ plugins {
     `java-gradle-plugin`
     idea
     id("io.gitlab.arturbosch.detekt") version "1.23.4"
+    `maven-publish`
 }
 
 group = "ch.acanda.gradle.fabrikt"

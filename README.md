@@ -124,3 +124,19 @@ fabrikt {
 | model.includeCompanionObject   | Enables adding a companion object to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                           | `disabled`                |
 | model.sealedInterfacesForOneOf | Enables the generation of interfaces for discriminated `oneOf` types.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                | `disabled`                |
 | model.ignoreUnknownProperties  | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                             | `disabled`                |
+
+## Development
+
+### Local Installation
+
+You can use `gradle publishToMavenLocal` to install the plugin to your local Maven repository.
+Then add the local maven repository to settings.gradle.kts of the project where you want to use the plugin:
+
+```kotlin
+pluginManagement {
+    repositories {
+        mavenLocal()
+        // other repositories go here
+    }
+}
+```
