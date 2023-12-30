@@ -110,7 +110,7 @@ class GradleTest : StringSpec({
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
         val files = projectDir.resolve(modelsPath).listFilesRelative()
         files shouldContain "Dog.kt"
     }
@@ -144,7 +144,7 @@ class GradleTest : StringSpec({
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
 
         val files = projectDir.resolve(modelsPath).listFilesRelative()
         files shouldContain "Dog.kt"
@@ -180,7 +180,7 @@ class GradleTest : StringSpec({
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
         val files = projectDir.resolve(modelsPath).listFilesRelative()
         files shouldContain "Dog.kt"
         files shouldContain "Cat.kt"
@@ -265,7 +265,7 @@ class GradleTest : StringSpec({
                         "$dir$gen"
                     }
 
-                srcDirs shouldContain "build/generated/fabrikt/src/main/kotlin (gen)"
+                srcDirs shouldContain "build/generated/sources/fabrikt/src/main/kotlin (gen)"
             }
 
     }

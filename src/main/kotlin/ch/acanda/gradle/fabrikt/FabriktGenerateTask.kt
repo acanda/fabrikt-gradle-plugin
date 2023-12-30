@@ -51,7 +51,7 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:OutputDirectory
     @get:Optional
     val outputDirectory: DirectoryProperty = project.objects.directoryProperty()
-        .convention(project.layout.buildDirectory.dir("generated/fabrikt"))
+        .convention(project.layout.buildDirectory.dir("generated/sources/fabrikt"))
 
     @get:Input
     @get:Optional
