@@ -65,10 +65,6 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
 
     @get:Input
     @get:Optional
-    val typeOverrides: Property<CodeGenTypeOverride> = project.objects.property(CodeGenTypeOverride::class.java)
-
-    @get:Input
-    @get:Optional
     val validationLibrary: Property<ValidationLibrary> = project.objects.property(ValidationLibrary::class.java)
         .convention(ValidationLibrary.JAKARTA_VALIDATION)
 
@@ -76,6 +72,10 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val quarkusReflectionConfig: Property<Boolean> = project.objects.property(Boolean::class.java)
         .convention(false)
+
+    @get:Nested
+    @get:Optional
+    val typeOverrides: TypeOverridesConfiguration = project.objects.newInstance(TypeOverridesConfiguration::class.java)
 
     @get:Nested
     @get:Optional
@@ -94,6 +94,14 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Input
     @get:Optional
     val options: SetProperty<CodeGenTypeOverride> = project.objects.setProperty(CodeGenTypeOverride::class.java)
+
+}
+
+open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory) {
+
+    @get:Input
+    @get:Optional
+    val datetime: Property<DateTimeOverrideType> = objects.property(DateTimeOverrideType::class.java)
 
 }
 

@@ -1,9 +1,10 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import ch.acanda.gradle.fabrikt.DateTimeOverrideType
+import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
-import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
@@ -44,7 +45,6 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
-            cliArgs.shouldContainOptionally(config.typeOverrides, ARG_TYPE_OVERRIDES)
             cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
             cliArgs.shouldContainOptionally(
                 config.quarkusReflectionConfig,
@@ -53,6 +53,9 @@ class FabriktArgumentsTest : StringSpec({
             )
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
+            }
+            with(config.typeOverrides) {
+                cliArgs.shouldContainOptionallyEnum(datetime, ARG_TYPE_OVERRIDES)
             }
             with(config.client) {
                 if (enabled.get()) {
@@ -148,7 +151,7 @@ class FabriktArgumentsTest : StringSpec({
                 outputDirectory.set(pathGen.bind())
                 sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
-                typeOverrides.set(Arb.enum<CodeGenTypeOverride>().orNull(0.2).bind())
+                typeOverrides.datetime.set(Arb.enum<DateTimeOverrideType>().orNull(0.2).bind())
                 validationLibrary.set(Arb.enum<ValidationLibrary>().orNull(0.2).bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
@@ -191,6 +194,17 @@ class FabriktArgumentsTest : StringSpec({
                 this should containArgument
             } else {
                 this shouldNot containArgument
+            }
+        }
+
+        private fun Array<String>.shouldContainOptionallyEnum(
+            valueProvider: Provider<out FabriktOption>,
+            argName: String
+        ) {
+            val argValue = valueProvider.orNull?.fabriktOption?.name
+            if (argValue != null) {
+                val containArgument = containsArgument(argName, argValue)
+                this should containArgument
             }
         }
 

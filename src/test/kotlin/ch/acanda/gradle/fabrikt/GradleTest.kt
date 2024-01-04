@@ -40,9 +40,11 @@ class GradleTest : StringSpec({
             |    outputDirectory = file("$outputPath")
             |    sourcesPath = "$sourcePath"
             |    resourcesPath = "$resourcePath"
-            |    typeOverrides = DATETIME_AS_INSTANT
             |    validationLibrary = JAKARTA_VALIDATION
             |    quarkusReflectionConfig = enabled
+            |    typeOverrides {
+            |      datetime = Instant
+            |    }
             |    client {
             |      enabled = true
             |      target = OPEN_FEIGN

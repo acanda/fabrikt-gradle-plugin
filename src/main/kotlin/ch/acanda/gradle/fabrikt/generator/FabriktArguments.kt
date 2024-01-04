@@ -43,10 +43,6 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_RESOURCES_PATH)
             args.add(path.toString())
         }
-        typeOverrides.orNull?.let { override ->
-            args.add(ARG_TYPE_OVERRIDES)
-            args.add(override.name)
-        }
         validationLibrary.orNull?.let { library ->
             args.add(ARG_VALIDATION_LIB)
             args.add(library.name)
@@ -55,10 +51,21 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
         }
+        addTypeOverridesArgs(args)
         addClientArgs(args)
         addControllerArgs(args)
         addModelArgs(args)
         return args.toTypedArray()
+    }
+
+    private fun GenerateTaskConfiguration.addTypeOverridesArgs(args: MutableList<String>) = with(typeOverrides) {
+        val overrides = listOfNotNull(
+            datetime.orNull?.fabriktOption
+        )
+        if (overrides.isNotEmpty()) {
+            args.add(ARG_TYPE_OVERRIDES)
+            args.addAll(overrides.map { it.name })
+        }
     }
 
     private fun GenerateTaskConfiguration.addClientArgs(args: MutableList<String>) = with(client) {

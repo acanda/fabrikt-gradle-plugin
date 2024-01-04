@@ -31,9 +31,11 @@ class FabriktPlugin : Plugin<Project> {
             outputDirectory.setIfPresent(ext.outputDirectory)
             sourcesPath.setIfPresent(ext.sourcesPath)
             resourcesPath.setIfPresent(ext.resourcesPath)
-            typeOverrides.setIfPresent(ext.typeOverrides)
             validationLibrary.setIfPresent(ext.validationLibrary)
             quarkusReflectionConfig.setIfPresent(ext.quarkusReflectionConfig)
+            with(typeOverrides) {
+                datetime.set(ext.typeOverrides.datetime)
+            }
             with(client) {
                 enabled.setIfPresent(ext.client.enabled)
                 resilience4j.setIfPresent(ext.client.resilience4j)

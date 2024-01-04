@@ -1,5 +1,7 @@
 package ch.acanda.gradle.fabrikt.build
 
+import ch.acanda.gradle.fabrikt.build.generator.DateTimeOverrideType
+import ch.acanda.gradle.fabrikt.build.generator.FabriktOption
 import ch.acanda.gradle.fabrikt.build.generator.booleanProperty
 import ch.acanda.gradle.fabrikt.build.generator.directoryProperty
 import ch.acanda.gradle.fabrikt.build.generator.enabledValues
@@ -10,7 +12,6 @@ import ch.acanda.gradle.fabrikt.build.generator.named
 import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
-import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import com.squareup.kotlinpoet.AnnotationSpec
@@ -21,6 +22,7 @@ import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
+import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
@@ -35,6 +37,7 @@ import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
 import javax.annotation.processing.Generated
 import javax.inject.Inject
+import kotlin.reflect.KClass
 
 @CacheableTask
 abstract class ExtensionGenerator : DefaultTask() {
@@ -44,6 +47,8 @@ abstract class ExtensionGenerator : DefaultTask() {
 
     @TaskAction
     fun generate() {
+        val typeOverridesExtensionName = ClassName(PACKAGE, "TypeOverridesExtension")
+        val typeOverridesExtension = typeOverridesExtension(typeOverridesExtensionName)
         val clientExtensionName = ClassName(PACKAGE, "ClientExtension")
         val clientExtension = clientExtension(clientExtensionName)
         val controllerExtensionName = ClassName(PACKAGE, "ControllerExtension")
@@ -54,6 +59,7 @@ abstract class ExtensionGenerator : DefaultTask() {
         val fabriktGenerateExtension =
             fabriktGenerateExtension(
                 fabriktGenerateExtensionName,
+                typeOverridesExtensionName,
                 clientExtensionName,
                 controllerExtensionName,
                 modelExtensionName
@@ -65,12 +71,24 @@ abstract class ExtensionGenerator : DefaultTask() {
             .addAnnotation(generated())
             .addType(fabriktExtension)
             .addType(fabriktGenerateExtension)
+            .addType(typeOverridesExtension)
             .addType(clientExtension)
             .addType(controllerExtension)
             .addType(modelExtension)
             .build()
 
         file.writeTo(outputDirectory.get().asFile)
+
+        FileSpec.builder(ClassName(PACKAGE, "FabriktOptions"))
+            .addType(
+                TypeSpec.interfaceBuilder(ClassName(PACKAGE, "FabriktOption"))
+                    .addModifiers(KModifier.SEALED)
+                    .addProperty("fabriktOption", nullableEnumType)
+                    .build()
+            )
+            .addType(DateTimeOverrideType::class.asSpec())
+            .build()
+            .writeTo(outputDirectory.get().asFile)
     }
 
     internal companion object {
@@ -79,8 +97,11 @@ abstract class ExtensionGenerator : DefaultTask() {
         internal const val PROP_NAME = "name"
         internal const val PROP_OBJECTS = "objects"
 
+        private val nullableEnumType = Enum::class.asTypeName().parameterizedBy(STAR).copy(nullable = true)
+
         internal fun fabriktGenerateExtension(
             className: ClassName,
+            typeOverridesExtName: ClassName,
             clientExtName: ClassName,
             controllerExtName: ClassName,
             modelExtName: ClassName
@@ -109,9 +130,9 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .directoryProperty("outputDirectory")
                 .stringProperty("sourcesPath")
                 .stringProperty("resourcesPath")
-                .enumProperty("typeOverrides", CodeGenTypeOverride::class)
                 .enumProperty("validationLibrary", ValidationLibrary::class)
                 .booleanProperty("quarkusReflectionConfig")
+                .nestedProperty("typeOverrides", typeOverridesExtName)
                 .nestedProperty("client", clientExtName)
                 .nestedProperty("controller", controllerExtName)
                 .nestedProperty("model", modelExtName)
@@ -142,6 +163,28 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .addParameter("action", Action::class.asTypeName().parameterizedBy(valueType))
                     .addStatement("register(name, action)")
                     .build()
+            )
+            .build()
+
+        internal fun typeOverridesExtension(className: ClassName) = TypeSpec.classBuilder(className)
+            .addAnnotation(generated())
+            .addModifiers(KModifier.OPEN)
+            .primaryConstructor(
+                FunSpec.constructorBuilder()
+                    .addAnnotation(Inject::class)
+                    .addParameter(PROP_OBJECTS, ObjectFactory::class)
+                    .build()
+            )
+            .addProperty(
+                PropertySpec.builder(PROP_OBJECTS, ObjectFactory::class)
+                    .addModifiers(KModifier.PRIVATE)
+                    .initializer(PROP_OBJECTS)
+                    .build()
+            )
+            .enumProperty(
+                "datetime",
+                DateTimeOverrideType::class.asSpec(),
+                ClassName(PACKAGE, DateTimeOverrideType::class.simpleName.orEmpty())
             )
             .build()
 
@@ -217,6 +260,40 @@ abstract class ExtensionGenerator : DefaultTask() {
             .addMember("\"${ExtensionGenerator::class.qualifiedName}\"")
             .build()
 
+        private fun <T> KClass<T>.asSpec(): TypeSpec where T : Enum<T>, T : FabriktOption {
+            val constants = this.java.enumConstants
+            val fabriktOptionType = constants
+                .firstNotNullOf { it.fabriktOption }::class.asTypeName()
+                .copy(nullable = constants.any { it.fabriktOption == null })
+            val spec = TypeSpec.enumBuilder(this.simpleName.orEmpty())
+                .addSuperinterface(ClassName(PACKAGE, "FabriktOption"))
+                .primaryConstructor(
+                    FunSpec.constructorBuilder()
+                        .addParameter("fabriktOption", fabriktOptionType)
+                        .build()
+                )
+                .addProperty(
+                    PropertySpec
+                        .builder("fabriktOption", fabriktOptionType, KModifier.PUBLIC, KModifier.OVERRIDE)
+                        .initializer("fabriktOption")
+                        .build()
+                )
+            constants.forEach {
+                val enumSpec = TypeSpec.anonymousClassBuilder()
+                val option = it.fabriktOption
+                if (option != null) {
+                    enumSpec.addSuperclassConstructorParameter(
+                        "%T.%N",
+                        fabriktOptionType.copy(nullable = false),
+                        option.name
+                    )
+                } else {
+                    enumSpec.addSuperclassConstructorParameter("null")
+                }
+                spec.addEnumConstant(it.name, enumSpec.build())
+            }
+            return spec.build()
+        }
     }
 
 }

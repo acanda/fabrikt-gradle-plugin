@@ -44,6 +44,7 @@ class ExtensionGeneratorTest : WordSpec({
         val typeSpec =
             ExtensionGenerator.fabriktGenerateExtension(
                 ClassName("ch.acanda", "FabriktGenerateExtension"),
+                ClassName("ch.acanda", "TypeOverridesExtension"),
                 ClassName("ch.acanda", "ClientExtension"),
                 ClassName("ch.acanda", "ControllerExtension"),
                 ClassName("ch.acanda", "ModelExtension")
@@ -87,15 +88,15 @@ class ExtensionGeneratorTest : WordSpec({
         }
 
         "contain the property typeOverrides" {
-            extension shouldContainOnlyOnce "public val typeOverrides: Property<CodeGenTypeOverride>"
-        }
-
-        "contain the property typeOverrides" {
             extension shouldContainOnlyOnce "public val validationLibrary: Property<ValidationLibrary>"
         }
 
         "contain the property typeOverrides" {
             extension shouldContainOnlyOnce "public val quarkusReflectionConfig: Property<Boolean>"
+        }
+
+        "contain the property typeOverrides" {
+            extension shouldContainOnlyOnce "public val typeOverrides: TypeOverridesExtension"
         }
 
         "contain the property client" {
@@ -203,6 +204,30 @@ class ExtensionGeneratorTest : WordSpec({
         }
         "contain the property ignoreUnknownProperties" {
             extension shouldContainOnlyOnce "public val ignoreUnknownProperties: Property<Boolean>"
+        }
+    }
+
+    "typeOverridesExtension(name)" should {
+        val typeSpec = ExtensionGenerator.typeOverridesExtension(
+            ClassName("ch.acanda", "TypeOverridesExtension")
+        )
+        val extension = typeSpec.writeToString()
+
+        "be annotated with @Generated" {
+            extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
+        }
+
+        "contain the property datetime" {
+            extension shouldContainOnlyOnce "public val datetime: Property<DateTimeOverrideType>"
+        }
+
+        "contain the value Instant" {
+            extension shouldContainOnlyOnce "public val Instant: DateTimeOverrideType = DateTimeOverrideType.Instant"
+        }
+
+        "contain the value LocalDateTime" {
+            extension shouldContainOnlyOnce
+                "public val LocalDateTime: DateTimeOverrideType = DateTimeOverrideType.LocalDateTime"
         }
     }
 

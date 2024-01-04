@@ -3,7 +3,6 @@ package ch.acanda.gradle.fabrikt
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
-import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.core.spec.style.WordSpec
@@ -48,9 +47,11 @@ class FabriktPluginTest : WordSpec({
                     it.outputDirectory.set(outputDirectory)
                     it.sourcesPath.set(srcDir)
                     it.resourcesPath.set(resDir)
-                    it.typeOverrides.set(it.DATETIME_AS_INSTANT)
                     it.validationLibrary.set(it.JAVAX_VALIDATION)
                     it.quarkusReflectionConfig.set(it.enabled)
+                    with(it.typeOverrides) {
+                        datetime.set(DateTimeOverrideType.Instant)
+                    }
                     with(it.client) {
                         enabled.set(true)
                         target.set(OPEN_FEIGN)
@@ -88,9 +89,11 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContainString srcDir
                     this.resourcesPath shouldContainString resDir
-                    this.typeOverrides shouldContain CodeGenTypeOverride.DATETIME_AS_INSTANT
                     this.validationLibrary shouldContain ValidationLibrary.JAVAX_VALIDATION
                     this.quarkusReflectionConfig shouldContain true
+                    with(typeOverrides) {
+                        datetime shouldContain DateTimeOverrideType.Instant
+                    }
                     with(client) {
                         enabled shouldContain true
                         resilience4j shouldContain true
@@ -142,9 +145,11 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContain "src/main/kotlin"
                     this.resourcesPath shouldContain "src/main/resources"
-                    this.typeOverrides.isPresent shouldBe false
                     this.validationLibrary shouldContain ValidationLibrary.JAKARTA_VALIDATION
                     this.quarkusReflectionConfig shouldContain false
+                    with(typeOverrides) {
+                        datetime.isPresent shouldBe false
+                    }
                     with(client) {
                         enabled shouldContain false
                         target shouldContain ClientCodeGenTargetType.OK_HTTP
