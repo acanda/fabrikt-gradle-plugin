@@ -18,11 +18,11 @@ val generatedSources: Provider<Directory> = project.layout.buildDirectory.dir("g
 gradlePlugin {
     plugins {
         create("fabriktPlugin") {
-            id = project.name
+            id = "$group"
             implementationClass = "$group.FabriktPlugin"
             displayName = "Fabrikt Gradle Plugin"
             description = "Generates Kotlin code from an OpenAPI 3 specification."
-            tags.set(listOf("openapi", "openapi-3.0", "codegen", "kotlin", "fabrikt"))
+            tags = listOf("openapi", "openapi-3.0", "codegen", "kotlin", "fabrikt")
         }
     }
 }

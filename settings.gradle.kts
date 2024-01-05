@@ -11,4 +11,4 @@ pluginManagement {
     }
 }
 
-rootProject.name = "ch.acanda.gradle.fabrikt"
+rootProject.name = "fabrikt-gradle-plugin"
