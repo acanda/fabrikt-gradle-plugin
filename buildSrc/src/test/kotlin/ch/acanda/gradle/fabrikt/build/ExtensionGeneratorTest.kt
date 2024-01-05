@@ -87,16 +87,20 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public val resourcesPath: Property<CharSequence>"
         }
 
-        "contain the property typeOverrides" {
-            extension shouldContainOnlyOnce "public val validationLibrary: Property<ValidationLibrary>"
+        "contain the property validationLibrary" {
+            extension shouldContainOnlyOnce "public val validationLibrary: Property<ValidationLibraryOption>"
         }
 
-        "contain the property typeOverrides" {
+        "contain the property quarkusReflectionConfig" {
             extension shouldContainOnlyOnce "public val quarkusReflectionConfig: Property<Boolean>"
         }
 
         "contain the property typeOverrides" {
             extension shouldContainOnlyOnce "public val typeOverrides: TypeOverridesExtension"
+        }
+
+        "contain the function typeOverrides(action)" {
+            extension shouldContainOnlyOnce "public fun typeOverrides(action: Action<TypeOverridesExtension>)"
         }
 
         "contain the property client" {

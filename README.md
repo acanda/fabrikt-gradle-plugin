@@ -66,7 +66,7 @@ fabrikt {
         outputDirectory = file("build/generated/sources/fabrikt")
         sourcesPath = "src/main/kotlin"
         resourcesPath = "src/main/resources"
-        validationLibrary = JAKARTA_VALIDATION
+        validationLibrary = Javax
         quarkusReflectionConfig = enabled
         typeOverrides {
             datetime = OffsetDateTime
@@ -107,7 +107,7 @@ fabrikt {
 | sourcesPath                    | The path for generated source files, interpreted relative to the output directory.                                                                                                                       | `src/main/kotlin`                 |
 | resourcesPath                  | The path for generated resource files, interpreted relative to the output directory.                                                                                                                     | `src/main/resources`              |
 | typeOverrides.datetime         | Specifies the Kotlin type for the OAS type `datetime`.<br/>Values: `OffsetDateTime`, `Instant`, `LocalDateTime`.                                                                                         | `OffsetDateTime`                  |
-| validationLibrary              | Specifies the validation library used for annotations in generated model classes.<br/>Values: `JAVAX_VALIDATION`, `JAKARTA_VALIDATION`.                                                                  | `JAKARTA_VALIDATION`              |
+| validationLibrary              | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`.                                                                                        | `Jakarta`                         |
 | quarkusReflectionConfig        | Enableds generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                | `enabled`                         |
 | client.enabled                 | Enables generating the http client code.<br/>Values: `true`, `false`.                                                                                                                                    | `false`                           |
 | client.target                  | The type of client you want to be generated.<br/>`OK_HTTP`, `OPEN_FEIGN`.                                                                                                                                | `OK_HTTP`                         |

@@ -4,7 +4,6 @@ import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
-import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
@@ -47,7 +46,7 @@ class FabriktPluginTest : WordSpec({
                     it.outputDirectory.set(outputDirectory)
                     it.sourcesPath.set(srcDir)
                     it.resourcesPath.set(resDir)
-                    it.validationLibrary.set(it.JAVAX_VALIDATION)
+                    it.validationLibrary.set(it.Javax)
                     it.quarkusReflectionConfig.set(it.enabled)
                     with(it.typeOverrides) {
                         datetime.set(DateTimeOverrideType.Instant)
@@ -89,7 +88,7 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContainString srcDir
                     this.resourcesPath shouldContainString resDir
-                    this.validationLibrary shouldContain ValidationLibrary.JAVAX_VALIDATION
+                    this.validationLibrary shouldContain ValidationLibraryOption.Javax
                     this.quarkusReflectionConfig shouldContain true
                     with(typeOverrides) {
                         datetime shouldContain DateTimeOverrideType.Instant
@@ -145,7 +144,7 @@ class FabriktPluginTest : WordSpec({
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContain "src/main/kotlin"
                     this.resourcesPath shouldContain "src/main/resources"
-                    this.validationLibrary shouldContain ValidationLibrary.JAKARTA_VALIDATION
+                    this.validationLibrary shouldContain ValidationLibraryOption.Jakarta
                     this.quarkusReflectionConfig shouldContain false
                     with(typeOverrides) {
                         datetime.isPresent shouldBe false

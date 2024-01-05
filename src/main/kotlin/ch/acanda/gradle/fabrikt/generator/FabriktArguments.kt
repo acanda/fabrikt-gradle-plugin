@@ -45,7 +45,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         }
         validationLibrary.orNull?.let { library ->
             args.add(ARG_VALIDATION_LIB)
-            args.add(library.name)
+            args.add(library.fabriktOption.name)
         }
         if (quarkusReflectionConfig.get()) {
             args.add(ARG_TARGETS)

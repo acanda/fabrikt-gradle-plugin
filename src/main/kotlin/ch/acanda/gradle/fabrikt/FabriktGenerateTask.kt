@@ -4,7 +4,6 @@ import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
-import com.cjbooms.fabrikt.cli.ValidationLibrary
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -65,8 +64,8 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
 
     @get:Input
     @get:Optional
-    val validationLibrary: Property<ValidationLibrary> = project.objects.property(ValidationLibrary::class.java)
-        .convention(ValidationLibrary.JAKARTA_VALIDATION)
+    val validationLibrary: Property<ValidationLibraryOption> =
+        project.objects.property(ValidationLibraryOption::class.java).convention(ValidationLibraryOption.Jakarta)
 
     @get:Input
     @get:Optional

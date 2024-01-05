@@ -3,13 +3,13 @@ package ch.acanda.gradle.fabrikt.generator
 import ch.acanda.gradle.fabrikt.DateTimeOverrideType
 import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
+import ch.acanda.gradle.fabrikt.ValidationLibraryOption
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
-import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.assertions.print.print
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.Matcher
@@ -45,7 +45,7 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
-            cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
+            cliArgs.shouldContainOptionallyEnum(config.validationLibrary, ARG_VALIDATION_LIB)
             cliArgs.shouldContainOptionally(
                 config.quarkusReflectionConfig,
                 ARG_TARGETS,
@@ -152,7 +152,7 @@ class FabriktArgumentsTest : StringSpec({
                 sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 typeOverrides.datetime.set(Arb.enum<DateTimeOverrideType>().orNull(0.2).bind())
-                validationLibrary.set(Arb.enum<ValidationLibrary>().orNull(0.2).bind())
+                validationLibrary.set(Arb.enum<ValidationLibraryOption>().orNull(0.2).bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
                 client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())

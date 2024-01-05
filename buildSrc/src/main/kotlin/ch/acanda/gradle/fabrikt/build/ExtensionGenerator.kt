@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt.build
 
 import ch.acanda.gradle.fabrikt.build.generator.DateTimeOverrideType
 import ch.acanda.gradle.fabrikt.build.generator.FabriktOption
+import ch.acanda.gradle.fabrikt.build.generator.ValidationLibraryOption
 import ch.acanda.gradle.fabrikt.build.generator.booleanProperty
 import ch.acanda.gradle.fabrikt.build.generator.directoryProperty
 import ch.acanda.gradle.fabrikt.build.generator.enabledValues
@@ -13,7 +14,6 @@ import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
-import com.cjbooms.fabrikt.cli.ValidationLibrary
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
@@ -87,6 +87,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .build()
             )
             .addType(DateTimeOverrideType::class.asSpec())
+            .addType(ValidationLibraryOption::class.asSpec())
             .build()
             .writeTo(outputDirectory.get().asFile)
     }
@@ -130,7 +131,11 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .directoryProperty("outputDirectory")
                 .stringProperty("sourcesPath")
                 .stringProperty("resourcesPath")
-                .enumProperty("validationLibrary", ValidationLibrary::class)
+                .enumProperty(
+                    "validationLibrary",
+                    ValidationLibraryOption::class.asSpec(),
+                    ClassName(PACKAGE, ValidationLibraryOption::class.simpleName.orEmpty())
+                )
                 .booleanProperty("quarkusReflectionConfig")
                 .nestedProperty("typeOverrides", typeOverridesExtName)
                 .nestedProperty("client", clientExtName)
