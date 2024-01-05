@@ -166,7 +166,7 @@ class ExtensionGeneratorTest : WordSpec({
         }
 
         "contain the property target" {
-            extension shouldContainOnlyOnce "public val target: Property<ControllerCodeGenTargetType>"
+            extension shouldContainOnlyOnce "public val target: Property<ControllerTargetOption>"
         }
     }
 

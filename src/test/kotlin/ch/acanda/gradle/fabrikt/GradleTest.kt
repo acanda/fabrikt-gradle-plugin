@@ -55,7 +55,7 @@ class GradleTest : StringSpec({
             |      enabled = true
             |      authentication = enabled
             |      suspendModifier = enabled
-            |      target = MICRONAUT
+            |      target = Micronaut
             |    }
             |    model {
             |      enabled = true

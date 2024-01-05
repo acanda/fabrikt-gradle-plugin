@@ -81,7 +81,7 @@ fabrikt {
             enabled = false
             authentication = disabled
             suspendModifier = disabled
-            target = SPRING
+            target = Spring
         }
         model {
             enabled = true
@@ -116,7 +116,7 @@ fabrikt {
 | controller.enabled             | Enables generating the http controller code.<br/>Values: `true`, `false`.                                                                                                                                | `false`                           |
 | controller.authentication      | Enables adding the authentication parameter to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                   | `disabled`                        |
 | controller.suspendModifier     | Enables adding the suspend modifier to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                           | `disabled`                        |
-| controller.target              | The target framework tor the controllers you want to be generated.<br/>Values: `SPRING`, `MICRONAUT`.                                                                                                    | `SPRING`                          |
+| controller.target              | The target framework tor the controllers you want to be generated.<br/>Values: `Spring`, `Micronaut`.                                                                                                    | `Spring`                          |
 | model.enabled                  | Enables generating the http model code.<br/>Values: `true`, `false`.                                                                                                                                     | `true`                            |
 | model.extensibleEnums          | Enables treating x-extensible-enums as enums.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                        | `disabled`                        |
 | model.javaSerialization        | Enables adding the Java `Serializable` interface to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                            | `disabled`                        |      

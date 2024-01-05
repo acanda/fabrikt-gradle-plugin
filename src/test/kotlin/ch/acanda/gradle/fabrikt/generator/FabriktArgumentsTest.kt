@@ -1,6 +1,7 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.ClientTargetOption
+import ch.acanda.gradle.fabrikt.ControllerTargetOption
 import ch.acanda.gradle.fabrikt.DateTimeOverrideType
 import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
@@ -8,7 +9,6 @@ import ch.acanda.gradle.fabrikt.ValidationLibraryOption
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
-import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
 import io.kotest.assertions.print.print
 import io.kotest.core.spec.style.StringSpec
@@ -45,7 +45,7 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
-            cliArgs.shouldContainOptionallyEnum(config.validationLibrary, ARG_VALIDATION_LIB)
+            cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
             cliArgs.shouldContainOptionally(
                 config.quarkusReflectionConfig,
                 ARG_TARGETS,
@@ -55,7 +55,7 @@ class FabriktArgumentsTest : StringSpec({
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
             with(config.typeOverrides) {
-                cliArgs.shouldContainOptionallyEnum(datetime, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(datetime, ARG_TYPE_OVERRIDES)
             }
             with(config.client) {
                 if (enabled.get()) {
@@ -66,7 +66,7 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.SUSPEND_MODIFIER
                     )
-                    cliArgs.shouldContainOptionallyEnum(target, ARG_CLIENT_TARGET)
+                    cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
 
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
@@ -160,7 +160,7 @@ class FabriktArgumentsTest : StringSpec({
                 controller.enabled.set(Arb.boolean().orNull(0.2).bind())
                 controller.authentication.set(Arb.boolean().orNull(0.2).bind())
                 controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
-                controller.target.set(Arb.enum<ControllerCodeGenTargetType>().orNull(0.2).bind())
+                controller.target.set(Arb.enum<ControllerTargetOption>().orNull(0.2).bind())
                 model.enabled.set(Arb.boolean().orNull(0.2).bind())
                 model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())
                 model.javaSerialization.set(Arb.boolean().orNull(0.2).bind())
@@ -176,14 +176,6 @@ class FabriktArgumentsTest : StringSpec({
             Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
         }
 
-        private fun <E : Enum<E>> Array<String>.shouldContainOptionally(valueProvider: Provider<E>, arg: String) {
-            if (valueProvider.isPresent) {
-                this shouldContainInOrder listOf(arg, valueProvider.get().name)
-            } else {
-                this shouldNotContain arg
-            }
-        }
-
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<Boolean>,
             argName: String,
@@ -197,7 +189,7 @@ class FabriktArgumentsTest : StringSpec({
             }
         }
 
-        private fun Array<String>.shouldContainOptionallyEnum(
+        private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<out FabriktOption>,
             argName: String
         ) {

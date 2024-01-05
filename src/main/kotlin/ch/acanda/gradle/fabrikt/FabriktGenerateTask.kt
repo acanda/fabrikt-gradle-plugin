@@ -2,7 +2,6 @@ package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.generator.generate
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
-import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
@@ -140,8 +139,8 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
 
     @get:Input
     @get:Optional
-    val target: Property<ControllerCodeGenTargetType> = objects.property(ControllerCodeGenTargetType::class.java)
-        .convention(ControllerCodeGenTargetType.SPRING)
+    val target: Property<ControllerTargetOption> = objects.property(ControllerTargetOption::class.java)
+        .convention(ControllerTargetOption.Spring)
 
 }
 

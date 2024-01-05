@@ -89,7 +89,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.addIfEnabled(suspendModifier, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.SUSPEND_MODIFIER)
             target.orNull?.let {
                 args.add(ARG_CONTROLLER_TARGET)
-                args.add(it.name)
+                args.add(it.fabriktOption.name)
             }
         }
     }

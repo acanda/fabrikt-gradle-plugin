@@ -2,7 +2,6 @@ package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
-import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
@@ -58,7 +57,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(it.controller) {
                         enabled.set(true)
-                        target.set(MICRONAUT)
+                        target.set(Micronaut)
                         authentication.set(it.enabled)
                         suspendModifier.set(it.enabled)
                     }
@@ -102,7 +101,7 @@ class FabriktPluginTest : WordSpec({
                         enabled shouldContain true
                         authentication shouldContain true
                         suspendModifier shouldContain true
-                        target shouldContain ControllerCodeGenTargetType.MICRONAUT
+                        target shouldContain ControllerTargetOption.Micronaut
                     }
                     with(model) {
                         enabled shouldContain false
@@ -156,7 +155,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(controller) {
                         enabled shouldContain false
-                        target shouldContain ControllerCodeGenTargetType.SPRING
+                        target shouldContain ControllerTargetOption.Spring
                         authentication shouldContain false
                         suspendModifier shouldContain false
                     }
