@@ -143,7 +143,7 @@ class ExtensionGeneratorTest : WordSpec({
         }
 
         "contain the property target" {
-            extension shouldContainOnlyOnce "public val target: Property<ClientCodeGenTargetType>"
+            extension shouldContainOnlyOnce "public val target: Property<ClientTargetOption>"
         }
     }
 

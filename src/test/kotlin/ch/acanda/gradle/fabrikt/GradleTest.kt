@@ -47,7 +47,7 @@ class GradleTest : StringSpec({
             |    }
             |    client {
             |      enabled = true
-            |      target = OPEN_FEIGN
+            |      target = OpenFeign
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |    }

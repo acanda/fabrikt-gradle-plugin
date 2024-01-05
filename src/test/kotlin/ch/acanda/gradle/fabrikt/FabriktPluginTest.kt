@@ -2,7 +2,6 @@ package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
-import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
@@ -49,11 +48,11 @@ class FabriktPluginTest : WordSpec({
                     it.validationLibrary.set(it.Javax)
                     it.quarkusReflectionConfig.set(it.enabled)
                     with(it.typeOverrides) {
-                        datetime.set(DateTimeOverrideType.Instant)
+                        datetime.set(Instant)
                     }
                     with(it.client) {
                         enabled.set(true)
-                        target.set(OPEN_FEIGN)
+                        target.set(OpenFeign)
                         resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
                     }
@@ -97,7 +96,7 @@ class FabriktPluginTest : WordSpec({
                         enabled shouldContain true
                         resilience4j shouldContain true
                         suspendModifier shouldContain true
-                        target shouldContain ClientCodeGenTargetType.OPEN_FEIGN
+                        target shouldContain ClientTargetOption.OpenFeign
                     }
                     with(controller) {
                         enabled shouldContain true
@@ -151,7 +150,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(client) {
                         enabled shouldContain false
-                        target shouldContain ClientCodeGenTargetType.OK_HTTP
+                        target shouldContain ClientTargetOption.OkHttp
                         resilience4j shouldContain false
                         suspendModifier shouldContain false
                     }

@@ -1,11 +1,11 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import ch.acanda.gradle.fabrikt.ClientTargetOption
 import ch.acanda.gradle.fabrikt.DateTimeOverrideType
 import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import ch.acanda.gradle.fabrikt.ValidationLibraryOption
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
-import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
@@ -66,7 +66,7 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.SUSPEND_MODIFIER
                     )
-                    cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
+                    cliArgs.shouldContainOptionallyEnum(target, ARG_CLIENT_TARGET)
 
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
@@ -156,7 +156,7 @@ class FabriktArgumentsTest : StringSpec({
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
                 client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
-                client.target.set(Arb.enum<ClientCodeGenTargetType>().orNull(0.2).bind())
+                client.target.set(Arb.enum<ClientTargetOption>().orNull(0.2).bind())
                 controller.enabled.set(Arb.boolean().orNull(0.2).bind())
                 controller.authentication.set(Arb.boolean().orNull(0.2).bind())
                 controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())

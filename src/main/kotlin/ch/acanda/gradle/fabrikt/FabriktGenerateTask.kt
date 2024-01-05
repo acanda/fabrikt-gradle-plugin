@@ -1,7 +1,6 @@
 package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.generator.generate
-import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import org.gradle.api.DefaultTask
@@ -120,8 +119,8 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
 
     @get:Input
     @get:Optional
-    val target: Property<ClientCodeGenTargetType> = objects.property(ClientCodeGenTargetType::class.java)
-        .convention(ClientCodeGenTargetType.OK_HTTP)
+    val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
+        .convention(ClientTargetOption.OkHttp)
 
 }
 

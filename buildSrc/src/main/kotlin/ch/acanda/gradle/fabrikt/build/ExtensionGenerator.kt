@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt.build
 
+import ch.acanda.gradle.fabrikt.build.generator.ClientTargetOption
 import ch.acanda.gradle.fabrikt.build.generator.DateTimeOverrideType
 import ch.acanda.gradle.fabrikt.build.generator.FabriktOption
 import ch.acanda.gradle.fabrikt.build.generator.ValidationLibraryOption
@@ -12,7 +13,6 @@ import ch.acanda.gradle.fabrikt.build.generator.filesProperty
 import ch.acanda.gradle.fabrikt.build.generator.named
 import ch.acanda.gradle.fabrikt.build.generator.nestedProperty
 import ch.acanda.gradle.fabrikt.build.generator.stringProperty
-import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.ClassName
@@ -88,6 +88,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             )
             .addType(DateTimeOverrideType::class.asSpec())
             .addType(ValidationLibraryOption::class.asSpec())
+            .addType(ClientTargetOption::class.asSpec())
             .build()
             .writeTo(outputDirectory.get().asFile)
     }
@@ -211,7 +212,11 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("enabled")
             .booleanProperty("resilience4j")
             .booleanProperty("suspendModifier")
-            .enumProperty("target", ClientCodeGenTargetType::class)
+            .enumProperty(
+                "target",
+                ClientTargetOption::class.asSpec(),
+                ClassName(PACKAGE, ClientTargetOption::class.simpleName.orEmpty())
+            )
             .build()
 
         internal fun controllerExtension(className: ClassName) = TypeSpec.classBuilder(className)
