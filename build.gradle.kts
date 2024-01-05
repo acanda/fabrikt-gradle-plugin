@@ -7,19 +7,21 @@ plugins {
     `java-gradle-plugin`
     idea
     id("io.gitlab.arturbosch.detekt") version "1.23.4"
-    `maven-publish`
+    id("com.gradle.plugin-publish") version "1.2.1"
 }
 
-group = "ch.acanda.gradle.fabrikt"
+group = "ch.acanda.gradle"
 version = "0.1-SNAPSHOT"
 
 val generatedSources: Provider<Directory> = project.layout.buildDirectory.dir("generated/src/main/kotlin")
 
 gradlePlugin {
+    website = "https://github.com/acanda/fabrikt-gradle-plugin"
+    vcsUrl = "https://github.com/acanda/fabrikt-gradle-plugin.git"
     plugins {
         create("fabriktPlugin") {
-            id = "$group"
-            implementationClass = "$group.FabriktPlugin"
+            id = "$group.fabrikt"
+            implementationClass = "$group.fabrikt.FabriktPlugin"
             displayName = "Fabrikt Gradle Plugin"
             description = "Generates Kotlin code from an OpenAPI 3 specification."
             tags = listOf("openapi", "openapi-3.0", "codegen", "kotlin", "fabrikt")
@@ -82,6 +84,10 @@ tasks {
     }
 
     compileKotlin {
+        dependsOn(generateExtensions)
+    }
+
+    withType<Jar>().configureEach {
         dependsOn(generateExtensions)
     }
 

@@ -44,7 +44,8 @@ fabrikt {
 
 When running `gradle fabriktGenerate`, the examples above will generate the
 model classes from the OpenAPI specification in `src/main/openapi/dog.yaml`. The
-model classes will be generated in `build/generated/fabrikt/src/main/kotlin/`.
+model classes will be generated in
+`build/generated/sources/fabrikt/src/main/kotlin/`.
 
 ## Configuration
 
@@ -131,8 +132,9 @@ fabrikt {
 
 ### Local Installation
 
-You can use `gradle publishToMavenLocal` to install the plugin to your local Maven repository.
-Then add the local maven repository to settings.gradle.kts of the project where you want to use the plugin:
+You can use `gradle publishToMavenLocal` to install the plugin to your local
+Maven repository. Then add the local maven repository to settings.gradle.kts of
+the project where you want to use the plugin:
 
 ```kotlin
 pluginManagement {
@@ -141,4 +143,18 @@ pluginManagement {
         // other repositories go here
     }
 }
+```
+
+### Publish to Gradle Plugin Portal
+
+Validate the plugin:
+
+```bash
+gradle publishPlugins --validateOnly
+```
+
+Publish the plugin:
+
+```bash
+gradle publishPlugins -Pgradle.publish.key=... -Pgradle.publish.secret=...
 ```
