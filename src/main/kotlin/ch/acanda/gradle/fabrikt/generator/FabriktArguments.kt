@@ -9,6 +9,7 @@ import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
 internal const val ARG_API_FRAGMENT = "--api-fragment"
+internal const val ARG_EXT_REF_RESOLUTION = "--external-ref-resolution"
 internal const val ARG_BASE_PACKAGE = "--base-package"
 internal const val ARG_OUT_DIR = "--output-directory"
 internal const val ARG_SRC_PATH = "--src-path"
@@ -34,6 +35,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         apiFragments.forEach { fragment ->
             args.add(ARG_API_FRAGMENT)
             args.add(fragment.absolutePath)
+        }
+        externalReferenceResolution.orNull?.let { resolution ->
+            args.add(ARG_EXT_REF_RESOLUTION)
+            args.add(resolution.fabriktOption.name)
         }
         sourcesPath.orNull?.let { path ->
             args.add(ARG_SRC_PATH)

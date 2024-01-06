@@ -40,7 +40,14 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val apiFile: RegularFileProperty = project.objects.fileProperty()
 
     @get:InputFiles
+    @get:Optional
     val apiFragments: ConfigurableFileCollection = project.objects.fileCollection()
+
+    @get:Input
+    @get:Optional
+    val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
+        project.objects.property(ExternalReferencesResolutionOption::class.java)
+            .convention(ExternalReferencesResolutionOption.targeted)
 
     @get:Input
     val basePackage: Property<CharSequence> = project.objects.property(CharSequence::class.java)

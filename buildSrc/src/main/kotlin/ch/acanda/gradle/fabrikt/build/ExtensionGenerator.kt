@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt.build
 import ch.acanda.gradle.fabrikt.build.generator.ClientTargetOption
 import ch.acanda.gradle.fabrikt.build.generator.ControllerTargetOption
 import ch.acanda.gradle.fabrikt.build.generator.DateTimeOverrideType
+import ch.acanda.gradle.fabrikt.build.generator.ExternalReferencesResolutionOption
 import ch.acanda.gradle.fabrikt.build.generator.FabriktOption
 import ch.acanda.gradle.fabrikt.build.generator.ValidationLibraryOption
 import ch.acanda.gradle.fabrikt.build.generator.booleanProperty
@@ -86,6 +87,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .addProperty("fabriktOption", nullableEnumType)
                     .build()
             )
+            .addType(ExternalReferencesResolutionOption::class.asSpec())
             .addType(DateTimeOverrideType::class.asSpec())
             .addType(ValidationLibraryOption::class.asSpec())
             .addType(ClientTargetOption::class.asSpec())
@@ -129,6 +131,11 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .enabledValues()
                 .fileProperty("apiFile")
                 .filesProperty("apiFragments")
+                .enumProperty(
+                    "externalReferenceResolution",
+                    ExternalReferencesResolutionOption::class.asSpec(),
+                    ClassName(PACKAGE, ExternalReferencesResolutionOption::class.simpleName.orEmpty())
+                )
                 .stringProperty("basePackage")
                 .directoryProperty("outputDirectory")
                 .stringProperty("sourcesPath")

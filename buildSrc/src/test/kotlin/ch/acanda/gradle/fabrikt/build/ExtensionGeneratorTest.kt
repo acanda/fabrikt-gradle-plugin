@@ -71,6 +71,13 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "public val apiFragments: ConfigurableFileCollection"
         }
 
+        "contain the property externalReferenceResolution and its values" {
+            extension shouldContainOnlyOnce
+                "public val externalReferenceResolution: Property<ExternalReferencesResolutionOption>"
+            extension shouldContainOnlyOnce "public val targeted: ExternalReferencesResolutionOption"
+            extension shouldContainOnlyOnce "public val aggressive: ExternalReferencesResolutionOption"
+        }
+
         "contain the property basePackage" {
             extension shouldContainOnlyOnce "public val basePackage: Property<CharSequence>"
         }

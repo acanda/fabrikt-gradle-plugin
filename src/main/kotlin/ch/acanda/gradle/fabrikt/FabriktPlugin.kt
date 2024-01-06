@@ -27,6 +27,7 @@ class FabriktPlugin : Plugin<Project> {
         GenerateTaskConfiguration(project).apply {
             apiFile.set(ext.apiFile)
             apiFragments.setFrom(ext.apiFragments)
+            externalReferenceResolution.setIfPresent(ext.externalReferenceResolution)
             basePackage.set(ext.basePackage)
             outputDirectory.setIfPresent(ext.outputDirectory)
             sourcesPath.setIfPresent(ext.sourcesPath)

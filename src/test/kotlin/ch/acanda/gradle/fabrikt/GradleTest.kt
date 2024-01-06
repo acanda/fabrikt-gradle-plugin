@@ -36,6 +36,7 @@ class GradleTest : StringSpec({
             |  generate("dog") { 
             |    apiFile = file("$openapiPath")
             |    apiFragments = files(${fragmentPaths.joinToString { "\"$it\"" }})
+            |    externalReferenceResolution = aggressive
             |    basePackage = "$basePackage"
             |    outputDirectory = file("$outputPath")
             |    sourcesPath = "$sourcePath"

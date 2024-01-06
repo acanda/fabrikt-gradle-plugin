@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt.generator
 import ch.acanda.gradle.fabrikt.ClientTargetOption
 import ch.acanda.gradle.fabrikt.ControllerTargetOption
 import ch.acanda.gradle.fabrikt.DateTimeOverrideType
+import ch.acanda.gradle.fabrikt.ExternalReferencesResolutionOption
 import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import ch.acanda.gradle.fabrikt.ValidationLibraryOption
@@ -41,6 +42,7 @@ class FabriktArgumentsTest : StringSpec({
             val cliArgs = FabriktArguments(config).getCliArgs()
             cliArgs shouldNotContain "null"
             cliArgs shouldContainInOrder listOf(ARG_API_FILE, config.apiFile.asFile.get().absolutePath)
+            cliArgs.shouldContainOptionally(config.externalReferenceResolution, ARG_EXT_REF_RESOLUTION)
             cliArgs shouldContainInOrder listOf(ARG_BASE_PACKAGE, config.basePackage.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
@@ -147,6 +149,7 @@ class FabriktArgumentsTest : StringSpec({
             GenerateTaskConfiguration(project).apply {
                 apiFile.set(pathGen.bind())
                 apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
+                externalReferenceResolution.set(Arb.enum<ExternalReferencesResolutionOption>().orNull(0.2).bind())
                 basePackage.set(Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
                 outputDirectory.set(pathGen.bind())
                 sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())

@@ -40,6 +40,7 @@ class FabriktPluginTest : WordSpec({
                 ext.generate("api") {
                     it.apiFile.set(apiFile)
                     it.apiFragments.setFrom(apiFragment)
+                    it.externalReferenceResolution.set(it.aggressive)
                     it.basePackage.set(basePackage)
                     it.outputDirectory.set(outputDirectory)
                     it.sourcesPath.set(srcDir)
@@ -82,6 +83,7 @@ class FabriktPluginTest : WordSpec({
                 .first().run {
                     this.apiFile shouldContain apiFile
                     this.apiFragments.files shouldContainExactly listOf(apiFragment)
+                    this.externalReferenceResolution shouldContain ExternalReferencesResolutionOption.aggressive
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContainString srcDir
@@ -138,6 +140,7 @@ class FabriktPluginTest : WordSpec({
                 .first().run {
                     this.apiFile shouldContain apiFile
                     this.apiFragments.files should beEmpty()
+                    this.externalReferenceResolution shouldContain ExternalReferencesResolutionOption.targeted
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContain "src/main/kotlin"
