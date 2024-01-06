@@ -152,7 +152,7 @@ pluginManagement {
 Validate the plugin:
 
 ```bash
-gradle publishPlugins --validateOnly
+gradle publishPlugins --validate-only
 ```
 
 Publish the plugin:
