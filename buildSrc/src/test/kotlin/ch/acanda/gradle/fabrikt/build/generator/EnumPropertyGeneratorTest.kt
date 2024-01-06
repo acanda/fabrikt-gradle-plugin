@@ -1,6 +1,5 @@
 package ch.acanda.gradle.fabrikt.build.generator
 
-import ch.acanda.gradle.fabrikt.build.ExtensionGeneratorTest
 import ch.acanda.gradle.fabrikt.build.ExtensionGeneratorTest.Companion.writeToString
 import com.squareup.kotlinpoet.TypeSpec
 import io.kotest.core.spec.style.StringSpec
@@ -9,30 +8,27 @@ import io.kotest.matchers.shouldBe
 class EnumPropertyGeneratorTest : StringSpec({
 
     "enumProperty(name, type) should create property and syntactic sugar" {
-        val typeSpec = TypeSpec.classBuilder("Dog")
-            .enumProperty("size", ExtensionGeneratorTest.Companion.Size::class)
+        val typeSpec = TypeSpec.classBuilder("Client")
+            .enumProperty("target", ClientTargetOption::class)
             .build()
         typeSpec.writeToString() shouldBe """
             |package ch.acanda
             |
-            |import ch.acanda.gradle.fabrikt.build.ExtensionGeneratorTest
+            |import ch.acanda.gradle.fabrikt.ClientTargetOption
             |import org.gradle.api.provider.Property
             |
-            |public class Dog {
-            |  public val size: Property<ExtensionGeneratorTest.Companion.Size> =
-            |      objects.property(ExtensionGeneratorTest.Companion.Size::class.java)
+            |public class Client {
+            |  public val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
             |
             |  /**
-            |   * small
+            |   * Generate OkHttp client.
             |   */
-            |  public val SMALL: ExtensionGeneratorTest.Companion.Size =
-            |      ExtensionGeneratorTest.Companion.Size.SMALL
+            |  public val OkHttp: ClientTargetOption = ClientTargetOption.OkHttp
             |
             |  /**
-            |   * large
+            |   * Generate OpenFeign client.
             |   */
-            |  public val LARGE: ExtensionGeneratorTest.Companion.Size =
-            |      ExtensionGeneratorTest.Companion.Size.LARGE
+            |  public val OpenFeign: ClientTargetOption = ClientTargetOption.OpenFeign
             |}
             |
         """.trimMargin()

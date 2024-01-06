@@ -98,7 +98,7 @@ abstract class ExtensionGenerator : DefaultTask() {
 
     internal companion object {
 
-        private const val PACKAGE = "ch.acanda.gradle.fabrikt"
+        internal const val PACKAGE = "ch.acanda.gradle.fabrikt"
         internal const val PROP_NAME = "name"
         internal const val PROP_OBJECTS = "objects"
 
@@ -131,20 +131,12 @@ abstract class ExtensionGenerator : DefaultTask() {
                 .enabledValues()
                 .fileProperty("apiFile")
                 .filesProperty("apiFragments")
-                .enumProperty(
-                    "externalReferenceResolution",
-                    ExternalReferencesResolutionOption::class.asSpec(),
-                    ClassName(PACKAGE, ExternalReferencesResolutionOption::class.simpleName.orEmpty())
-                )
+                .enumProperty("externalReferenceResolution", ExternalReferencesResolutionOption::class)
                 .stringProperty("basePackage")
                 .directoryProperty("outputDirectory")
                 .stringProperty("sourcesPath")
                 .stringProperty("resourcesPath")
-                .enumProperty(
-                    "validationLibrary",
-                    ValidationLibraryOption::class.asSpec(),
-                    ClassName(PACKAGE, ValidationLibraryOption::class.simpleName.orEmpty())
-                )
+                .enumProperty("validationLibrary", ValidationLibraryOption::class)
                 .booleanProperty("quarkusReflectionConfig")
                 .nestedProperty("typeOverrides", typeOverridesExtName)
                 .nestedProperty("client", clientExtName)
@@ -195,11 +187,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .initializer(PROP_OBJECTS)
                     .build()
             )
-            .enumProperty(
-                "datetime",
-                DateTimeOverrideOption::class.asSpec(),
-                ClassName(PACKAGE, DateTimeOverrideOption::class.simpleName.orEmpty())
-            )
+            .enumProperty("datetime", DateTimeOverrideOption::class)
             .build()
 
         internal fun clientExtension(className: ClassName) = TypeSpec.classBuilder(className)
@@ -220,11 +208,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("enabled")
             .booleanProperty("resilience4j")
             .booleanProperty("suspendModifier")
-            .enumProperty(
-                "target",
-                ClientTargetOption::class.asSpec(),
-                ClassName(PACKAGE, ClientTargetOption::class.simpleName.orEmpty())
-            )
+            .enumProperty("target", ClientTargetOption::class)
             .build()
 
         internal fun controllerExtension(className: ClassName) = TypeSpec.classBuilder(className)
@@ -245,11 +229,7 @@ abstract class ExtensionGenerator : DefaultTask() {
             .booleanProperty("enabled")
             .booleanProperty("authentication")
             .booleanProperty("suspendModifier")
-            .enumProperty(
-                "target",
-                ControllerTargetOption::class.asSpec(),
-                ClassName(PACKAGE, ControllerTargetOption::class.simpleName.orEmpty())
-            )
+            .enumProperty("target", ControllerTargetOption::class)
             .build()
 
         internal fun modelExtension(className: ClassName) = TypeSpec.classBuilder(className)

@@ -252,8 +252,6 @@ class ExtensionGeneratorTest : WordSpec({
             fileSpec.writeTo(file)
             return file.toString()
         }
-
-        internal enum class Size(val description: String) { SMALL("small"), LARGE("large") }
     }
 
 }
