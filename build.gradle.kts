@@ -8,6 +8,7 @@ plugins {
     idea
     id("io.gitlab.arturbosch.detekt") version "1.23.4"
     id("com.gradle.plugin-publish") version "1.2.1"
+    signing
 }
 
 group = "ch.acanda.gradle"
@@ -75,6 +76,10 @@ testing {
             }
         }
     }
+}
+
+signing {
+    useGpgCmd()
 }
 
 tasks {

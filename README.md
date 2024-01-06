@@ -156,5 +156,8 @@ gradle publishPlugins --validateOnly
 Publish the plugin:
 
 ```bash
-gradle publishPlugins -Pgradle.publish.key=... -Pgradle.publish.secret=...
+gradle publishPlugins \
+  -Pgradle.publish.key=... \ 
+  -Pgradle.publish.secret=... \
+  -Psigning.gnupg.keyName=...
 ```
