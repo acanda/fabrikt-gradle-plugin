@@ -2,7 +2,7 @@ package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.ClientTargetOption
 import ch.acanda.gradle.fabrikt.ControllerTargetOption
-import ch.acanda.gradle.fabrikt.DateTimeOverrideType
+import ch.acanda.gradle.fabrikt.DateTimeOverrideOption
 import ch.acanda.gradle.fabrikt.ExternalReferencesResolutionOption
 import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
@@ -154,7 +154,7 @@ class FabriktArgumentsTest : StringSpec({
                 outputDirectory.set(pathGen.bind())
                 sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
-                typeOverrides.datetime.set(Arb.enum<DateTimeOverrideType>().orNull(0.2).bind())
+                typeOverrides.datetime.set(Arb.enum<DateTimeOverrideOption>().orNull(0.2).bind())
                 validationLibrary.set(Arb.enum<ValidationLibraryOption>().orNull(0.2).bind())
                 client.enabled.set(Arb.boolean().orNull(0.2).bind())
                 client.resilience4j.set(Arb.boolean().orNull(0.2).bind())

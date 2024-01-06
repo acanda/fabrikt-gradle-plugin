@@ -91,7 +91,7 @@ class FabriktPluginTest : WordSpec({
                     this.validationLibrary shouldContain ValidationLibraryOption.Javax
                     this.quarkusReflectionConfig shouldContain true
                     with(typeOverrides) {
-                        datetime shouldContain DateTimeOverrideType.Instant
+                        datetime shouldContain DateTimeOverrideOption.Instant
                     }
                     with(client) {
                         enabled shouldContain true

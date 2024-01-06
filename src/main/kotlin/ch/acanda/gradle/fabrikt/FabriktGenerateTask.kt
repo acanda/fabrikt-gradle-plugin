@@ -105,7 +105,7 @@ open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory
 
     @get:Input
     @get:Optional
-    val datetime: Property<DateTimeOverrideType> = objects.property(DateTimeOverrideType::class.java)
+    val datetime: Property<DateTimeOverrideOption> = objects.property(DateTimeOverrideOption::class.java)
 
 }
 

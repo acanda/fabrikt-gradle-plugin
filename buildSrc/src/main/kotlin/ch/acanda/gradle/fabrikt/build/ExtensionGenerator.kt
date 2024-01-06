@@ -2,7 +2,7 @@ package ch.acanda.gradle.fabrikt.build
 
 import ch.acanda.gradle.fabrikt.build.generator.ClientTargetOption
 import ch.acanda.gradle.fabrikt.build.generator.ControllerTargetOption
-import ch.acanda.gradle.fabrikt.build.generator.DateTimeOverrideType
+import ch.acanda.gradle.fabrikt.build.generator.DateTimeOverrideOption
 import ch.acanda.gradle.fabrikt.build.generator.ExternalReferencesResolutionOption
 import ch.acanda.gradle.fabrikt.build.generator.FabriktOption
 import ch.acanda.gradle.fabrikt.build.generator.ValidationLibraryOption
@@ -88,7 +88,7 @@ abstract class ExtensionGenerator : DefaultTask() {
                     .build()
             )
             .addType(ExternalReferencesResolutionOption::class.asSpec())
-            .addType(DateTimeOverrideType::class.asSpec())
+            .addType(DateTimeOverrideOption::class.asSpec())
             .addType(ValidationLibraryOption::class.asSpec())
             .addType(ClientTargetOption::class.asSpec())
             .addType(ControllerTargetOption::class.asSpec())
@@ -197,8 +197,8 @@ abstract class ExtensionGenerator : DefaultTask() {
             )
             .enumProperty(
                 "datetime",
-                DateTimeOverrideType::class.asSpec(),
-                ClassName(PACKAGE, DateTimeOverrideType::class.simpleName.orEmpty())
+                DateTimeOverrideOption::class.asSpec(),
+                ClassName(PACKAGE, DateTimeOverrideOption::class.simpleName.orEmpty())
             )
             .build()
 

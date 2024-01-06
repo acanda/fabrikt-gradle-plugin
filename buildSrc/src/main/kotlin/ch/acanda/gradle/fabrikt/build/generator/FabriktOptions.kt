@@ -24,7 +24,7 @@ enum class ValidationLibraryOption(override val fabriktOption: ValidationLibrary
     Javax(ValidationLibrary.JAVAX_VALIDATION),
 }
 
-enum class DateTimeOverrideType(override val fabriktOption: CodeGenTypeOverride?) : FabriktOption {
+enum class DateTimeOverrideOption(override val fabriktOption: CodeGenTypeOverride?) : FabriktOption {
     OffsetDateTime(null),
     Instant(CodeGenTypeOverride.DATETIME_AS_INSTANT),
     LocalDateTime(CodeGenTypeOverride.DATETIME_AS_LOCALDATETIME),

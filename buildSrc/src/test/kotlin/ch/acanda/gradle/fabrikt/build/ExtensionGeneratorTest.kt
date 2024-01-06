@@ -229,16 +229,17 @@ class ExtensionGeneratorTest : WordSpec({
         }
 
         "contain the property datetime" {
-            extension shouldContainOnlyOnce "public val datetime: Property<DateTimeOverrideType>"
+            extension shouldContainOnlyOnce "public val datetime: Property<DateTimeOverrideOption>"
         }
 
         "contain the value Instant" {
-            extension shouldContainOnlyOnce "public val Instant: DateTimeOverrideType = DateTimeOverrideType.Instant"
+            extension shouldContainOnlyOnce
+                "public val Instant: DateTimeOverrideOption = DateTimeOverrideOption.Instant"
         }
 
         "contain the value LocalDateTime" {
             extension shouldContainOnlyOnce
-                "public val LocalDateTime: DateTimeOverrideType = DateTimeOverrideType.LocalDateTime"
+                "public val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime"
         }
     }
 
