@@ -24,7 +24,9 @@ gradlePlugin {
             id = "$group.fabrikt"
             implementationClass = "$group.fabrikt.FabriktPlugin"
             displayName = "Fabrikt Gradle Plugin"
-            description = "Generates Kotlin code from an OpenAPI 3 specification."
+            description = "The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds. Fabrikt generates" +
+                " Kotlin data classes with support for advanced features, Spring or Micronaut controllers, and" +
+                " OkHttp or OpenFeign clients."
             tags = listOf("openapi", "openapi-3.0", "codegen", "kotlin", "fabrikt")
         }
     }
