@@ -14,6 +14,7 @@ class FabriktPlugin : Plugin<Project> {
         val extension = project.extensions.create("fabrikt", FabriktExtension::class.java)
 
         val fabriktGenerateTask = project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
+            task.group = "OpenAPI Tools"
             val configurations = extension.map { project.createGenerateTaskConfiguration(it) }
             task.configurations.set(configurations)
             project.addOutputDirectoryToKotlinSourceSet(configurations)
