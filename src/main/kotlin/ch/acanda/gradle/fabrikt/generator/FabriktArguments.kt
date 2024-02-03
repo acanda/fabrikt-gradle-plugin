@@ -74,7 +74,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
     }
 
     private fun GenerateTaskConfiguration.addClientArgs(args: MutableList<String>) = with(client) {
-        if (enabled.get()) {
+        if (generate.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CLIENT.name)
             args.addIfEnabled(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
@@ -87,7 +87,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
     }
 
     private fun GenerateTaskConfiguration.addControllerArgs(args: MutableList<String>) = with(controller) {
-        if (enabled.get()) {
+        if (generate.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CONTROLLERS.name)
             args.addIfEnabled(authentication, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.AUTHENTICATION)
@@ -100,7 +100,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
     }
 
     private fun GenerateTaskConfiguration.addModelArgs(args: MutableList<String>) = with(model) {
-        if (enabled.get()) {
+        if (generate.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.HTTP_MODELS.name)
             args.addIfEnabled(extensibleEnums, ARG_MODEL_OPTS, ModelCodeGenOptionType.X_EXTENSIBLE_ENUMS)

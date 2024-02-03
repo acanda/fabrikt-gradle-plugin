@@ -74,19 +74,19 @@ fabrikt {
             datetime = OffsetDateTime
         }
         client {
-            enabled = false
+            generate = disabled
             target = OkHttp
             resilience4j = disabled
             suspendModifier = disabled
         }
         controller {
-            enabled = false
+            generate = disabled
             authentication = disabled
             suspendModifier = disabled
             target = Spring
         }
         model {
-            enabled = true
+            generate = enabled
             extensibleEnums = disabled
             javaSerialization = disabled
             quarkusReflection = disabled
@@ -112,15 +112,15 @@ fabrikt {
 | typeOverrides.datetime         | Specifies the Kotlin type for the OAS type `datetime`.<br/>Values: `OffsetDateTime`, `Instant`, `LocalDateTime`.                                                                                                                                                                                                                   | `OffsetDateTime`                  |
 | validationLibrary              | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`.                                                                                                                                                                                                                  | `Jakarta`                         |
 | quarkusReflectionConfig        | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
-| client.enabled                 | Enables generating the http client code.<br/>Values: `true`, `false`.                                                                                                                                                                                                                                                              | `false`                           |
+| client.generate                | Enables generating the http client code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                       | `disabled`                        |
 | client.target                  | The type of client you want to be generated.<br/>`OkHttp`, `OpenFeign`.                                                                                                                                                                                                                                                            | `OkHttp`                          |
 | client.resilience4j            | Generates a fault tolerance service for the client using the following library "io.github.resilience4j:resilience4j-all:+". Only for OkHttp clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                           | `disabled`                        |
 | client.suspendModifier         | Enables adding the suspend modifier to the generated client functions. Only for OpenFeign clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                             | `disabled`                        |
-| controller.enabled             | Enables generating the http controller code.<br/>Values: `true`, `false`.                                                                                                                                                                                                                                                          | `false`                           |
+| controller.generate            | Enables generating the http controller code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                   | `disabled`                        |
 | controller.authentication      | Enables adding the authentication parameter to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                             | `disabled`                        |
 | controller.suspendModifier     | Enables adding the suspend modifier to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                     | `disabled`                        |
 | controller.target              | The target framework tor the controllers you want to be generated.<br/>Values: `Spring`, `Micronaut`.                                                                                                                                                                                                                              | `Spring`                          |
-| model.enabled                  | Enables generating the http model code.<br/>Values: `true`, `false`.                                                                                                                                                                                                                                                               | `true`                            |
+| model.generate                 | Enables generating the http model code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                        | `enabled`                         |
 | model.extensibleEnums          | Enables treating x-extensible-enums as enums.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                  | `disabled`                        |
 | model.javaSerialization        | Enables adding the Java `Serializable` interface to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                      | `disabled`                        |      
 | model.quarkusReflection        | Enables adding `@RegisterForReflection` to the generated models.<br/>Requires the dependency `io.quarkus:quarkus-core:+`.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                      | `disabled`                        |

@@ -39,19 +39,19 @@ class FabriktPlugin : Plugin<Project> {
                 datetime.set(ext.typeOverrides.datetime)
             }
             with(client) {
-                enabled.setIfPresent(ext.client.enabled)
+                generate.setIfPresent(ext.client.generate)
                 resilience4j.setIfPresent(ext.client.resilience4j)
                 suspendModifier.setIfPresent(ext.client.suspendModifier)
                 target.setIfPresent(ext.client.target)
             }
             with(controller) {
-                enabled.setIfPresent(ext.controller.enabled)
+                generate.setIfPresent(ext.controller.generate)
                 authentication.setIfPresent(ext.controller.authentication)
                 suspendModifier.setIfPresent(ext.controller.suspendModifier)
                 target.setIfPresent(ext.controller.target)
             }
             with(model) {
-                enabled.setIfPresent(ext.model.enabled)
+                generate.setIfPresent(ext.model.generate)
                 extensibleEnums.setIfPresent(ext.model.extensibleEnums)
                 javaSerialization.setIfPresent(ext.model.javaSerialization)
                 quarkusReflection.setIfPresent(ext.model.quarkusReflection)

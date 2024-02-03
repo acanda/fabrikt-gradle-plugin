@@ -47,19 +47,19 @@ class GradleTest : StringSpec({
             |      datetime = Instant
             |    }
             |    client {
-            |      enabled = true
+            |      generate = enabled
             |      target = OpenFeign
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |    }
             |    controller {
-            |      enabled = true
+            |      generate = enabled
             |      authentication = enabled
             |      suspendModifier = enabled
             |      target = Micronaut
             |    }
             |    model {
-            |      enabled = true
+            |      generate = enabled
             |      extensibleEnums = enabled
             |      javaSerialization = enabled
             |      quarkusReflection = enabled

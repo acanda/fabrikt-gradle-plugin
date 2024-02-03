@@ -60,7 +60,7 @@ class FabriktArgumentsTest : StringSpec({
                 cliArgs.shouldContainOptionally(datetime, ARG_TYPE_OVERRIDES)
             }
             with(config.client) {
-                if (enabled.get()) {
+                if (generate.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
                     cliArgs.shouldContainOptionally(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
                     cliArgs.shouldContainOptionally(
@@ -76,7 +76,7 @@ class FabriktArgumentsTest : StringSpec({
                 }
             }
             with(config.controller) {
-                if (enabled.get()) {
+                if (generate.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
                     cliArgs.shouldContainOptionally(
                         authentication,
@@ -95,7 +95,7 @@ class FabriktArgumentsTest : StringSpec({
                 }
             }
             with(config.model) {
-                if (enabled.get()) {
+                if (generate.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs.shouldContainOptionally(
                         extensibleEnums,
@@ -156,15 +156,15 @@ class FabriktArgumentsTest : StringSpec({
                 resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
                 typeOverrides.datetime.set(Arb.enum<DateTimeOverrideOption>().orNull(0.2).bind())
                 validationLibrary.set(Arb.enum<ValidationLibraryOption>().orNull(0.2).bind())
-                client.enabled.set(Arb.boolean().orNull(0.2).bind())
+                client.generate.set(Arb.boolean().orNull(0.2).bind())
                 client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
                 client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
                 client.target.set(Arb.enum<ClientTargetOption>().orNull(0.2).bind())
-                controller.enabled.set(Arb.boolean().orNull(0.2).bind())
+                controller.generate.set(Arb.boolean().orNull(0.2).bind())
                 controller.authentication.set(Arb.boolean().orNull(0.2).bind())
                 controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
                 controller.target.set(Arb.enum<ControllerTargetOption>().orNull(0.2).bind())
-                model.enabled.set(Arb.boolean().orNull(0.2).bind())
+                model.generate.set(Arb.boolean().orNull(0.2).bind())
                 model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())
                 model.javaSerialization.set(Arb.boolean().orNull(0.2).bind())
                 model.quarkusReflection.set(Arb.boolean().orNull(0.2).bind())

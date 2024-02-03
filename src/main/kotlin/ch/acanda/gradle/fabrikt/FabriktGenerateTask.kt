@@ -143,7 +143,7 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
 
     @get:Input
     @get:Optional
-    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    val generate: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
     @get:Input
     @get:Optional
@@ -164,7 +164,7 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
 
     @get:Input
     @get:Optional
-    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    val generate: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
     @get:Input
     @get:Optional
@@ -185,7 +185,7 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
 
     @get:Input
     @get:Optional
-    val enabled: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+    val generate: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
     @get:Input
     @get:Optional

@@ -51,19 +51,19 @@ class FabriktPluginTest : WordSpec({
                         datetime.set(Instant)
                     }
                     with(it.client) {
-                        enabled.set(true)
+                        generate.set(it.enabled)
                         target.set(OpenFeign)
                         resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
                     }
                     with(it.controller) {
-                        enabled.set(true)
+                        generate.set(it.enabled)
                         target.set(Micronaut)
                         authentication.set(it.enabled)
                         suspendModifier.set(it.enabled)
                     }
                     with(it.model) {
-                        enabled.set(false)
+                        generate.set(it.disabled)
                         extensibleEnums.set(it.enabled)
                         javaSerialization.set(it.enabled)
                         quarkusReflection.set(it.enabled)
@@ -94,19 +94,19 @@ class FabriktPluginTest : WordSpec({
                         datetime shouldContain DateTimeOverrideOption.Instant
                     }
                     with(client) {
-                        enabled shouldContain true
+                        generate shouldContain true
                         resilience4j shouldContain true
                         suspendModifier shouldContain true
                         target shouldContain ClientTargetOption.OpenFeign
                     }
                     with(controller) {
-                        enabled shouldContain true
+                        generate shouldContain true
                         authentication shouldContain true
                         suspendModifier shouldContain true
                         target shouldContain ControllerTargetOption.Micronaut
                     }
                     with(model) {
-                        enabled shouldContain false
+                        generate shouldContain false
                         extensibleEnums shouldContain true
                         javaSerialization shouldContain true
                         quarkusReflection shouldContain true
@@ -151,19 +151,19 @@ class FabriktPluginTest : WordSpec({
                         datetime.isPresent shouldBe false
                     }
                     with(client) {
-                        enabled shouldContain false
+                        generate shouldContain false
                         target shouldContain ClientTargetOption.OkHttp
                         resilience4j shouldContain false
                         suspendModifier shouldContain false
                     }
                     with(controller) {
-                        enabled shouldContain false
+                        generate shouldContain false
                         target shouldContain ControllerTargetOption.Spring
                         authentication shouldContain false
                         suspendModifier shouldContain false
                     }
                     with(model) {
-                        enabled shouldContain true
+                        generate shouldContain true
                         extensibleEnums shouldContain false
                         javaSerialization shouldContain false
                         quarkusReflection shouldContain false

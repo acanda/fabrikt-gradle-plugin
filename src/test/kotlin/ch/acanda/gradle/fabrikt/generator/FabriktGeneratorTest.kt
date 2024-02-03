@@ -53,7 +53,7 @@ class FabriktGeneratorTest : WordSpec({
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
-            config.client.enabled.set(true)
+            config.client.generate.set(true)
 
             generate(config)
 
@@ -69,7 +69,7 @@ class FabriktGeneratorTest : WordSpec({
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
-            config.controller.enabled.set(true)
+            config.controller.generate.set(true)
 
             generate(config)
 

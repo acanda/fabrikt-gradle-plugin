@@ -137,8 +137,8 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
         }
 
-        "contain the property enabled" {
-            extension shouldContainOnlyOnce "public val enabled: Property<Boolean>"
+        "contain the property generate" {
+            extension shouldContainOnlyOnce "public val generate: Property<Boolean>"
         }
 
         "contain the property resilience4j" {
@@ -164,6 +164,10 @@ class ExtensionGeneratorTest : WordSpec({
             extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
         }
 
+        "contain the property generate" {
+            extension shouldContainOnlyOnce "public val generate: Property<Boolean>"
+        }
+
         "contain the property authentication" {
             extension shouldContainOnlyOnce "public val authentication: Property<Boolean>"
         }
@@ -185,6 +189,10 @@ class ExtensionGeneratorTest : WordSpec({
 
         "be annotated with @Generated" {
             extension shouldContainOnlyOnce "@Generated(\"ch.acanda.gradle.fabrikt.build.ExtensionGenerator\")"
+        }
+
+        "contain the property generate" {
+            extension shouldContainOnlyOnce "public val generate: Property<Boolean>"
         }
 
         "contain the property extensibleEnums" {
