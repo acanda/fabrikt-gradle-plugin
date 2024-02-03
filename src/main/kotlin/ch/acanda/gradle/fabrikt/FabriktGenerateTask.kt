@@ -6,6 +6,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
@@ -18,6 +19,8 @@ import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.TaskAction
+import org.gradle.internal.logging.progress.ProgressLogger
+import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import javax.inject.Inject
 
 abstract class FabriktGenerateTask : DefaultTask() {
@@ -25,11 +28,38 @@ abstract class FabriktGenerateTask : DefaultTask() {
     @get:Nested
     abstract val configurations: ListProperty<GenerateTaskConfiguration>
 
+    @get:Inject
+    abstract val progressLoggerFactory: ProgressLoggerFactory
+
     @TaskAction
     fun generate() {
-        configurations.get().forEach { config ->
-            generate(config)
+        val configs = configurations.get()
+        Progress(progressLoggerFactory, configs.size).use { progress ->
+            configs.forEach { config ->
+                progress.log(config.apiFile.get())
+                generate(config)
+            }
         }
+    }
+
+}
+
+private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoCloseable {
+
+    private val progressLogger: ProgressLogger = factory.newOperation(FabriktGenerateTask::class.java)
+    private var count = 0
+
+    init {
+        progressLogger.start("Generating Kotlin code with Fabrikt", "[0/$total]")
+    }
+
+    fun log(apiFile: RegularFile) {
+        count++
+        progressLogger.progress("[$count/$total] generating code for $apiFile...")
+    }
+
+    override fun close() {
+        progressLogger.completed()
     }
 
 }
