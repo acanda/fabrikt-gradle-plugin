@@ -1,6 +1,8 @@
 formatting:
   NoBlankLineBeforeRbrace:
     active: false
+  EnumEntryNameCase:
+    active: false
 style:
   ForbiddenMethodCall:
     active: true

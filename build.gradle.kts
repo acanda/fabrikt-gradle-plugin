@@ -1,4 +1,3 @@
-import ch.acanda.gradle.fabrikt.build.ExtensionGenerator
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
@@ -85,18 +84,6 @@ signing {
 }
 
 tasks {
-
-    val generateExtensions by creating(ExtensionGenerator::class.java) {
-        outputDirectory.set(generatedSources)
-    }
-
-    compileKotlin {
-        dependsOn(generateExtensions)
-    }
-
-    withType<Jar>().configureEach {
-        dependsOn(generateExtensions)
-    }
 
     wrapper {
         gradleVersion = "8.6"
