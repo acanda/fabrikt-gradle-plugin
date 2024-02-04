@@ -1,8 +1,9 @@
 package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.generator.generate
-import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+import org.gradle.api.Action
 import org.gradle.api.DefaultTask
+import org.gradle.api.Named
 import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
@@ -11,10 +12,10 @@ import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.provider.SetProperty
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
+import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
@@ -64,7 +65,16 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
 
 }
 
-class GenerateTaskConfiguration @Inject constructor(project: Project) {
+open class GenerateTaskConfiguration @Inject constructor(private val name: String, project: Project) : Named {
+
+    @Internal
+    override fun getName() = name
+
+    @get:Internal
+    val enabled: Boolean = true
+
+    @get:Internal
+    val disabled: Boolean = false
 
     @get:InputFile
     val apiFile: RegularFileProperty = project.objects.fileProperty()
@@ -78,6 +88,12 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
         project.objects.property(ExternalReferencesResolutionOption::class.java)
             .convention(ExternalReferencesResolutionOption.targeted)
+
+    @get:Internal
+    val targeted: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.targeted
+
+    @get:Internal
+    val aggressive: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.aggressive
 
     @get:Input
     val basePackage: Property<CharSequence> = project.objects.property(CharSequence::class.java)
@@ -102,6 +118,14 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     val validationLibrary: Property<ValidationLibraryOption> =
         project.objects.property(ValidationLibraryOption::class.java).convention(ValidationLibraryOption.Jakarta)
 
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Jakarta: ValidationLibraryOption = ValidationLibraryOption.Jakarta
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Javax: ValidationLibraryOption = ValidationLibraryOption.Javax
+
     @get:Input
     @get:Optional
     val quarkusReflectionConfig: Property<Boolean> = project.objects.property(Boolean::class.java)
@@ -111,23 +135,35 @@ class GenerateTaskConfiguration @Inject constructor(project: Project) {
     @get:Optional
     val typeOverrides: TypeOverridesConfiguration = project.objects.newInstance(TypeOverridesConfiguration::class.java)
 
+    fun typeOverrides(action: Action<TypeOverridesConfiguration>) {
+        action.execute(typeOverrides)
+    }
+
     @get:Nested
     @get:Optional
     val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)
+
+    fun client(action: Action<GenerateClientConfiguration>) {
+        action.execute(client)
+    }
 
     @get:Nested
     @get:Optional
     val controller: GenerateControllerConfiguration =
         project.objects.newInstance(GenerateControllerConfiguration::class.java)
 
+    fun controller(action: Action<GenerateControllerConfiguration>) {
+        action.execute(controller)
+    }
+
     @get:Nested
     @get:Optional
     val model: GenerateModelConfiguration =
         project.objects.newInstance(GenerateModelConfiguration::class.java)
 
-    @get:Input
-    @get:Optional
-    val options: SetProperty<CodeGenTypeOverride> = project.objects.setProperty(CodeGenTypeOverride::class.java)
+    fun model(action: Action<GenerateModelConfiguration>) {
+        action.execute(model)
+    }
 
 }
 
@@ -135,7 +171,20 @@ open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory
 
     @get:Input
     @get:Optional
-    val datetime: Property<DateTimeOverrideOption> = objects.property(DateTimeOverrideOption::class.java)
+    val datetime: Property<DateTimeOverrideOption> =
+        objects.property(DateTimeOverrideOption::class.java).convention(DateTimeOverrideOption.OffsetDateTime)
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val OffsetDateTime: DateTimeOverrideOption = DateTimeOverrideOption.OffsetDateTime
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Instant: DateTimeOverrideOption = DateTimeOverrideOption.Instant
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime
 
 }
 
@@ -158,6 +207,14 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
     val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
         .convention(ClientTargetOption.OkHttp)
 
+    @get:Internal
+    @Suppress("VariableNaming")
+    val OkHttp: ClientTargetOption = ClientTargetOption.OkHttp
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val OpenFeign: ClientTargetOption = ClientTargetOption.OpenFeign
+
 }
 
 open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFactory) {
@@ -178,6 +235,14 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
     @get:Optional
     val target: Property<ControllerTargetOption> = objects.property(ControllerTargetOption::class.java)
         .convention(ControllerTargetOption.Spring)
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Spring: ControllerTargetOption = ControllerTargetOption.Spring
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Micronaut: ControllerTargetOption = ControllerTargetOption.Micronaut
 
 }
 

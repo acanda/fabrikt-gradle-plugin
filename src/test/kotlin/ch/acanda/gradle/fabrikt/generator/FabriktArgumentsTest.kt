@@ -146,7 +146,7 @@ class FabriktArgumentsTest : StringSpec({
 
         private val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = arbitrary {
             val project = ProjectBuilder.builder().build()
-            GenerateTaskConfiguration(project).apply {
+            project.objects.newInstance(GenerateTaskConfiguration::class.java, "api").apply {
                 apiFile.set(pathGen.bind())
                 apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
                 externalReferenceResolution.set(Arb.enum<ExternalReferencesResolutionOption>().orNull(0.2).bind())

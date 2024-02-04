@@ -10,7 +10,6 @@ import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
-import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
 import org.gradle.testfixtures.ProjectBuilder
 
@@ -148,7 +147,7 @@ class FabriktPluginTest : WordSpec({
                     this.validationLibrary shouldContain ValidationLibraryOption.Jakarta
                     this.quarkusReflectionConfig shouldContain false
                     with(typeOverrides) {
-                        datetime.isPresent shouldBe false
+                        datetime shouldContain DateTimeOverrideOption.OffsetDateTime
                     }
                     with(client) {
                         generate shouldContain false

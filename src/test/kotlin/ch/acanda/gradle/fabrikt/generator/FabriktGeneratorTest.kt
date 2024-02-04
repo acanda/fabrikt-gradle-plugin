@@ -18,7 +18,7 @@ class FabriktGeneratorTest : WordSpec({
         "generate model classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration(project)
+            val config = GenerateTaskConfiguration("dog", project)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
@@ -33,7 +33,7 @@ class FabriktGeneratorTest : WordSpec({
         "postprocess model classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration(project)
+            val config = GenerateTaskConfiguration("dog", project)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
@@ -48,7 +48,7 @@ class FabriktGeneratorTest : WordSpec({
         "generate client classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration(project)
+            val config = GenerateTaskConfiguration("dog", project)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
@@ -64,7 +64,7 @@ class FabriktGeneratorTest : WordSpec({
         "generate controller classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration(project)
+            val config = GenerateTaskConfiguration("dog", project)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
@@ -81,7 +81,7 @@ class FabriktGeneratorTest : WordSpec({
 
 })
 
-fun TestConfiguration.apiFile(): File = tempfile("api", ".yaml").apply {
+fun TestConfiguration.apiFile(): File = tempfile("dog", ".yaml").apply {
     writeText(
         """
         |openapi: 3.0.3

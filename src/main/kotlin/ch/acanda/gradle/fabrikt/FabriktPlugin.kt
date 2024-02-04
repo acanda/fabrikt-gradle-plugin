@@ -3,7 +3,6 @@ package ch.acanda.gradle.fabrikt
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
-import org.gradle.api.provider.Property
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.plugins.ide.idea.model.IdeaModel
@@ -15,55 +14,15 @@ class FabriktPlugin : Plugin<Project> {
 
         val fabriktGenerateTask = project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
             task.group = "OpenAPI Tools"
-            val configurations = extension.map { project.createGenerateTaskConfiguration(it) }
-            task.configurations.set(configurations)
-            project.addOutputDirectoryToKotlinSourceSet(configurations)
+            task.configurations.set(extension)
+            project.addOutputDirectoryToKotlinSourceSet(extension)
         }
 
         project.addCompileKotlinDependsOn(fabriktGenerateTask)
         project.addGeneratedDirectoriesToIdea(extension)
     }
 
-    private fun Project.createGenerateTaskConfiguration(ext: FabriktGenerateExtension) =
-        GenerateTaskConfiguration(project).apply {
-            apiFile.set(ext.apiFile)
-            apiFragments.setFrom(ext.apiFragments)
-            externalReferenceResolution.setIfPresent(ext.externalReferenceResolution)
-            basePackage.set(ext.basePackage)
-            outputDirectory.setIfPresent(ext.outputDirectory)
-            sourcesPath.setIfPresent(ext.sourcesPath)
-            resourcesPath.setIfPresent(ext.resourcesPath)
-            validationLibrary.setIfPresent(ext.validationLibrary)
-            quarkusReflectionConfig.setIfPresent(ext.quarkusReflectionConfig)
-            with(typeOverrides) {
-                datetime.set(ext.typeOverrides.datetime)
-            }
-            with(client) {
-                generate.setIfPresent(ext.client.generate)
-                resilience4j.setIfPresent(ext.client.resilience4j)
-                suspendModifier.setIfPresent(ext.client.suspendModifier)
-                target.setIfPresent(ext.client.target)
-            }
-            with(controller) {
-                generate.setIfPresent(ext.controller.generate)
-                authentication.setIfPresent(ext.controller.authentication)
-                suspendModifier.setIfPresent(ext.controller.suspendModifier)
-                target.setIfPresent(ext.controller.target)
-            }
-            with(model) {
-                generate.setIfPresent(ext.model.generate)
-                extensibleEnums.setIfPresent(ext.model.extensibleEnums)
-                javaSerialization.setIfPresent(ext.model.javaSerialization)
-                quarkusReflection.setIfPresent(ext.model.quarkusReflection)
-                micronautIntrospection.setIfPresent(ext.model.micronautIntrospection)
-                micronautReflection.setIfPresent(ext.model.micronautReflection)
-                includeCompanionObject.setIfPresent(ext.model.includeCompanionObject)
-                sealedInterfacesForOneOf.setIfPresent(ext.model.sealedInterfacesForOneOf)
-                ignoreUnknownProperties.setIfPresent(ext.model.ignoreUnknownProperties)
-            }
-        }
-
-    private fun Project.addOutputDirectoryToKotlinSourceSet(configurations: List<GenerateTaskConfiguration>) {
+    private fun Project.addOutputDirectoryToKotlinSourceSet(configurations: Collection<GenerateTaskConfiguration>) {
         val sourceSets = project.extensions.findByName("sourceSets") as SourceSetContainer?
         val srcDirSet = sourceSets
             ?.findByName("main")
@@ -92,15 +51,11 @@ class FabriktPlugin : Plugin<Project> {
         }
     }
 
-    private fun <T, P : Property<T>> P.setIfPresent(value: P) {
-        if (value.isPresent) set(value)
-    }
-
-    private fun Project.addGeneratedDirectoriesToIdea(extension: FabriktExtension) {
+    private fun Project.addGeneratedDirectoriesToIdea(configurations: Collection<GenerateTaskConfiguration>) {
         this.afterEvaluate { project ->
             val idea = project.extensions.findByType(IdeaModel::class.java)
             if (idea != null) {
-                extension.map { project.createGenerateTaskConfiguration(it) }.forEach { config ->
+                configurations.forEach { config ->
                     val dir = config.outputDirectory.dir(config.sourcesPath).get().asFile
                     idea.module.generatedSourceDirs.add(dir)
                 }
