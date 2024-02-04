@@ -18,10 +18,10 @@ fun addIgnoreUnknownPropertiesAnnotation(modelsDirectory: Path) {
 }
 
 private fun addAnnotation(file: Path) {
-    val import = "import ${JsonIgnoreProperties::class.qualifiedName}"
+    val import = "import ${JsonIgnoreProperties::class.qualifiedName}".replace("annotation", "`annotation`")
     val annotation = "@${JsonIgnoreProperties::class.simpleName}(${JsonIgnoreProperties::ignoreUnknown.name} = true)"
     val annotatedClass = file.readText()
         .replaceFirst("import", "$import\nimport")
-        .replaceFirst("public data class", "$annotation\npublic data class")
+        .replace("public data class", "$annotation\npublic data class")
     file.writeText(annotatedClass)
 }

@@ -13,20 +13,40 @@ class IgnoreUnknownPropertiesProcessorTest : StringSpec({
     "should add @JsonIgnoreProperties(ignoreUnknown = true) to data classes" {
         val apiFile = tempfile("api").apply {
             writeText(
-                """
-                |openapi: 3.0.3
+                """openapi: 3.0.3
                 |info:
                 |  title: The API
                 |  version: 1.0.0
                 |paths: {}
                 |components:
-                |  schemas: 
-                |    dog:
+                |  schemas:
+                |
+                |    Animal:
                 |      type: object
+                |      discriminator:
+                |        propertyName: type
+                |        mapping:
+                |          Dog: '#/components/schemas/Dog'
+                |          Cat: '#/components/schemas/Cat'
+                |      required:
+                |        - type
                 |      properties:
-                |        isGoodBoy:
-                |          type: boolean
-                |          default: true
+                |        type:
+                |          ${'$'}ref: '#/components/schemas/AnimalDiscriminatorType'
+                |
+                |    AnimalDiscriminatorType:
+                |      type: string
+                |      enum:
+                |        - Dog
+                |        - Cat
+                |
+                |    Dog:
+                |      allOf:
+                |        - ${'$'}ref: '#/components/schemas/Animal'
+                |
+                |    Cat:
+                |      allOf:
+                |        - ${'$'}ref: '#/components/schemas/Animal'
                 """.trimMargin()
             )
         }
@@ -50,22 +70,43 @@ class IgnoreUnknownPropertiesProcessorTest : StringSpec({
 
         addIgnoreUnknownPropertiesAnnotation(modelsDirectory)
 
-        val modelClass = modelsDirectory.resolve("Dog.kt").readText()
+        val modelClass = modelsDirectory.resolve("Animal.kt").readText()
         modelClass shouldBe """
             |package a.b.models
             |
-            |import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+            |import com.fasterxml.jackson.`annotation`.JsonIgnoreProperties
             |import com.fasterxml.jackson.`annotation`.JsonProperty
+            |import com.fasterxml.jackson.`annotation`.JsonSubTypes
+            |import com.fasterxml.jackson.`annotation`.JsonTypeInfo
             |import javax.validation.constraints.NotNull
-            |import kotlin.Boolean
+            |
+            |@JsonTypeInfo(
+            |  use = JsonTypeInfo.Id.NAME,
+            |  include = JsonTypeInfo.As.EXISTING_PROPERTY,
+            |  property = "type",
+            |  visible = true,
+            |)
+            |@JsonSubTypes(JsonSubTypes.Type(value = Dog::class, name = "Dog"),JsonSubTypes.Type(value =
+            |    Cat::class, name = "Cat"))
+            |public sealed class Animal() {
+            |  public abstract val type: AnimalDiscriminatorType
+            |}
             |
             |@JsonIgnoreProperties(ignoreUnknown = true)
             |public data class Dog(
-            |  @param:JsonProperty("isGoodBoy")
-            |  @get:JsonProperty("isGoodBoy")
+            |  @get:JsonProperty("type")
             |  @get:NotNull
-            |  public val isGoodBoy: Boolean = true,
-            |)
+            |  @param:JsonProperty("type")
+            |  override val type: AnimalDiscriminatorType = AnimalDiscriminatorType.DOG,
+            |) : Animal()
+            |
+            |@JsonIgnoreProperties(ignoreUnknown = true)
+            |public data class Cat(
+            |  @get:JsonProperty("type")
+            |  @get:NotNull
+            |  @param:JsonProperty("type")
+            |  override val type: AnimalDiscriminatorType = AnimalDiscriminatorType.CAT,
+            |) : Animal()
             |
         """.trimMargin()
     }
