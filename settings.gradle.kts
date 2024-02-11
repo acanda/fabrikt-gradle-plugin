@@ -7,7 +7,7 @@ pluginManagement {
     plugins {
         // The Kotlin version has to match the one embedded in Gradle.
         // See https://docs.gradle.org/current/userguide/compatibility.html#kotlin.
-        kotlin("jvm") version "1.9.10"
+        kotlin("jvm") version "1.9.20"
     }
 }
 

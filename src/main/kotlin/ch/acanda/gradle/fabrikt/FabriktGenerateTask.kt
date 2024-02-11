@@ -10,6 +10,9 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFile
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.problems.ProblemSpec
+import org.gradle.api.problems.Problems
+import org.gradle.api.problems.Severity
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
@@ -24,23 +27,38 @@ import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import javax.inject.Inject
 
-abstract class FabriktGenerateTask : DefaultTask() {
+abstract class FabriktGenerateTask @Inject constructor(
+    private val progressLoggerFactory: ProgressLoggerFactory,
+    problems: Problems
+) : DefaultTask() {
+
+    private val problemReporter = problems.forNamespace(FabriktPlugin.PLUGIN_ID)
 
     @get:Nested
     abstract val configurations: ListProperty<GenerateTaskConfiguration>
-
-    @get:Inject
-    abstract val progressLoggerFactory: ProgressLoggerFactory
 
     @TaskAction
     fun generate() {
         val configs = configurations.get()
         Progress(progressLoggerFactory, configs.size).use { progress ->
             configs.forEach { config ->
-                progress.log(config.apiFile.get())
-                generate(config)
+                val apiFile = config.apiFile.get()
+                progress.log(apiFile)
+                try {
+                    generate(config)
+                } catch (e: GeneratorException) {
+                    progress.fail(apiFile)
+                    problemReporter.rethrowing(e, generatorProblem(e, config.name))
+                }
             }
         }
+    }
+
+    private fun generatorProblem(e: GeneratorException, name: String) = Action { problem: ProblemSpec ->
+        problem.category("code-generation", "openapi", name.lowercase())
+            .label("Fabrikt failed to generate code for configuration $name.")
+            .details("Fabrikt failed to generate code for the OpenAPI specification ${e.apiFile}.")
+            .severity(Severity.ERROR)
     }
 
 }
@@ -49,6 +67,7 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
 
     private val progressLogger: ProgressLogger = factory.newOperation(FabriktGenerateTask::class.java)
     private var count = 0
+    private var failed = false
 
     init {
         progressLogger.start("Generating Kotlin code with Fabrikt", "[0/$total]")
@@ -59,8 +78,13 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
         progressLogger.progress("[$count/$total] generating code for $apiFile...")
     }
 
+    fun fail(apiFile: RegularFile) {
+        failed = true
+        progressLogger.progress("[$count/$total] generating code for $apiFile...", true)
+    }
+
     override fun close() {
-        progressLogger.completed()
+        progressLogger.completed(null, failed)
     }
 
 }
