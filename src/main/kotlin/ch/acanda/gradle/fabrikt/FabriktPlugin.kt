@@ -9,6 +9,10 @@ import org.gradle.plugins.ide.idea.model.IdeaModel
 
 class FabriktPlugin : Plugin<Project> {
 
+    companion object {
+        const val PLUGIN_ID = "ch.acanda.gradle.fabrikt"
+    }
+
     override fun apply(project: Project) {
         val extension = project.extensions.create("fabrikt", FabriktExtension::class.java)
 
