@@ -43,7 +43,8 @@ abstract class FabriktGenerateTask @Inject constructor(
         Progress(progressLoggerFactory, configs.size).use { progress ->
             configs.forEach { config ->
                 val apiFile = config.apiFile.get()
-                progress.log(apiFile)
+                val skip = config.skip.get()
+                progress.log(apiFile, skip)
                 try {
                     generate(config)
                 } catch (e: GeneratorException) {
@@ -73,9 +74,10 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
         progressLogger.start("Generating Kotlin code with Fabrikt", "[0/$total]")
     }
 
-    fun log(apiFile: RegularFile) {
+    fun log(apiFile: RegularFile, skip: Boolean) {
         count++
-        progressLogger.progress("[$count/$total] generating code for $apiFile...")
+        val skipMsg = if (skip) " skip" else " "
+        progressLogger.progress("[$count/$total]$skipMsg generating code for $apiFile...")
     }
 
     fun fail(apiFile: RegularFile) {
@@ -188,6 +190,11 @@ open class GenerateTaskConfiguration @Inject constructor(private val name: Strin
     fun model(action: Action<GenerateModelConfiguration>) {
         action.execute(model)
     }
+
+    @get:Input
+    @get:Optional
+    val skip: Property<Boolean> = project.objects.property(Boolean::class.java)
+        .convention(false)
 
 }
 

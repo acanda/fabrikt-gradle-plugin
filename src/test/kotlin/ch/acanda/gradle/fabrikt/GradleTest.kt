@@ -69,6 +69,7 @@ class GradleTest : StringSpec({
             |      sealedInterfacesForOneOf = enabled
             |      ignoreUnknownProperties = enabled
             |    }
+            |    skip = false
             |  }
             |}
             """.trimMargin()
