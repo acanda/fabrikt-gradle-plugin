@@ -98,6 +98,7 @@ fabrikt {
             sealedInterfacesForOneOf = disabled
             ignoreUnknownProperties = disabled
         }
+        skip = false
     }
 }
 ```
@@ -131,6 +132,7 @@ fabrikt {
 | model.includeCompanionObject   | Enables adding a companion object to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                     | `disabled`                        |
 | model.sealedInterfacesForOneOf | Enables the generation of interfaces for discriminated `oneOf` types.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                          | `disabled`                        |
 | model.ignoreUnknownProperties  | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
+| skip                           | Skips generating code if set to `true`.<br/>Values: `true`, `false`.                                                                                                                                                                                                                                                               | `false`                           |
 
 ## Development
 

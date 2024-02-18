@@ -7,13 +7,15 @@ import com.cjbooms.fabrikt.cli.CodeGen
 import com.cjbooms.fabrikt.util.ModelNameRegistry
 
 internal fun generate(config: GenerateTaskConfiguration) {
-    try {
-        ModelNameRegistry.clear()
-        val args = FabriktArguments(config)
-        CodeGen.main(args.getCliArgs())
-        processGeneratedSources(config)
-    } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-        val spec = config.apiFile.get().asFile.toPath()
-        throw GeneratorException(spec, e)
+    if (!config.skip.get()) {
+        try {
+            ModelNameRegistry.clear()
+            val args = FabriktArguments(config)
+            CodeGen.main(args.getCliArgs())
+            processGeneratedSources(config)
+        } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
+            val spec = config.apiFile.get().asFile.toPath()
+            throw GeneratorException(spec, e)
+        }
     }
 }

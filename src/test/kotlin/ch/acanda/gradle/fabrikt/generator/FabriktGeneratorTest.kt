@@ -6,7 +6,9 @@ import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
+import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.should
 import io.kotest.matchers.string.shouldContain
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
@@ -75,6 +77,25 @@ class FabriktGeneratorTest : WordSpec({
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/controllers/DogsController.kt"
+        }
+
+        "skip generating code" {
+            val outputDir = tempdir("out")
+            val project = ProjectBuilder.builder().build()
+            val config = GenerateTaskConfiguration("dog", project)
+            config.apiFile.set(apiFile())
+            config.apiFragments.setFrom(apiFragment())
+            config.basePackage.set("dog")
+            config.outputDirectory.set(outputDir)
+            config.model.generate.set(true)
+            config.client.generate.set(true)
+            config.controller.generate.set(true)
+            config.skip.set(true)
+
+            generate(config)
+
+            val outputs = outputDir.listFilesRelative()
+            outputs should beEmpty()
         }
 
     }
