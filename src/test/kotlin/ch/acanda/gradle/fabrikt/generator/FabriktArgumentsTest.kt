@@ -1,12 +1,7 @@
 package ch.acanda.gradle.fabrikt.generator
 
-import ch.acanda.gradle.fabrikt.ClientTargetOption
-import ch.acanda.gradle.fabrikt.ControllerTargetOption
-import ch.acanda.gradle.fabrikt.DateTimeOverrideOption
-import ch.acanda.gradle.fabrikt.ExternalReferencesResolutionOption
 import ch.acanda.gradle.fabrikt.FabriktOption
-import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
-import ch.acanda.gradle.fabrikt.ValidationLibraryOption
+import ch.acanda.gradle.fabrikt.generateTaskConfigGen
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
@@ -22,18 +17,8 @@ import io.kotest.matchers.collections.shouldNotContainInOrder
 import io.kotest.matchers.neverNullMatcher
 import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
-import io.kotest.property.Arb
-import io.kotest.property.arbitrary.arbitrary
-import io.kotest.property.arbitrary.boolean
-import io.kotest.property.arbitrary.enum
-import io.kotest.property.arbitrary.orNull
-import io.kotest.property.arbitrary.set
-import io.kotest.property.arbitrary.stringPattern
 import io.kotest.property.checkAll
 import org.gradle.api.provider.Provider
-import org.gradle.testfixtures.ProjectBuilder
-import java.io.File
-import java.nio.file.Paths
 
 class FabriktArgumentsTest : StringSpec({
 
@@ -143,41 +128,6 @@ class FabriktArgumentsTest : StringSpec({
 }) {
 
     companion object {
-
-        private val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = arbitrary {
-            val project = ProjectBuilder.builder().build()
-            project.objects.newInstance(GenerateTaskConfiguration::class.java, "api").apply {
-                apiFile.set(pathGen.bind())
-                apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
-                externalReferenceResolution.set(Arb.enum<ExternalReferencesResolutionOption>().orNull(0.2).bind())
-                basePackage.set(Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
-                outputDirectory.set(pathGen.bind())
-                sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
-                resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
-                typeOverrides.datetime.set(Arb.enum<DateTimeOverrideOption>().orNull(0.2).bind())
-                validationLibrary.set(Arb.enum<ValidationLibraryOption>().orNull(0.2).bind())
-                client.generate.set(Arb.boolean().orNull(0.2).bind())
-                client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
-                client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
-                client.target.set(Arb.enum<ClientTargetOption>().orNull(0.2).bind())
-                controller.generate.set(Arb.boolean().orNull(0.2).bind())
-                controller.authentication.set(Arb.boolean().orNull(0.2).bind())
-                controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
-                controller.target.set(Arb.enum<ControllerTargetOption>().orNull(0.2).bind())
-                model.generate.set(Arb.boolean().orNull(0.2).bind())
-                model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())
-                model.javaSerialization.set(Arb.boolean().orNull(0.2).bind())
-                model.quarkusReflection.set(Arb.boolean().orNull(0.2).bind())
-                model.micronautIntrospection.set(Arb.boolean().orNull(0.2).bind())
-                model.micronautReflection.set(Arb.boolean().orNull(0.2).bind())
-                model.includeCompanionObject.set(Arb.boolean().orNull(0.2).bind())
-                model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
-            }
-        }
-
-        private val pathGen: Arb<File> = arbitrary {
-            Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
-        }
 
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<Boolean>,

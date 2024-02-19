@@ -11,23 +11,80 @@ class FabriktPlugin : Plugin<Project> {
 
     companion object {
         const val PLUGIN_ID = "ch.acanda.gradle.fabrikt"
+
+        @Suppress("MaxLineLength")
+        /**
+         * We use the same task group name as the
+         * [OpenAPI Generator Gradle Plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/src/main/kotlin/org/openapitools/generator/gradle/plugin/OpenApiGeneratorPlugin.kt#L162),
+         * so the tasks of this plugin are available in the same group as the
+         * tasks of the OpenAPI Generator Gradle Plugin.
+         */
+        const val TASK_GROUP = "OpenAPI Tools"
+
+        /**
+         * Creates a suffix for a task name using the following rules:
+         * - The first character and characters following a non-alphanumeric
+         *   character are converted to upper case.
+         * - Non-alphanumeric characters are removed.
+         *
+         * For example, the configuration name "dog-api" will be converted to
+         * the task name suffix "DogApi".
+         */
+        internal fun String.toTaskNameSuffix(): String {
+            val builder = StringBuilder(length)
+            var isNextUpperCase = true
+            for (cp in codePoints()) {
+                if (Character.isLetterOrDigit(cp)) {
+                    if (isNextUpperCase) {
+                        builder.appendCodePoint(Character.toUpperCase(cp))
+                        isNextUpperCase = false
+                    } else {
+                        builder.appendCodePoint(cp)
+                    }
+                } else {
+                    isNextUpperCase = true
+                }
+            }
+            return builder.toString()
+        }
+
     }
 
     override fun apply(project: Project) {
         val extension = project.extensions.create("fabrikt", FabriktExtension::class.java)
-
-        val fabriktGenerateTask = project.tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
-            task.group = "OpenAPI Tools"
-            task.configurations.set(extension)
-            project.addOutputDirectoryToKotlinSourceSet(extension)
-        }
-
+        val fabriktGenerateTask = project.registerGenerateTask(extension)
+        project.registerGenerateNamedTasks()
         project.addCompileKotlinDependsOn(fabriktGenerateTask)
         project.addGeneratedDirectoriesToIdea(extension)
     }
 
+    private fun Project.registerGenerateTask(extension: FabriktExtension): TaskProvider<FabriktGenerateTask> =
+        tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
+            task.group = TASK_GROUP
+            task.configurations.set(extension)
+            project.addOutputDirectoryToKotlinSourceSet(extension)
+        }
+
+    private fun Project.registerGenerateNamedTasks() {
+        afterEvaluate { project ->
+            project.extensions.findByType(FabriktExtension::class.java)?.let { extension ->
+                extension.names.map { name ->
+                    val suffix = name.toTaskNameSuffix()
+                    if (suffix.isNotBlank()) {
+                        tasks.register("fabriktGenerate$suffix", FabriktGenerateTask::class.java) { task ->
+                            task.group = TASK_GROUP
+                            val configurations = listOf(extension.getByName(name).copy { skip.set(false) })
+                            task.configurations.set(configurations)
+                            project.addOutputDirectoryToKotlinSourceSet(configurations)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     private fun Project.addOutputDirectoryToKotlinSourceSet(configurations: Collection<GenerateTaskConfiguration>) {
-        val sourceSets = project.extensions.findByName("sourceSets") as SourceSetContainer?
+        val sourceSets = extensions.findByName("sourceSets") as SourceSetContainer?
         val srcDirSet = sourceSets
             ?.findByName("main")
             ?.extensions
@@ -35,7 +92,7 @@ class FabriktPlugin : Plugin<Project> {
 
         if (srcDirSet == null) {
             val msg = "Unable to find the source set \"main/kotlin\" and add the Fabrikt output directories."
-            project.logger.info(msg)
+            logger.info(msg)
         } else {
             val srcDirs = configurations.map { config ->
                 config.outputDirectory.flatMap { it.dir(config.sourcesPath) }
@@ -45,18 +102,18 @@ class FabriktPlugin : Plugin<Project> {
     }
 
     private fun Project.addCompileKotlinDependsOn(task: TaskProvider<FabriktGenerateTask>) {
-        val compileKotlinTask = project.tasks.findByName("compileKotlin")
+        val compileKotlinTask = tasks.findByName("compileKotlin")
         if (compileKotlinTask == null) {
             val msg = "Unable to find the task kotlinCompile and" +
                 " register the dependency kotlinCompile -> fabriktGenerate."
-            project.logger.info(msg)
+            logger.info(msg)
         } else {
             compileKotlinTask.dependsOn(task)
         }
     }
 
     private fun Project.addGeneratedDirectoriesToIdea(configurations: Collection<GenerateTaskConfiguration>) {
-        this.afterEvaluate { project ->
+        afterEvaluate { project ->
             val idea = project.extensions.findByType(IdeaModel::class.java)
             if (idea != null) {
                 configurations.forEach { config ->

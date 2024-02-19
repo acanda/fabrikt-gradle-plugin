@@ -49,6 +49,16 @@ model classes from the OpenAPI specification in `src/main/openapi/dog.yaml`. The
 model classes will be generated in
 `build/generated/sources/fabrikt/src/main/kotlin/`.
 
+The plugin provides the following tasks:
+
+- `fabriktGenerate`: generates code for all configurations, unless they have
+  `skip` set to  `true`.
+- `fabriktGenerate[Name]`: generates code for the configuration with the
+  specified name. The suffix `[Name]` is derived from the configuration´s name
+  by removing non-alphanumeric characters and converting the rest to CamelCase.
+  E.g. the code for the configuration `generate("dog-api") { ... }` can be generated
+  with `gradle fabriktGenerateDogApi`.
+
 ## Configuration
 
 ```kotlin
@@ -132,7 +142,7 @@ fabrikt {
 | model.includeCompanionObject   | Enables adding a companion object to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                     | `disabled`                        |
 | model.sealedInterfacesForOneOf | Enables the generation of interfaces for discriminated `oneOf` types.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                          | `disabled`                        |
 | model.ignoreUnknownProperties  | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
-| skip                           | Skips generating code if set to `true`.<br/>Values: `true`, `false`.                                                                                                                                                                                                                                                               | `false`                           |
+| skip                           | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
 ## Development
 

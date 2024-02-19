@@ -1,26 +1,32 @@
 package ch.acanda.gradle.fabrikt
 
+import ch.acanda.gradle.fabrikt.FabriktPlugin.Companion.toTaskNameSuffix
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import ch.acanda.gradle.fabrikt.matchers.shouldContainString
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.collections.beEmpty
+import io.kotest.matchers.collections.shouldContainAll
 import io.kotest.matchers.collections.shouldContainExactly
 import io.kotest.matchers.collections.shouldHaveSize
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldBe
 import io.kotest.matchers.types.shouldBeInstanceOf
+import org.gradle.api.Project
+import org.gradle.api.internal.project.ProjectInternal
 import org.gradle.testfixtures.ProjectBuilder
 
 /**
  * Tests that the FabriktPlugin:
  * - creates its extensions
- * - registers the task "fabriktGenerate"
+ * - registers the task `fabriktGenerate`
  *     - sets all its properties correctly
  *     - uses the proper defaults where the properties are not set
+ * - registers the tasks `fabriktGenerate<Name>`
  *
- * It does not test the output of the task "fabriktGenerate".
+ * It does not test the output of the task `fabriktGenerate`.
  */
 class FabriktPluginTest : WordSpec({
 
@@ -174,6 +180,64 @@ class FabriktPluginTest : WordSpec({
                 }
         }
 
+        "register the tasks fabriktGenerate<Name>" {
+            val project = ProjectBuilder.builder().build()
+            val apiFile = tempfile("apiSpec", ".yaml")
+            val basePackage = "ch.acanda"
+
+            project.pluginManager.apply("ch.acanda.gradle.fabrikt")
+            project.extensions.configure(FabriktExtension::class.java) { ext ->
+                ext.generate("dog") {
+                    it.apiFile.set(apiFile)
+                    it.basePackage.set(basePackage)
+                    it.skip.set(true)
+                }
+                ext.generate("cat") {
+                    it.apiFile.set(apiFile)
+                    it.basePackage.set(basePackage)
+                    it.skip.set(true)
+                }
+            }
+
+            project.evaluate()
+
+            with(project.tasks) {
+                names shouldContainAll listOf("fabriktGenerate", "fabriktGenerateDog", "fabriktGenerateCat")
+                named("fabriktGenerateDog", FabriktGenerateTask::class.java).get().configurations.get().apply {
+                    this shouldHaveSize 1
+                    this.forEach { it.skip.get() shouldBe false }
+                }
+                named("fabriktGenerate", FabriktGenerateTask::class.java).get().configurations.get().apply {
+                    this shouldHaveSize 2
+                    this.forEach { it.skip.get() shouldBe true }
+                }
+                named("fabriktGenerateCat", FabriktGenerateTask::class.java).get().configurations.get().apply {
+                    this shouldHaveSize 1
+                    this.forEach { it.skip.get() shouldBe false }
+                }
+            }
+        }
+
     }
 
-})
+    "toTaskNameSuffix()" should {
+        "keep and upper case non-ascii characters" {
+            "älg".toTaskNameSuffix() shouldBe "Älg"
+        }
+        "remove special characters" {
+            "älg-rådjur#2".toTaskNameSuffix() shouldBe "ÄlgRådjur2"
+        }
+        "convert a string containing only non-alphanumeric characters to an empty string" {
+            "+¦\"@*#%&¬/|()='?´^`~<> ,;.:-_[]{}".toTaskNameSuffix() shouldBe ""
+        }
+    }
+
+}) {
+
+    companion object {
+        private fun Project.evaluate() {
+            (this as ProjectInternal).evaluate()
+        }
+    }
+
+}

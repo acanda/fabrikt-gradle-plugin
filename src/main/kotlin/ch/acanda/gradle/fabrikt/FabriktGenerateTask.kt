@@ -91,7 +91,10 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
 
 }
 
-open class GenerateTaskConfiguration @Inject constructor(private val name: String, project: Project) : Named {
+open class GenerateTaskConfiguration @Inject constructor(
+    private val name: String,
+    @get:Internal internal val project: Project
+) : Named {
 
     @Internal
     override fun getName() = name
@@ -193,10 +196,53 @@ open class GenerateTaskConfiguration @Inject constructor(private val name: Strin
 
     @get:Input
     @get:Optional
-    val skip: Property<Boolean> = project.objects.property(Boolean::class.java)
+    open val skip: Property<Boolean> = project.objects.property(Boolean::class.java)
         .convention(false)
 
 }
+
+internal fun GenerateTaskConfiguration.copy(block: GenerateTaskConfiguration.() -> Unit = {}) =
+    GenerateTaskConfiguration(name, project)
+        .apply {
+            apiFile.set(this@copy.apiFile)
+            apiFragments.setFrom(this@copy.apiFragments)
+            externalReferenceResolution.set(this@copy.externalReferenceResolution)
+            basePackage.set(this@copy.basePackage)
+            outputDirectory.set(this@copy.outputDirectory)
+            sourcesPath.set(this@copy.sourcesPath)
+            resourcesPath.set(this@copy.resourcesPath)
+            validationLibrary.set(this@copy.validationLibrary)
+            quarkusReflectionConfig.set(this@copy.quarkusReflectionConfig)
+            @Suppress("UnnecessaryApply")
+            typeOverrides.apply {
+                datetime.set(this@copy.typeOverrides.datetime)
+            }
+            client.apply {
+                generate.set(this@copy.client.generate)
+                resilience4j.set(this@copy.client.resilience4j)
+                suspendModifier.set(this@copy.client.suspendModifier)
+                target.set(this@copy.client.target)
+            }
+            controller.apply {
+                generate.set(this@copy.controller.generate)
+                authentication.set(this@copy.controller.authentication)
+                suspendModifier.set(this@copy.controller.suspendModifier)
+                target.set(this@copy.controller.target)
+            }
+            model.apply {
+                generate.set(this@copy.model.generate)
+                extensibleEnums.set(this@copy.model.extensibleEnums)
+                javaSerialization.set(this@copy.model.javaSerialization)
+                quarkusReflection.set(this@copy.model.quarkusReflection)
+                micronautIntrospection.set(this@copy.model.micronautIntrospection)
+                micronautReflection.set(this@copy.model.micronautReflection)
+                includeCompanionObject.set(this@copy.model.includeCompanionObject)
+                sealedInterfacesForOneOf.set(this@copy.model.sealedInterfacesForOneOf)
+                ignoreUnknownProperties.set(this@copy.model.ignoreUnknownProperties)
+            }
+            skip.set(this@copy.skip)
+        }
+        .apply(block)
 
 open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory) {
 
