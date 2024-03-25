@@ -38,7 +38,7 @@ repositories {
 dependencies {
     implementation("com.cjbooms:fabrikt:13.0.1")
     testImplementation(kotlin("test"))
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.5")
+    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.6")
 }
 
 kotlin {
