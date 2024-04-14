@@ -76,6 +76,7 @@ class FabriktPluginTest : WordSpec({
                         micronautReflection.set(it.enabled)
                         includeCompanionObject.set(it.enabled)
                         sealedInterfacesForOneOf.set(it.enabled)
+                        nonNullMapValues.set(it.enabled)
                         ignoreUnknownProperties.set(it.enabled)
                     }
                 }
@@ -119,6 +120,7 @@ class FabriktPluginTest : WordSpec({
                         micronautReflection shouldContain true
                         includeCompanionObject shouldContain true
                         sealedInterfacesForOneOf shouldContain true
+                        nonNullMapValues shouldContain true
                         ignoreUnknownProperties shouldContain true
                     }
                 }
@@ -175,6 +177,7 @@ class FabriktPluginTest : WordSpec({
                         micronautIntrospection shouldContain false
                         micronautReflection shouldContain false
                         includeCompanionObject shouldContain false
+                        nonNullMapValues shouldContain false
                         sealedInterfacesForOneOf shouldContain false
                     }
                 }

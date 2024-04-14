@@ -38,6 +38,7 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = arbitrary {
         model.micronautIntrospection.set(Arb.boolean().orNull(0.2).bind())
         model.micronautReflection.set(Arb.boolean().orNull(0.2).bind())
         model.includeCompanionObject.set(Arb.boolean().orNull(0.2).bind())
+        model.nonNullMapValues.set(Arb.boolean().orNull(0.2).bind())
         model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
         skip.set(Arb.boolean().orNull(0.2).bind())
     }

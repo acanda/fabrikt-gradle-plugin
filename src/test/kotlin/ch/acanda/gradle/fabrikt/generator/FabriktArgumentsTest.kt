@@ -117,6 +117,11 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_MODEL_OPTS,
                         ModelCodeGenOptionType.SEALED_INTERFACES_FOR_ONE_OF
                     )
+                    cliArgs.shouldContainOptionally(
+                        nonNullMapValues,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.NON_NULL_MAP_VALUES
+                    )
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs shouldNotContain ARG_MODEL_OPTS

@@ -238,6 +238,7 @@ internal fun GenerateTaskConfiguration.copy(block: GenerateTaskConfiguration.() 
                 micronautReflection.set(this@copy.model.micronautReflection)
                 includeCompanionObject.set(this@copy.model.includeCompanionObject)
                 sealedInterfacesForOneOf.set(this@copy.model.sealedInterfacesForOneOf)
+                nonNullMapValues.set(this@copy.model.nonNullMapValues)
                 ignoreUnknownProperties.set(this@copy.model.ignoreUnknownProperties)
             }
             skip.set(this@copy.skip)
@@ -356,6 +357,10 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
     @get:Input
     @get:Optional
     val sealedInterfacesForOneOf: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val nonNullMapValues: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
 
     @get:Input
     @get:Optional
