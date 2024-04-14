@@ -184,7 +184,7 @@ class FabriktPluginTest : WordSpec({
         }
 
         "register the tasks fabriktGenerate<Name>" {
-            val project = ProjectBuilder.builder().build()
+            val project = ProjectBuilder.builder().withProjectDir(tempdir("project")).build()
             val apiFile = tempfile("apiSpec", ".yaml")
             val basePackage = "ch.acanda"
 
@@ -204,19 +204,29 @@ class FabriktPluginTest : WordSpec({
 
             project.evaluate()
 
+            val relativeApiFile = apiFile.relativeTo(project.projectDir)
             with(project.tasks) {
                 names shouldContainAll listOf("fabriktGenerate", "fabriktGenerateDog", "fabriktGenerateCat")
-                named("fabriktGenerateDog", FabriktGenerateTask::class.java).get().configurations.get().apply {
-                    this shouldHaveSize 1
-                    this.forEach { it.skip.get() shouldBe false }
+                named("fabriktGenerateDog", FabriktGenerateTask::class.java).get().apply {
+                    description shouldBe "Generates the classes for $relativeApiFile."
+                    configurations.get().apply {
+                        this shouldHaveSize 1
+                        first().skip.get() shouldBe false
+                    }
                 }
-                named("fabriktGenerate", FabriktGenerateTask::class.java).get().configurations.get().apply {
-                    this shouldHaveSize 2
-                    this.forEach { it.skip.get() shouldBe true }
+                named("fabriktGenerate", FabriktGenerateTask::class.java).get().apply {
+                    description shouldBe "Generates the classes for all Fabrikt configurations."
+                    configurations.get().apply {
+                        this shouldHaveSize 2
+                        this.forEach { it.skip.get() shouldBe true }
+                    }
                 }
-                named("fabriktGenerateCat", FabriktGenerateTask::class.java).get().configurations.get().apply {
-                    this shouldHaveSize 1
-                    this.forEach { it.skip.get() shouldBe false }
+                named("fabriktGenerateCat", FabriktGenerateTask::class.java).get().apply {
+                    description shouldBe "Generates the classes for $relativeApiFile."
+                    configurations.get().apply {
+                        this shouldHaveSize 1
+                        first().skip.get() shouldBe false
+                    }
                 }
             }
         }

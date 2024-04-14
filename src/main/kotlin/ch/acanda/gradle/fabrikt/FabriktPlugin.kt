@@ -61,6 +61,7 @@ class FabriktPlugin : Plugin<Project> {
     private fun Project.registerGenerateTask(extension: FabriktExtension): TaskProvider<FabriktGenerateTask> =
         tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
             task.group = TASK_GROUP
+            task.description = "Generates the classes for all Fabrikt configurations."
             task.configurations.set(extension)
             project.addOutputDirectoryToKotlinSourceSet(extension)
         }
@@ -75,6 +76,9 @@ class FabriktPlugin : Plugin<Project> {
                             task.group = TASK_GROUP
                             val configurations = listOf(extension.getByName(name).copy { skip.set(false) })
                             task.configurations.set(configurations)
+                            val apiFile = configurations.first().apiFile.get().asFile
+                                .relativeTo(project.layout.projectDirectory.asFile)
+                            task.description = "Generates the classes for $apiFile."
                             project.addOutputDirectoryToKotlinSourceSet(configurations)
                         }
                     }
