@@ -155,6 +155,10 @@ open class GenerateTaskConfiguration @Inject constructor(
     @Suppress("VariableNaming")
     val Javax: ValidationLibraryOption = ValidationLibraryOption.Javax
 
+    @get:Internal
+    @Suppress("VariableNaming")
+    val NoValidation: ValidationLibraryOption = ValidationLibraryOption.NoValidation
+
     @get:Input
     @get:Optional
     val quarkusReflectionConfig: Property<Boolean> = project.objects.property(Boolean::class.java)

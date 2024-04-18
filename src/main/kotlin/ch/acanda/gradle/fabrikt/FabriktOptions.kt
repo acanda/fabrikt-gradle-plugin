@@ -31,6 +31,7 @@ enum class ValidationLibraryOption(
 ) : FabriktOption {
     Jakarta(ValidationLibrary.JAKARTA_VALIDATION),
     Javax(ValidationLibrary.JAVAX_VALIDATION),
+    NoValidation(ValidationLibrary.NO_VALIDATION),
 }
 
 enum class ClientTargetOption(

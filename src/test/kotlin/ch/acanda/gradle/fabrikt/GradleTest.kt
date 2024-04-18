@@ -41,7 +41,7 @@ class GradleTest : StringSpec({
             |    outputDirectory = file("$outputPath")
             |    sourcesPath = "$sourcePath"
             |    resourcesPath = "$resourcePath"
-            |    validationLibrary = Jakarta
+            |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
             |    typeOverrides {
             |      datetime = Instant
