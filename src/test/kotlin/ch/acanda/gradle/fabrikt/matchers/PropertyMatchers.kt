@@ -7,18 +7,18 @@ import org.gradle.api.provider.Property
 import java.io.File
 
 internal infix fun <T> Property<T>.shouldContain(expected: T?): Property<T> {
-    get() shouldBe expected
+    getOrNull() shouldBe expected
     return this
 }
 
 internal infix fun <T : CharSequence> Property<T>.shouldContainString(expected: String?): Property<T> {
-    get().toString() shouldBe expected
+    getOrNull()?.toString() shouldBe expected
     return this
 }
 
 private typealias FslProperty<T> = FileSystemLocationProperty<T>
 
 internal infix fun <T : FileSystemLocation> FslProperty<T>.shouldContain(expected: File?): FslProperty<T> {
-    get().asFile shouldBe expected
+    getOrNull()?.asFile shouldBe expected
     return this
 }

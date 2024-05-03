@@ -28,8 +28,8 @@ private infix fun <T : Any> T.propertiesShouldBe(expected: T) {
     val kClass = expected::class as KClass<T>
     kClass.declaredMemberProperties.forEach { prop ->
         if (prop.isGradleProperty()) {
-            val actual = (prop.get(this) as Property<*>).get()
-            val expectedValue = (prop.get(expected) as Property<*>).get()
+            val actual = (prop.get(this) as Property<*>).getOrNull()
+            val expectedValue = (prop.get(expected) as Property<*>).getOrNull()
             withClue("Expected \"${prop.name}\" to be <$expectedValue> but was <$actual>.") {
                 expectedValue shouldBe actual
             }
