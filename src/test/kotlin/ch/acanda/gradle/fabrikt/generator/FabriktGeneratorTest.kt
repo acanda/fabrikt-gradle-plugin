@@ -1,7 +1,9 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
+import ch.acanda.gradle.fabrikt.GenerateTaskDefaults
 import ch.acanda.gradle.fabrikt.listFilesRelative
+import ch.acanda.gradle.fabrikt.withDefaults
 import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
@@ -26,7 +28,7 @@ class FabriktGeneratorTest : WordSpec({
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
 
-            generate(config)
+            generate(config.withDefaults(GenerateTaskDefaults(project)))
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/models/Dog.kt"
@@ -42,7 +44,7 @@ class FabriktGeneratorTest : WordSpec({
             config.outputDirectory.set(outputDir)
             config.model.ignoreUnknownProperties.set(true)
 
-            generate(config)
+            generate(config.withDefaults(GenerateTaskDefaults(project)))
 
             outputDir.resolve("src/main/kotlin/dog/models/Dog.kt").readText() shouldContain "JsonIgnoreProperties"
         }
@@ -57,7 +59,7 @@ class FabriktGeneratorTest : WordSpec({
             config.outputDirectory.set(outputDir)
             config.client.generate.set(true)
 
-            generate(config)
+            generate(config.withDefaults(GenerateTaskDefaults(project)))
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/client/DogsClient.kt"
@@ -73,7 +75,7 @@ class FabriktGeneratorTest : WordSpec({
             config.outputDirectory.set(outputDir)
             config.controller.generate.set(true)
 
-            generate(config)
+            generate(config.withDefaults(GenerateTaskDefaults(project)))
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/controllers/DogsController.kt"

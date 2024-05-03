@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.file.SourceDirectorySet
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.api.tasks.TaskProvider
 import org.gradle.plugins.ide.idea.model.IdeaModel
@@ -62,8 +63,9 @@ class FabriktPlugin : Plugin<Project> {
         tasks.register("fabriktGenerate", FabriktGenerateTask::class.java) { task ->
             task.group = TASK_GROUP
             task.description = "Generates the classes for all Fabrikt configurations."
-            task.configurations.set(extension)
-            project.addOutputDirectoryToKotlinSourceSet(extension)
+            val configurations = extension.getTaskConfigurations()
+            task.configurations.set(configurations)
+            project.addOutputDirectoryToKotlinSourceSet(configurations)
         }
 
     private fun Project.registerGenerateNamedTasks() {
@@ -74,9 +76,10 @@ class FabriktPlugin : Plugin<Project> {
                     if (suffix.isNotBlank()) {
                         tasks.register("fabriktGenerate$suffix", FabriktGenerateTask::class.java) { task ->
                             task.group = TASK_GROUP
-                            val configurations = listOf(extension.getByName(name).copy { skip.set(false) })
+                            val configurations =
+                                extension.getTaskConfiguration(name).map { listOf(it.copy { skip.set(false) }) }
                             task.configurations.set(configurations)
-                            val apiFile = configurations.first().apiFile.get().asFile
+                            val apiFile = configurations.get().first().apiFile.get().asFile
                                 .relativeTo(project.layout.projectDirectory.asFile)
                             task.description = "Generates the classes for $apiFile."
                             project.addOutputDirectoryToKotlinSourceSet(configurations)
@@ -87,7 +90,9 @@ class FabriktPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.addOutputDirectoryToKotlinSourceSet(configurations: Collection<GenerateTaskConfiguration>) {
+    private fun Project.addOutputDirectoryToKotlinSourceSet(
+        configurations: Provider<out Iterable<GenerateTaskConfiguration>>
+    ) {
         val sourceSets = extensions.findByName("sourceSets") as SourceSetContainer?
         val srcDirSet = sourceSets
             ?.findByName("main")
@@ -98,8 +103,10 @@ class FabriktPlugin : Plugin<Project> {
             val msg = "Unable to find the source set \"main/kotlin\" and add the Fabrikt output directories."
             logger.info(msg)
         } else {
-            val srcDirs = configurations.map { config ->
-                config.outputDirectory.flatMap { it.dir(config.sourcesPath) }
+            val srcDirs = configurations.map { configs ->
+                configs.map { config ->
+                    config.outputDirectory.flatMap { it.dir(config.sourcesPath) }
+                }
             }
             srcDirSet.srcDirs(srcDirs)
         }
@@ -116,11 +123,11 @@ class FabriktPlugin : Plugin<Project> {
         }
     }
 
-    private fun Project.addGeneratedDirectoriesToIdea(configurations: Collection<GenerateTaskConfiguration>) {
+    private fun Project.addGeneratedDirectoriesToIdea(extension: FabriktExtension) {
         afterEvaluate { project ->
             val idea = project.extensions.findByType(IdeaModel::class.java)
             if (idea != null) {
-                configurations.forEach { config ->
+                extension.getTaskConfigurations().get().forEach { config ->
                     val dir = config.outputDirectory.dir(config.sourcesPath).get().asFile
                     idea.module.generatedSourceDirs.add(dir)
                 }

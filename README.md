@@ -145,6 +145,34 @@ fabrikt {
 | model.ignoreUnknownProperties  | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
 | skip                           | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
+### Defaults (coming in 0.8)
+
+If you have many OpenAPI specifications with nearly the same configuration, you
+can set the common values in the `defaults`. All properties except `apiFile` and
+`basePackage` can be configured with default values.
+
+```kotlin
+fabrikt {
+    defaults {
+        client {
+            generate = true
+            target = OpenFeign
+        }
+    }
+    generate("dog") {
+        apiFile = file("src/main/openapi/dog.yaml")
+        basePackage = "com.example.dog"
+    }
+    generate("cat") {
+        apiFile = file("src/main/openapi/cat.yaml")
+        basePackage = "com.example.cat"
+    }
+}
+```
+
+The above example generates OpenFeign clients for both the dog and cat
+specifications.
+
 ## Development
 
 ### Local Installation
