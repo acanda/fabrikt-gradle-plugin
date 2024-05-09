@@ -244,6 +244,10 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
     @Suppress("VariableNaming")
     val Micronaut: ControllerTargetOption = ControllerTargetOption.Micronaut
 
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Ktor: ControllerTargetOption = ControllerTargetOption.Ktor
+
 }
 
 open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory) {

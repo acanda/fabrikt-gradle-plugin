@@ -56,7 +56,7 @@ class GradleTest : StringSpec({
             |      generate = enabled
             |      authentication = enabled
             |      suspendModifier = enabled
-            |      target = Micronaut
+            |      target = Ktor
             |    }
             |    model {
             |      generate = enabled

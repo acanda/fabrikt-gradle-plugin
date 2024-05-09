@@ -46,4 +46,5 @@ enum class ControllerTargetOption(
 ) : FabriktOption {
     Spring(ControllerCodeGenTargetType.SPRING),
     Micronaut(ControllerCodeGenTargetType.MICRONAUT),
+    Ktor(ControllerCodeGenTargetType.KTOR),
 }
