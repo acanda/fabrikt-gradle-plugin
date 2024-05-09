@@ -70,15 +70,12 @@ class IgnoreUnknownPropertiesProcessorTest : StringSpec({
 
         addIgnoreUnknownPropertiesAnnotation(modelsDirectory)
 
-        val modelClass = modelsDirectory.resolve("Animal.kt").readText()
-        modelClass shouldBe """
+        // the base class should not be annotated
+        modelsDirectory.resolve("Animal.kt").readText() shouldBe """
             |package a.b.models
             |
-            |import com.fasterxml.jackson.`annotation`.JsonIgnoreProperties
-            |import com.fasterxml.jackson.`annotation`.JsonProperty
             |import com.fasterxml.jackson.`annotation`.JsonSubTypes
             |import com.fasterxml.jackson.`annotation`.JsonTypeInfo
-            |import javax.validation.constraints.NotNull
             |
             |@JsonTypeInfo(
             |  use = JsonTypeInfo.Id.NAME,
@@ -92,20 +89,22 @@ class IgnoreUnknownPropertiesProcessorTest : StringSpec({
             |  public abstract val type: AnimalDiscriminatorType
             |}
             |
+        """.trimMargin()
+
+        // only the data classes should be annotated
+        modelsDirectory.resolve("Dog.kt").readText() shouldBe """
+            |package a.b.models
+            |
+            |import com.fasterxml.jackson.`annotation`.JsonIgnoreProperties
+            |import com.fasterxml.jackson.`annotation`.JsonProperty
+            |import javax.validation.constraints.NotNull
+            |
             |@JsonIgnoreProperties(ignoreUnknown = true)
             |public data class Dog(
             |  @get:JsonProperty("type")
             |  @get:NotNull
             |  @param:JsonProperty("type")
             |  override val type: AnimalDiscriminatorType = AnimalDiscriminatorType.DOG,
-            |) : Animal()
-            |
-            |@JsonIgnoreProperties(ignoreUnknown = true)
-            |public data class Cat(
-            |  @get:JsonProperty("type")
-            |  @get:NotNull
-            |  @param:JsonProperty("type")
-            |  override val type: AnimalDiscriminatorType = AnimalDiscriminatorType.CAT,
             |) : Animal()
             |
         """.trimMargin()
