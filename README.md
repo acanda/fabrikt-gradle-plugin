@@ -18,7 +18,7 @@ To use it with the Kotlin DSL (build.gradle.kts):
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "0.7.0"
+    id("ch.acanda.gradle.fabrikt") version "0.8.0"
 }
 
 fabrikt {
@@ -33,7 +33,7 @@ To use it with the Groovy DSL (build.gradle):
 
 ```groovy
 plugins {
-    id 'ch.acanda.gradle.fabrikt' version '0.7.0'
+    id 'ch.acanda.gradle.fabrikt' version '0.8.0'
 }
 
 fabrikt {
@@ -63,7 +63,7 @@ The plugin provides the following tasks:
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "0.7.0"
+    id("ch.acanda.gradle.fabrikt") version "0.8.0"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
     // output directory as a generated sources directory.
     idea
@@ -145,7 +145,7 @@ fabrikt {
 | model.ignoreUnknownProperties  | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
 | skip                           | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
-### Defaults (coming in 0.8)
+### Defaults
 
 If you have many OpenAPI specifications with nearly the same configuration, you
 can set the common values in the `defaults`. All properties except `apiFile` and
