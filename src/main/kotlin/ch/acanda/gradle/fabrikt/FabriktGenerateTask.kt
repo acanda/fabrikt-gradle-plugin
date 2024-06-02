@@ -43,8 +43,9 @@ abstract class FabriktGenerateTask @Inject constructor(
     }
 
     private fun generatorProblem(e: GeneratorException, name: String) = Action { problem: ProblemSpec ->
-        problem.category("code-generation", "openapi", name.lowercase())
-            .label("Fabrikt failed to generate code for configuration $name.")
+        problem
+            .id("fabrikt-code-generation", "Fabrikt failed to generate code.")
+            .contextualLabel("Fabrikt failed to generate code for configuration $name.")
             .details("Fabrikt failed to generate code for the OpenAPI specification ${e.apiFile}.")
             .severity(Severity.ERROR)
     }

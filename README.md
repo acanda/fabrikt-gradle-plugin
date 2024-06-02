@@ -12,7 +12,7 @@ contract and code always match, even as your APIs evolve in complexity.
 
 [![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/ch.acanda.gradle.fabrikt?style=flat)](https://plugins.gradle.org/plugin/ch.acanda.gradle.fabrikt)
 
-The plugin requires at least Gradle 8.6 and a JRE 17.
+The plugin requires at least Gradle 8.8 and a JRE 17.
 
 To use it with the Kotlin DSL (build.gradle.kts):
 
