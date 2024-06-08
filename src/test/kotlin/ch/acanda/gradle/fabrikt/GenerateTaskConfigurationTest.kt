@@ -13,7 +13,7 @@ import kotlin.reflect.full.memberProperties
 class GenerateTaskConfigurationTest : StringSpec({
 
     val project = ProjectBuilder.builder().build()
-    checkProperties(GenerateTaskConfiguration("dog", project))
+    checkProperties(GenerateTaskConfiguration("dog", project.objects))
 
 }) {
 

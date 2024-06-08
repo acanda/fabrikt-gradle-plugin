@@ -425,7 +425,7 @@ class GradleTest : StringSpec({
             GradleRunner.create()
                 .withProjectDir(projectDir)
                 .forwardOutput()
-                .withArguments(*(arrayOf("--console=plain", "-i") + arguments))
+                .withArguments(*(arrayOf("--console=plain", "-i", "--configuration-cache") + arguments))
                 .withPluginClasspath()
                 .build()
 
