@@ -64,7 +64,15 @@ class FabriktPlugin : Plugin<Project> {
             task.group = TASK_GROUP
             task.description = "Generates the classes for all Fabrikt configurations."
             val configurations = extension.getTaskConfigurations()
-            task.configurations.set(configurations)
+            configurations.get().forEach { config ->
+                task.addConfiguration(config.name) {
+                    apiFile.set(config.apiFile)
+                    basePackage.set(config.basePackage)
+                    outputDirectory.set(config.outputDirectory)
+                    skip.set(config.skip)
+                }
+            }
+            // task.configurations.set(configurations)
             project.addOutputDirectoryToKotlinSourceSet(configurations)
         }
 

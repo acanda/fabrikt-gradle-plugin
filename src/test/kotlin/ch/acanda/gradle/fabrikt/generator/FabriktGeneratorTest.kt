@@ -22,13 +22,13 @@ class FabriktGeneratorTest : WordSpec({
         "generate model classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration("dog", project)
+            val config = GenerateTaskConfiguration("dog", project.objects)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
 
-            generate(config.withDefaults(GenerateTaskDefaults(project)))
+            generate(config.withDefaults(GenerateTaskDefaults(project.objects, project.layout)))
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/models/Dog.kt"
@@ -37,14 +37,14 @@ class FabriktGeneratorTest : WordSpec({
         "postprocess model classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration("dog", project)
+            val config = GenerateTaskConfiguration("dog", project.objects)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
             config.model.ignoreUnknownProperties.set(true)
 
-            generate(config.withDefaults(GenerateTaskDefaults(project)))
+            generate(config.withDefaults(GenerateTaskDefaults(project.objects, project.layout)))
 
             outputDir.resolve("src/main/kotlin/dog/models/Dog.kt").readText() shouldContain "JsonIgnoreProperties"
         }
@@ -52,14 +52,14 @@ class FabriktGeneratorTest : WordSpec({
         "generate client classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration("dog", project)
+            val config = GenerateTaskConfiguration("dog", project.objects)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
             config.client.generate.set(true)
 
-            generate(config.withDefaults(GenerateTaskDefaults(project)))
+            generate(config.withDefaults(GenerateTaskDefaults(project.objects, project.layout)))
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/client/DogsClient.kt"
@@ -68,14 +68,14 @@ class FabriktGeneratorTest : WordSpec({
         "generate controller classes" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration("dog", project)
+            val config = GenerateTaskConfiguration("dog", project.objects)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")
             config.outputDirectory.set(outputDir)
             config.controller.generate.set(true)
 
-            generate(config.withDefaults(GenerateTaskDefaults(project)))
+            generate(config.withDefaults(GenerateTaskDefaults(project.objects, project.layout)))
 
             val outputs = outputDir.listFilesRelative()
             outputs shouldContain "src/main/kotlin/dog/controllers/DogsController.kt"
@@ -84,7 +84,7 @@ class FabriktGeneratorTest : WordSpec({
         "skip generating code" {
             val outputDir = tempdir("out")
             val project = ProjectBuilder.builder().build()
-            val config = GenerateTaskConfiguration("dog", project)
+            val config = GenerateTaskConfiguration("dog", project.objects)
             config.apiFile.set(apiFile())
             config.apiFragments.setFrom(apiFragment())
             config.basePackage.set("dog")

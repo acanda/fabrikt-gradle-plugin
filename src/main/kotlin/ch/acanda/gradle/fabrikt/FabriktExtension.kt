@@ -30,7 +30,7 @@ open class FabriktExtension @Inject constructor(private val project: Project) :
         project.provider { getByName(name).withDefaults() }
 
     private fun GenerateTaskConfiguration.withDefaults(): GenerateTaskConfiguration {
-        val defaults = GenerateTaskDefaults(project).also { defaultsAction?.execute(it) }
+        val defaults = GenerateTaskDefaults(objects, project.layout).also { defaultsAction?.execute(it) }
         return withDefaults(defaults)
     }
 

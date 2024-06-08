@@ -2,9 +2,9 @@ package ch.acanda.gradle.fabrikt
 
 import org.gradle.api.Action
 import org.gradle.api.Named
-import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.ProjectLayout
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
@@ -20,7 +20,7 @@ import javax.inject.Inject
 
 open class GenerateTaskConfiguration @Inject constructor(
     private val name: String,
-    @get:Internal internal val project: Project
+    @get:Internal internal val objects: ObjectFactory
 ) : Named {
 
     @Internal
@@ -33,16 +33,16 @@ open class GenerateTaskConfiguration @Inject constructor(
     val disabled: Boolean = false
 
     @get:InputFile
-    val apiFile: RegularFileProperty = project.objects.fileProperty()
+    val apiFile: RegularFileProperty = objects.fileProperty()
 
     @get:InputFiles
     @get:Optional
-    val apiFragments: ConfigurableFileCollection = project.objects.fileCollection()
+    val apiFragments: ConfigurableFileCollection = objects.fileCollection()
 
     @get:Input
     @get:Optional
     val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
-        project.objects.property(ExternalReferencesResolutionOption::class.java)
+        objects.property(ExternalReferencesResolutionOption::class.java)
 
     @get:Internal
     val targeted: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.targeted
@@ -51,24 +51,24 @@ open class GenerateTaskConfiguration @Inject constructor(
     val aggressive: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.aggressive
 
     @get:Input
-    val basePackage: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+    val basePackage: Property<CharSequence> = objects.property(CharSequence::class.java)
 
     @get:OutputDirectory
     @get:Optional
-    val outputDirectory: DirectoryProperty = project.objects.directoryProperty()
+    val outputDirectory: DirectoryProperty = objects.directoryProperty()
 
     @get:Input
     @get:Optional
-    val sourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+    val sourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
 
     @get:Input
     @get:Optional
-    val resourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+    val resourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
 
     @get:Input
     @get:Optional
     val validationLibrary: Property<ValidationLibraryOption> =
-        project.objects.property(ValidationLibraryOption::class.java)
+        objects.property(ValidationLibraryOption::class.java)
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -84,11 +84,11 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Input
     @get:Optional
-    val quarkusReflectionConfig: Property<Boolean> = project.objects.property(Boolean::class.java)
+    val quarkusReflectionConfig: Property<Boolean> = objects.property(Boolean::class.java)
 
     @get:Nested
     @get:Optional
-    val typeOverrides: TypeOverridesConfiguration = project.objects.newInstance(TypeOverridesConfiguration::class.java)
+    val typeOverrides: TypeOverridesConfiguration = objects.newInstance(TypeOverridesConfiguration::class.java)
 
     fun typeOverrides(action: Action<TypeOverridesConfiguration>) {
         action.execute(typeOverrides)
@@ -96,7 +96,7 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Nested
     @get:Optional
-    val client: GenerateClientConfiguration = project.objects.newInstance(GenerateClientConfiguration::class.java)
+    val client: GenerateClientConfiguration = objects.newInstance(GenerateClientConfiguration::class.java)
 
     fun client(action: Action<GenerateClientConfiguration>) {
         action.execute(client)
@@ -105,7 +105,7 @@ open class GenerateTaskConfiguration @Inject constructor(
     @get:Nested
     @get:Optional
     val controller: GenerateControllerConfiguration =
-        project.objects.newInstance(GenerateControllerConfiguration::class.java)
+        objects.newInstance(GenerateControllerConfiguration::class.java)
 
     fun controller(action: Action<GenerateControllerConfiguration>) {
         action.execute(controller)
@@ -114,7 +114,7 @@ open class GenerateTaskConfiguration @Inject constructor(
     @get:Nested
     @get:Optional
     val model: GenerateModelConfiguration =
-        project.objects.newInstance(GenerateModelConfiguration::class.java)
+        objects.newInstance(GenerateModelConfiguration::class.java)
 
     fun model(action: Action<GenerateModelConfiguration>) {
         action.execute(model)
@@ -122,12 +122,12 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Input
     @get:Optional
-    open val skip: Property<Boolean> = project.objects.property(Boolean::class.java)
+    open val skip: Property<Boolean> = objects.property(Boolean::class.java)
 
 }
 
 internal fun GenerateTaskConfiguration.copy(block: GenerateTaskConfiguration.() -> Unit = {}) =
-    GenerateTaskConfiguration(name, project)
+    GenerateTaskConfiguration(name, objects)
         .apply {
             apiFile.set(this@copy.apiFile)
             apiFragments.setFrom(this@copy.apiFragments)
@@ -295,7 +295,8 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
 }
 
 open class GenerateTaskDefaults @Inject constructor(
-    @get:Internal internal val project: Project
+    @get:Internal internal val objects: ObjectFactory,
+    @get:Internal internal val layouts: ProjectLayout,
 ) {
 
     // apiFile and basePackage are meant to be different for each
@@ -309,12 +310,12 @@ open class GenerateTaskDefaults @Inject constructor(
 
     @get:InputFiles
     @get:Optional
-    val apiFragments: ConfigurableFileCollection = project.objects.fileCollection()
+    val apiFragments: ConfigurableFileCollection = objects.fileCollection()
 
     @get:Input
     @get:Optional
     val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
-        project.objects.property(ExternalReferencesResolutionOption::class.java)
+        objects.property(ExternalReferencesResolutionOption::class.java)
             .convention(ExternalReferencesResolutionOption.targeted)
 
     @get:Internal
@@ -325,23 +326,23 @@ open class GenerateTaskDefaults @Inject constructor(
 
     @get:OutputDirectory
     @get:Optional
-    val outputDirectory: DirectoryProperty = project.objects.directoryProperty()
-        .convention(project.layout.buildDirectory.dir("generated/sources/fabrikt"))
+    val outputDirectory: DirectoryProperty = objects.directoryProperty()
+        .convention(layouts.buildDirectory.dir("generated/sources/fabrikt"))
 
     @get:Input
     @get:Optional
-    val sourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+    val sourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
         .convention("src/main/kotlin")
 
     @get:Input
     @get:Optional
-    val resourcesPath: Property<CharSequence> = project.objects.property(CharSequence::class.java)
+    val resourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
         .convention("src/main/resources")
 
     @get:Input
     @get:Optional
     val validationLibrary: Property<ValidationLibraryOption> =
-        project.objects.property(ValidationLibraryOption::class.java).convention(ValidationLibraryOption.Jakarta)
+        objects.property(ValidationLibraryOption::class.java).convention(ValidationLibraryOption.Jakarta)
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -357,12 +358,12 @@ open class GenerateTaskDefaults @Inject constructor(
 
     @get:Input
     @get:Optional
-    val quarkusReflectionConfig: Property<Boolean> = project.objects.property(Boolean::class.java)
+    val quarkusReflectionConfig: Property<Boolean> = objects.property(Boolean::class.java)
         .convention(false)
 
     @get:Nested
     @get:Optional
-    val typeOverrides: TypeOverridesDefaults = project.objects.newInstance(TypeOverridesDefaults::class.java)
+    val typeOverrides: TypeOverridesDefaults = objects.newInstance(TypeOverridesDefaults::class.java)
 
     fun typeOverrides(action: Action<TypeOverridesDefaults>) {
         action.execute(typeOverrides)
@@ -370,7 +371,7 @@ open class GenerateTaskDefaults @Inject constructor(
 
     @get:Nested
     @get:Optional
-    val client: GenerateClientDefaults = project.objects.newInstance(GenerateClientDefaults::class.java)
+    val client: GenerateClientDefaults = objects.newInstance(GenerateClientDefaults::class.java)
 
     fun client(action: Action<GenerateClientDefaults>) {
         action.execute(client)
@@ -378,7 +379,7 @@ open class GenerateTaskDefaults @Inject constructor(
 
     @get:Nested
     @get:Optional
-    val controller: GenerateControllerDefaults = project.objects.newInstance(GenerateControllerDefaults::class.java)
+    val controller: GenerateControllerDefaults = objects.newInstance(GenerateControllerDefaults::class.java)
 
     fun controller(action: Action<GenerateControllerDefaults>) {
         action.execute(controller)
@@ -387,7 +388,7 @@ open class GenerateTaskDefaults @Inject constructor(
     @get:Nested
     @get:Optional
     val model: GenerateModelDefaults =
-        project.objects.newInstance(GenerateModelDefaults::class.java)
+        objects.newInstance(GenerateModelDefaults::class.java)
 
     fun model(action: Action<GenerateModelDefaults>) {
         action.execute(model)
@@ -395,7 +396,7 @@ open class GenerateTaskDefaults @Inject constructor(
 
     @get:Input
     @get:Optional
-    open val skip: Property<Boolean> = project.objects.property(Boolean::class.java)
+    open val skip: Property<Boolean> = objects.property(Boolean::class.java)
         .convention(false)
 
 }
@@ -524,7 +525,7 @@ open class GenerateModelDefaults @Inject constructor(objects: ObjectFactory) {
 }
 
 internal fun GenerateTaskConfiguration.withDefaults(defaults: GenerateTaskDefaults) =
-    GenerateTaskConfiguration(name, project).also { cfg ->
+    GenerateTaskConfiguration(name, objects).also { cfg ->
         cfg.apiFile.set(apiFile)
         cfg.apiFragments.setDefaultIfNotSet(apiFragments, defaults.apiFragments)
         cfg.basePackage.set(basePackage)
