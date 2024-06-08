@@ -4,18 +4,23 @@ import ch.acanda.gradle.fabrikt.generator.generate
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFile
+import org.gradle.api.model.ObjectFactory
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
 import org.gradle.api.problems.Severity
 import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import javax.inject.Inject
 
+typealias GenerateTaskConfigurationInitializer =
+    GenerateTaskConfiguration.(source: GenerateTaskExtension, defaults: GenerateTaskDefaults) -> Unit
+
 abstract class FabriktGenerateTask @Inject constructor(
-    private val progressLoggerFactory: ProgressLoggerFactory,
+    private val objects: ObjectFactory,
     problems: Problems
 ) : DefaultTask() {
 
@@ -24,8 +29,25 @@ abstract class FabriktGenerateTask @Inject constructor(
     @get:Nested
     abstract val configurations: ListProperty<GenerateTaskConfiguration>
 
+    fun addConfigurations(
+        configsProvider: Provider<out List<GenerateTaskExtension>>,
+        defaultsProvider: Provider<out GenerateTaskDefaults>,
+        initializer: GenerateTaskConfigurationInitializer
+    ) {
+        configurations.addAll(
+            configsProvider.map { configs ->
+                val defaults = defaultsProvider.get()
+                configs.map { config ->
+                    objects.newInstance(GenerateTaskConfiguration::class.java, name)
+                        .also { initializer.invoke(it, config, defaults) }
+                }
+            }
+        )
+    }
+
     @TaskAction
     fun generate() {
+        val progressLoggerFactory = services.get(ProgressLoggerFactory::class.java)
         val configs = configurations.get()
         Progress(progressLoggerFactory, configs.size).use { progress ->
             configs.forEach { config ->
@@ -64,7 +86,7 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
 
     fun log(apiFile: RegularFile, skip: Boolean) {
         count++
-        val skipMsg = if (skip) " skip" else " "
+        val skipMsg = if (skip) " skip" else ""
         progressLogger.progress("[$count/$total]$skipMsg generating code for $apiFile...")
     }
 
