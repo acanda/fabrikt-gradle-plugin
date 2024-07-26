@@ -60,12 +60,14 @@ class FabriktPluginTest : WordSpec({
                         target.set(OpenFeign)
                         resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
+                        springResponseEntityWrapper.set(it.enabled)
                     }
                     with(it.controller) {
                         generate.set(it.enabled)
                         target.set(Micronaut)
                         authentication.set(it.enabled)
                         suspendModifier.set(it.enabled)
+                        springResponseEntityWrapper.set(it.enabled)
                     }
                     with(it.model) {
                         generate.set(it.disabled)
@@ -103,6 +105,7 @@ class FabriktPluginTest : WordSpec({
                         generate shouldContain true
                         resilience4j shouldContain true
                         suspendModifier shouldContain true
+                        springResponseEntityWrapper shouldContain true
                         target shouldContain ClientTargetOption.OpenFeign
                     }
                     with(controller) {
@@ -162,6 +165,7 @@ class FabriktPluginTest : WordSpec({
                         target shouldContain ClientTargetOption.OkHttp
                         resilience4j shouldContain false
                         suspendModifier shouldContain false
+                        springResponseEntityWrapper shouldContain false
                     }
                     with(controller) {
                         generate shouldContain false

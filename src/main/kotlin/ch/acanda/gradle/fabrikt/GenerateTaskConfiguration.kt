@@ -146,6 +146,7 @@ internal fun GenerateTaskConfiguration.copy(block: GenerateTaskConfiguration.() 
                 generate.set(this@copy.client.generate)
                 resilience4j.set(this@copy.client.resilience4j)
                 suspendModifier.set(this@copy.client.suspendModifier)
+                springResponseEntityWrapper.set(this@copy.client.springResponseEntityWrapper)
                 target.set(this@copy.client.target)
             }
             controller.apply {
@@ -206,6 +207,10 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
 
     @get:Input
     @get:Optional
+    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java)
+
+    @get:Input
+    @get:Optional
     val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
 
     @get:Internal
@@ -231,6 +236,10 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
     @get:Input
     @get:Optional
     val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java)
+
+    @get:Input
+    @get:Optional
+    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java)
 
     @get:Input
     @get:Optional
@@ -437,6 +446,10 @@ open class GenerateClientDefaults @Inject constructor(objects: ObjectFactory) {
 
     @get:Input
     @get:Optional
+    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
     val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
         .convention(ClientTargetOption.OkHttp)
 
@@ -543,6 +556,10 @@ internal fun GenerateTaskConfiguration.withDefaults(defaults: GenerateTaskDefaul
             it.generate.setDefaultIfNotSet(client.generate, clientDefaults.generate)
             it.resilience4j.setDefaultIfNotSet(client.resilience4j, clientDefaults.resilience4j)
             it.suspendModifier.setDefaultIfNotSet(client.suspendModifier, clientDefaults.suspendModifier)
+            it.springResponseEntityWrapper.setDefaultIfNotSet(
+                client.springResponseEntityWrapper,
+                clientDefaults.springResponseEntityWrapper
+            )
             it.target.setDefaultIfNotSet(client.target, clientDefaults.target)
         }
         cfg.controller.also {

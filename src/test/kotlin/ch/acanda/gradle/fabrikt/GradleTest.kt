@@ -51,6 +51,7 @@ class GradleTest : StringSpec({
             |      target = OpenFeign
             |      resilience4j = enabled
             |      suspendModifier = enabled
+            |      springResponseEntityWrapper = enabled
             |    }
             |    controller {
             |      generate = enabled
@@ -121,6 +122,7 @@ class GradleTest : StringSpec({
             |      target = OpenFeign
             |      resilience4j = enabled
             |      suspendModifier = enabled
+            |      springResponseEntityWrapper = enabled
             |    }
             |    controller {
             |      generate = enabled
