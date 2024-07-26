@@ -26,6 +26,7 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = arbitrary {
         client.generate.set(Arb.boolean().orNull(0.2).bind())
         client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
         client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
+        client.springResponseEntityWrapper.set(Arb.boolean().orNull(0.2).bind())
         client.target.set(Arb.enum<ClientTargetOption>().orNull(0.2).bind())
         controller.generate.set(Arb.boolean().orNull(0.2).bind())
         controller.authentication.set(Arb.boolean().orNull(0.2).bind())

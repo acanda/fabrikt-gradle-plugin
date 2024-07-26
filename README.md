@@ -90,6 +90,7 @@ fabrikt {
             target = OkHttp
             resilience4j = disabled
             suspendModifier = disabled
+            springResponseEntityWrapper = disabled
         }
         controller {
             generate = disabled
@@ -129,6 +130,7 @@ fabrikt {
 | client.target                  | The type of client you want to be generated.<br/>`OkHttp`, `OpenFeign`.                                                                                                                                                                                                                                                            | `OkHttp`                          |
 | client.resilience4j            | Generates a fault tolerance service for the client using the following library "io.github.resilience4j:resilience4j-all:+". Only for OkHttp clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                           | `disabled`                        |
 | client.suspendModifier         | Enables adding the suspend modifier to the generated client functions. Only for OpenFeign clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                             | `disabled`                        |
+| client.springResponseEntityWrapper         | Enables adding the Spring-ResponseEntity generic around the response to be able to get response headers and status (only for OpenFeign clients).<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                             | `disabled`                        |
 | controller.generate            | Enables generating the http controller code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                   | `disabled`                        |
 | controller.authentication      | Enables adding the authentication parameter to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                             | `disabled`                        |
 | controller.suspendModifier     | Enables adding the suspend modifier to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                     | `disabled`                        |

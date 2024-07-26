@@ -79,6 +79,11 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(CodeGenerationType.CLIENT.name)
             args.addIfEnabled(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
             args.addIfEnabled(suspendModifier, ARG_CLIENT_OPTS, ClientCodeGenOptionType.SUSPEND_MODIFIER)
+            args.addIfEnabled(
+                springResponseEntityWrapper,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.SPRING_RESPONSE_ENTITY_WRAPPER
+            )
             target.orNull?.let {
                 args.add(ARG_CLIENT_TARGET)
                 args.add(it.fabriktOption.name)

@@ -53,6 +53,11 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.SUSPEND_MODIFIER
                     )
+                    cliArgs.shouldContainOptionally(
+                        springResponseEntityWrapper,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.SPRING_RESPONSE_ENTITY_WRAPPER
+                    )
                     cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
 
                 } else {
