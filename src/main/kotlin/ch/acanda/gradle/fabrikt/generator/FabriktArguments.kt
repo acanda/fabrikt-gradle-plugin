@@ -97,6 +97,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(CodeGenerationType.CONTROLLERS.name)
             args.addIfEnabled(authentication, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.AUTHENTICATION)
             args.addIfEnabled(suspendModifier, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.SUSPEND_MODIFIER)
+            args.addIfEnabled(completionStage, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.COMPLETION_STAGE)
             target.orNull?.let {
                 args.add(ARG_CONTROLLER_TARGET)
                 args.add(it.fabriktOption.name)

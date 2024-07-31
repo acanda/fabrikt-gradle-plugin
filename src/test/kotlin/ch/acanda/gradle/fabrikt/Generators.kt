@@ -31,6 +31,7 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = arbitrary {
         controller.generate.set(Arb.boolean().orNull(0.2).bind())
         controller.authentication.set(Arb.boolean().orNull(0.2).bind())
         controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
+        controller.completionStage.set(Arb.boolean().orNull(0.2).bind())
         controller.target.set(Arb.enum<ControllerTargetOption>().orNull(0.2).bind())
         model.generate.set(Arb.boolean().orNull(0.2).bind())
         model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())

@@ -153,6 +153,7 @@ internal fun GenerateTaskConfiguration.copy(block: GenerateTaskConfiguration.() 
                 generate.set(this@copy.controller.generate)
                 authentication.set(this@copy.controller.authentication)
                 suspendModifier.set(this@copy.controller.suspendModifier)
+                completionStage.set(this@copy.controller.completionStage)
                 target.set(this@copy.controller.target)
             }
             model.apply {
@@ -239,7 +240,7 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
 
     @get:Input
     @get:Optional
-    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java)
+    val completionStage: Property<Boolean> = objects.property(Boolean::class.java)
 
     @get:Input
     @get:Optional
@@ -479,6 +480,10 @@ open class GenerateControllerDefaults @Inject constructor(objects: ObjectFactory
 
     @get:Input
     @get:Optional
+    val completionStage: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
     val target: Property<ControllerTargetOption> = objects.property(ControllerTargetOption::class.java)
         .convention(ControllerTargetOption.Spring)
 
@@ -536,6 +541,7 @@ open class GenerateModelDefaults @Inject constructor(objects: ObjectFactory) {
 
 }
 
+@Suppress("LongMethod")
 internal fun GenerateTaskConfiguration.withDefaults(defaults: GenerateTaskDefaults) =
     GenerateTaskConfiguration(name, project).also { cfg ->
         cfg.apiFile.set(apiFile)
@@ -567,6 +573,7 @@ internal fun GenerateTaskConfiguration.withDefaults(defaults: GenerateTaskDefaul
             it.generate.setDefaultIfNotSet(controller.generate, controllerDefaults.generate)
             it.authentication.setDefaultIfNotSet(controller.authentication, controllerDefaults.authentication)
             it.suspendModifier.setDefaultIfNotSet(controller.suspendModifier, controllerDefaults.suspendModifier)
+            it.completionStage.setDefaultIfNotSet(controller.completionStage, controllerDefaults.completionStage)
             it.target.setDefaultIfNotSet(controller.target, controllerDefaults.target)
         }
         cfg.model.also {

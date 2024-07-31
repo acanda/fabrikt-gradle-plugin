@@ -78,6 +78,11 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CONTROLLER_OPTS,
                         ControllerCodeGenOptionType.SUSPEND_MODIFIER
                     )
+                    cliArgs.shouldContainOptionally(
+                        completionStage,
+                        ARG_CONTROLLER_OPTS,
+                        ControllerCodeGenOptionType.COMPLETION_STAGE
+                    )
                     cliArgs.shouldContainOptionally(target, ARG_CONTROLLER_TARGET)
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)

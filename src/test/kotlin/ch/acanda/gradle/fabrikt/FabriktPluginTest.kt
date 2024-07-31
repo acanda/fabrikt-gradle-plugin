@@ -67,7 +67,7 @@ class FabriktPluginTest : WordSpec({
                         target.set(Micronaut)
                         authentication.set(it.enabled)
                         suspendModifier.set(it.enabled)
-                        springResponseEntityWrapper.set(it.enabled)
+                        completionStage.set(it.enabled)
                     }
                     with(it.model) {
                         generate.set(it.disabled)
@@ -112,6 +112,7 @@ class FabriktPluginTest : WordSpec({
                         generate shouldContain true
                         authentication shouldContain true
                         suspendModifier shouldContain true
+                        completionStage shouldContain true
                         target shouldContain ControllerTargetOption.Micronaut
                     }
                     with(model) {
@@ -172,6 +173,7 @@ class FabriktPluginTest : WordSpec({
                         target shouldContain ControllerTargetOption.Spring
                         authentication shouldContain false
                         suspendModifier shouldContain false
+                        completionStage shouldContain false
                     }
                     with(model) {
                         generate shouldContain true
