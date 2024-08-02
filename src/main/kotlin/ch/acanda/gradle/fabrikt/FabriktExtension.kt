@@ -9,9 +9,9 @@ import org.gradle.api.Project
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.Nested
 import javax.annotation.processing.Generated
 import javax.inject.Inject
 
@@ -42,35 +42,31 @@ open class FabriktExtension @Inject constructor(private val project: Project) :
 
 }
 
-open class GenerateTaskExtension @Inject constructor(private val name: String, objects: ObjectFactory) : Named {
-
-    override fun getName() = name
+abstract class GenerateTaskExtension @Inject constructor() : Named {
 
     val enabled: Boolean = true
 
     val disabled: Boolean = false
 
-    val apiFile: RegularFileProperty = objects.fileProperty()
+    abstract val apiFile: RegularFileProperty
 
-    val apiFragments: ConfigurableFileCollection = objects.fileCollection()
+    abstract val apiFragments: ConfigurableFileCollection
 
-    val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
-        objects.property(ExternalReferencesResolutionOption::class.java)
+    abstract val externalReferenceResolution: Property<ExternalReferencesResolutionOption>
 
     val targeted: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.targeted
 
     val aggressive: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.aggressive
 
-    val basePackage: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val basePackage: Property<CharSequence>
 
-    val outputDirectory: DirectoryProperty = objects.directoryProperty()
+    abstract val outputDirectory: DirectoryProperty
 
-    val sourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val sourcesPath: Property<CharSequence>
 
-    val resourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val resourcesPath: Property<CharSequence>
 
-    val validationLibrary: Property<ValidationLibraryOption> =
-        objects.property(ValidationLibraryOption::class.java)
+    abstract val validationLibrary: Property<ValidationLibraryOption>
 
     @Suppress("VariableNaming")
     val Jakarta: ValidationLibraryOption = ValidationLibraryOption.Jakarta
@@ -81,41 +77,43 @@ open class GenerateTaskExtension @Inject constructor(private val name: String, o
     @Suppress("VariableNaming")
     val NoValidation: ValidationLibraryOption = ValidationLibraryOption.NoValidation
 
-    val quarkusReflectionConfig: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val quarkusReflectionConfig: Property<Boolean>
 
-    val typeOverrides: TypeOverridesExtension = objects.newInstance(TypeOverridesExtension::class.java)
+    @get:Nested
+    abstract val typeOverrides: TypeOverridesExtension
 
     fun typeOverrides(action: Action<TypeOverridesExtension>) {
         action.execute(typeOverrides)
     }
 
-    val client: GenerateClientExtension = objects.newInstance(GenerateClientExtension::class.java)
+    @get:Nested
+    abstract val client: GenerateClientExtension
 
     fun client(action: Action<GenerateClientExtension>) {
         action.execute(client)
     }
 
-    val controller: GenerateControllerExtension =
-        objects.newInstance(GenerateControllerExtension::class.java)
+    @get:Nested
+    abstract val controller: GenerateControllerExtension
 
     fun controller(action: Action<GenerateControllerExtension>) {
         action.execute(controller)
     }
 
-    val model: GenerateModelExtension =
-        objects.newInstance(GenerateModelExtension::class.java)
+    @get:Nested
+    abstract val model: GenerateModelExtension
 
     fun model(action: Action<GenerateModelExtension>) {
         action.execute(model)
     }
 
-    open val skip: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val skip: Property<Boolean>
 
 }
 
-open class TypeOverridesExtension @Inject constructor(objects: ObjectFactory) {
+abstract class TypeOverridesExtension {
 
-    val datetime: Property<DateTimeOverrideOption> = objects.property(DateTimeOverrideOption::class.java)
+    abstract val datetime: Property<DateTimeOverrideOption>
 
     @Suppress("VariableNaming")
     val OffsetDateTime: DateTimeOverrideOption = DateTimeOverrideOption.OffsetDateTime
@@ -126,7 +124,7 @@ open class TypeOverridesExtension @Inject constructor(objects: ObjectFactory) {
     @Suppress("VariableNaming")
     val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime
 
-    val binary: Property<BinaryOverrideOption> = objects.property(BinaryOverrideOption::class.java)
+    abstract val binary: Property<BinaryOverrideOption>
 
     @Suppress("VariableNaming")
     val ByteArray: BinaryOverrideOption = BinaryOverrideOption.ByteArray
@@ -136,17 +134,17 @@ open class TypeOverridesExtension @Inject constructor(objects: ObjectFactory) {
 
 }
 
-open class GenerateClientExtension @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateClientExtension {
 
-    val generate: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val generate: Property<Boolean>
 
-    val resilience4j: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val resilience4j: Property<Boolean>
 
-    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val suspendModifier: Property<Boolean>
 
-    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val springResponseEntityWrapper: Property<Boolean>
 
-    val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
+    abstract val target: Property<ClientTargetOption>
 
     @Suppress("VariableNaming")
     val OkHttp: ClientTargetOption = ClientTargetOption.OkHttp
@@ -156,17 +154,17 @@ open class GenerateClientExtension @Inject constructor(objects: ObjectFactory) {
 
 }
 
-open class GenerateControllerExtension @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateControllerExtension {
 
-    val generate: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val generate: Property<Boolean>
 
-    val authentication: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val authentication: Property<Boolean>
 
-    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val suspendModifier: Property<Boolean>
 
-    val completionStage: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val completionStage: Property<Boolean>
 
-    val target: Property<ControllerTargetOption> = objects.property(ControllerTargetOption::class.java)
+    abstract val target: Property<ControllerTargetOption>
 
     @Suppress("VariableNaming")
     val Spring: ControllerTargetOption = ControllerTargetOption.Spring
@@ -179,32 +177,32 @@ open class GenerateControllerExtension @Inject constructor(objects: ObjectFactor
 
 }
 
-open class GenerateModelExtension @Inject constructor(objects: ObjectFactory) {
+@Suppress("UnnecessaryAbstractClass")
+abstract class GenerateModelExtension {
 
-    val generate: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val generate: Property<Boolean>
 
-    val extensibleEnums: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val extensibleEnums: Property<Boolean>
 
-    val javaSerialization: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val javaSerialization: Property<Boolean>
 
-    val quarkusReflection: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val quarkusReflection: Property<Boolean>
 
-    val micronautIntrospection: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val micronautIntrospection: Property<Boolean>
 
-    val micronautReflection: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val micronautReflection: Property<Boolean>
 
-    val includeCompanionObject: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val includeCompanionObject: Property<Boolean>
 
-    val sealedInterfacesForOneOf: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val sealedInterfacesForOneOf: Property<Boolean>
 
-    val nonNullMapValues: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val nonNullMapValues: Property<Boolean>
 
-    val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val ignoreUnknownProperties: Property<Boolean>
 
-    val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val suffix: Property<CharSequence>
 
-    val serializationLibrary: Property<SerializationLibraryOption> =
-        objects.property(SerializationLibraryOption::class.java)
+    abstract val serializationLibrary: Property<SerializationLibraryOption>
 
     @Suppress("VariableNaming")
     val Jackson: SerializationLibraryOption = SerializationLibraryOption.Jackson
