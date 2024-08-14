@@ -20,11 +20,8 @@ typealias GenerateTaskConfigurationInitializer =
     GenerateTaskConfiguration.(source: GenerateTaskExtension, defaults: GenerateTaskDefaults) -> Unit
 
 abstract class FabriktGenerateTask @Inject constructor(
-    private val objects: ObjectFactory,
-    problems: Problems
+    private val objects: ObjectFactory
 ) : DefaultTask() {
-
-    private val problemReporter = problems.forNamespace(FabriktPlugin.PLUGIN_ID)
 
     @get:Nested
     abstract val configurations: ListProperty<GenerateTaskConfiguration>
@@ -58,6 +55,7 @@ abstract class FabriktGenerateTask @Inject constructor(
                     generate(config)
                 } catch (e: GeneratorException) {
                     progress.fail(apiFile)
+                    val problemReporter = services.get(Problems::class.java).forNamespace(FabriktPlugin.PLUGIN_ID)
                     problemReporter.rethrowing(e, generatorProblem(e, config.name))
                 }
             }
