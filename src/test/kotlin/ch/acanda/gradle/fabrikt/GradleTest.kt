@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt
 
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
 import org.gradle.internal.classpath.DefaultClassPath
@@ -202,9 +203,11 @@ class GradleTest : StringSpec({
 
     "`gradle fabriktGenerate` with multiple kotlin configurations should run fabrikt" {
         val projectDir = projectDir("multi-config")
-        val basePackage = "ch.acanda"
+        val basePackageA = "ch.acanda.a"
+        val basePackageB = "ch.acanda.b"
         val openapiPathDog = createSpec(projectDir, "Dog")
         val openapiPathCat = createSpec(projectDir, "Cat")
+        val openapiPathMouse = createSpec(projectDir, "Mouse")
         projectDir.resolve("build.gradle.kts").writeText(
             """
             |plugins {
@@ -214,11 +217,15 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  generate("dog") {
             |    apiFile = file("$openapiPathDog")
-            |    basePackage = "$basePackage"
+            |    basePackage = "$basePackageA"
             |  }
             |  generate("cat") {
             |    apiFile = file("$openapiPathCat")
-            |    basePackage = "$basePackage"
+            |    basePackage = "$basePackageB"
+            |  }
+            |  generate("mouse") {
+            |    apiFile = file("$openapiPathMouse")
+            |    basePackage = "$basePackageB"
             |  }
             |}
             """.trimMargin()
@@ -229,11 +236,14 @@ class GradleTest : StringSpec({
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+        val modelsPathA = "build/generated/sources/fabrikt/src/main/kotlin/${basePackageA.packageToPath()}/models"
+        val filesA = projectDir.resolve(modelsPathA).listFilesRelative()
+        filesA shouldContain "Dog.kt"
 
-        val files = projectDir.resolve(modelsPath).listFilesRelative()
-        files shouldContain "Dog.kt"
-        files shouldContain "Cat.kt"
+        val modelsPathB = "build/generated/sources/fabrikt/src/main/kotlin/${basePackageB.packageToPath()}/models"
+        val filesB = projectDir.resolve(modelsPathB).listFilesRelative()
+        filesB shouldNotContain "Cat.kt"
+        filesB shouldContain "Mouse.kt"
     }
 
     "`gradle fabriktGenerate` with multiple groovy configurations should run fabrikt" {
@@ -250,11 +260,11 @@ class GradleTest : StringSpec({
             |fabrikt {
             |  dog {
             |    apiFile = file('$openapiPathDog')
-            |    basePackage = '$basePackage'
+            |    basePackage = '$basePackage.dog'
             |  }
             |  cat {
             |    apiFile = file('$openapiPathCat')
-            |    basePackage = '$basePackage'
+            |    basePackage = '$basePackage.cat'
             |  }
             |}
             """.trimMargin()
@@ -265,10 +275,10 @@ class GradleTest : StringSpec({
             .shouldNotBeNull()
             .outcome shouldBe TaskOutcome.SUCCESS
 
-        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}"
         val files = projectDir.resolve(modelsPath).listFilesRelative()
-        files shouldContain "Dog.kt"
-        files shouldContain "Cat.kt"
+        files shouldContain "dog/models/Dog.kt"
+        files shouldContain "cat/models/Cat.kt"
     }
 
     "`gradle compileKotlin` should run fabrikt" {

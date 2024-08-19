@@ -5,13 +5,16 @@ import ch.acanda.gradle.fabrikt.GenerateTaskDefaults
 import ch.acanda.gradle.fabrikt.GenerateTaskExtension
 import ch.acanda.gradle.fabrikt.initializeWithDefaults
 import ch.acanda.gradle.fabrikt.listFilesRelative
+import ch.acanda.gradle.fabrikt.packageToPath
 import io.kotest.core.TestConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.engine.spec.tempdir
 import io.kotest.engine.spec.tempfile
 import io.kotest.matchers.collections.beEmpty
 import io.kotest.matchers.collections.shouldContain
+import io.kotest.matchers.file.exist
 import io.kotest.matchers.should
+import io.kotest.matchers.shouldNot
 import io.kotest.matchers.string.shouldContain
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
@@ -94,6 +97,30 @@ class FabriktGeneratorTest : WordSpec({
 
             val outputs = outputDir.listFilesRelative()
             outputs should beEmpty()
+        }
+
+        "clean source and resource dir before generating code" {
+            val outputDir = tempdir("out")
+            val config = createConfig()
+            config.apiFile.set(apiFile())
+            config.apiFragments.setFrom(apiFragment())
+            config.basePackage.set("dog")
+            config.outputDirectory.set(outputDir)
+
+            val packageDir = config.basePackage.get().toString().packageToPath()
+            val sourcesDir = outputDir.resolve(config.sourcesPath.get().toString()).resolve(packageDir)
+            sourcesDir.mkdirs()
+            val sourcesFile = sourcesDir.resolve("src.txt").apply { writeText("Hi!") }
+            val resourcesDir = outputDir.resolve(config.resourcesPath.get().toString()).resolve(packageDir)
+            resourcesDir.mkdirs()
+            val resourcesFile = resourcesDir.resolve("resrc.txt").apply { writeText("Hi!") }
+
+            generate(config)
+
+            val outputs = outputDir.listFilesRelative()
+            outputs shouldNot beEmpty()
+            sourcesFile shouldNot exist()
+            resourcesFile shouldNot exist()
         }
 
     }
