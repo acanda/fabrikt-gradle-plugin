@@ -5,7 +5,7 @@ plugins {
     kotlin("jvm")
     `java-gradle-plugin`
     idea
-    id("io.gitlab.arturbosch.detekt") version "1.23.6"
+    id("io.gitlab.arturbosch.detekt") version "1.23.7"
     id("com.gradle.plugin-publish") version "1.3.0"
     signing
 }
