@@ -5,5 +5,13 @@
   ],
   "ignoreDeps": [
     "org.jetbrains.kotlin.jvm"
+  ],
+  "packageRules": [
+    {
+      "groupName": "Detekt",
+      "matchPackageNames": [
+        "io.gitlab.arturbosch.detekt:*"
+      ]
+    }
   ]
 }
