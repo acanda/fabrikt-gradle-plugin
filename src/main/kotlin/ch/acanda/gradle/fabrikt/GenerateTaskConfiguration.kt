@@ -143,6 +143,18 @@ open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory
     @Suppress("VariableNaming")
     val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime
 
+    @get:Input
+    @get:Optional
+    val binary: Property<BinaryOverrideOption> = objects.property(BinaryOverrideOption::class.java)
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val ByteArray: BinaryOverrideOption = BinaryOverrideOption.ByteArray
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val InputStream: BinaryOverrideOption = BinaryOverrideOption.InputStream
+
 }
 
 open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactory) {
@@ -346,6 +358,15 @@ open class TypeOverridesDefaults @Inject constructor(objects: ObjectFactory) {
 
     @Suppress("VariableNaming")
     val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime
+
+    val binary: Property<BinaryOverrideOption> =
+        objects.property(BinaryOverrideOption::class.java).convention(BinaryOverrideOption.ByteArray)
+
+    @Suppress("VariableNaming")
+    val ByteArray: BinaryOverrideOption = BinaryOverrideOption.ByteArray
+
+    @Suppress("VariableNaming")
+    val InputStream: BinaryOverrideOption = BinaryOverrideOption.InputStream
 
 }
 

@@ -24,6 +24,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         quarkusReflectionConfig.set(Arb.boolean().orNull(0.2).bind())
         typeOverrides.datetime.set(Arb.enum<DateTimeOverrideOption>().orNull(0.2).bind())
+        typeOverrides.binary.set(Arb.enum<BinaryOverrideOption>().orNull(0.2).bind())
         validationLibrary.set(Arb.enum<ValidationLibraryOption>().orNull(0.2).bind())
         client.generate.set(Arb.boolean().orNull(0.2).bind())
         client.resilience4j.set(Arb.boolean().orNull(0.2).bind())

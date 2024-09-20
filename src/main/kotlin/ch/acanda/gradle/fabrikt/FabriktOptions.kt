@@ -26,6 +26,13 @@ enum class DateTimeOverrideOption(
     LocalDateTime(CodeGenTypeOverride.DATETIME_AS_LOCALDATETIME),
 }
 
+enum class BinaryOverrideOption(
+    override val fabriktOption: CodeGenTypeOverride?,
+) : FabriktOption {
+    ByteArray(null),
+    InputStream(CodeGenTypeOverride.BYTEARRAY_AS_INPUTSTREAM),
+}
+
 enum class ValidationLibraryOption(
     override val fabriktOption: ValidationLibrary,
 ) : FabriktOption {

@@ -1,10 +1,12 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
@@ -64,12 +66,14 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
     }
 
     private fun GenerateTaskConfiguration.addTypeOverridesArgs(args: MutableList<String>) = with(typeOverrides) {
-        val overrides = listOfNotNull(
-            datetime.orNull?.fabriktOption
-        )
-        if (overrides.isNotEmpty()) {
+        addTypeOverrideArg(args, datetime)
+        addTypeOverrideArg(args, binary)
+    }
+
+    private fun addTypeOverrideArg(args: MutableList<String>, property: Property<out FabriktOption>) {
+        property.orNull?.fabriktOption?.let { option ->
             args.add(ARG_TYPE_OVERRIDES)
-            args.addAll(overrides.map { it.name })
+            args.add(option.name)
         }
     }
 
