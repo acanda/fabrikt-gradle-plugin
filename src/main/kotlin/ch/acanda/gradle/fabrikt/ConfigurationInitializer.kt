@@ -17,6 +17,10 @@ internal fun initializeWithDefaults(
     validationLibrary.assign(source.validationLibrary, defaults.validationLibrary)
     // same as model.quarkusReflection?
     quarkusReflectionConfig.assign(source.quarkusReflectionConfig, defaults.quarkusReflectionConfig)
+    with(typeOverrides) {
+        datetime.assign(source.typeOverrides.datetime, defaults.typeOverrides.datetime)
+        binary.assign(source.typeOverrides.binary, defaults.typeOverrides.binary)
+    }
     typeOverrides.datetime.assign(source.typeOverrides.datetime, defaults.typeOverrides.datetime)
     with(client) {
         val s = source.client

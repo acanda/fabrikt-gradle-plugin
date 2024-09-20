@@ -126,6 +126,14 @@ open class TypeOverridesExtension @Inject constructor(objects: ObjectFactory) {
     @Suppress("VariableNaming")
     val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime
 
+    val binary: Property<BinaryOverrideOption> = objects.property(BinaryOverrideOption::class.java)
+
+    @Suppress("VariableNaming")
+    val ByteArray: BinaryOverrideOption = BinaryOverrideOption.ByteArray
+
+    @Suppress("VariableNaming")
+    val InputStream: BinaryOverrideOption = BinaryOverrideOption.InputStream
+
 }
 
 open class GenerateClientExtension @Inject constructor(objects: ObjectFactory) {
