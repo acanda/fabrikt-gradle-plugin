@@ -53,6 +53,7 @@ internal fun initializeWithDefaults(
         sealedInterfacesForOneOf.assign(s.sealedInterfacesForOneOf, d.sealedInterfacesForOneOf)
         nonNullMapValues.assign(s.nonNullMapValues, d.nonNullMapValues)
         ignoreUnknownProperties.assign(s.ignoreUnknownProperties, d.ignoreUnknownProperties)
+        suffix.assign(s.suffix, d.suffix)
     }
     skip.assign(source.skip, defaults.skip)
     init.invoke(this)

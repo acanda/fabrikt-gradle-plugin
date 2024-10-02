@@ -133,6 +133,10 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_MODEL_OPTS,
                         ModelCodeGenOptionType.NON_NULL_MAP_VALUES
                     )
+                    cliArgs.shouldContainOptionally(
+                        suffix,
+                        ARG_MODEL_SUFFIX
+                    )
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs shouldNotContain ARG_MODEL_OPTS
@@ -145,6 +149,7 @@ class FabriktArgumentsTest : StringSpec({
 
     companion object {
 
+        @JvmName(name = "shouldContainBooleanOptionOptionally")
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<Boolean>,
             argName: String,
@@ -158,6 +163,7 @@ class FabriktArgumentsTest : StringSpec({
             }
         }
 
+        @JvmName(name = "shouldContainOptionOptionally")
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<out FabriktOption>,
             argName: String
@@ -165,6 +171,18 @@ class FabriktArgumentsTest : StringSpec({
             val argValue = valueProvider.orNull?.fabriktOption?.name
             if (argValue != null) {
                 val containArgument = containsArgument(argName, argValue)
+                this should containArgument
+            }
+        }
+
+        @JvmName(name = "shouldContainStringOptionally")
+        private fun Array<String>.shouldContainOptionally(
+            valueProvider: Provider<out CharSequence>,
+            argName: String
+        ) {
+            val argValue = valueProvider.orNull
+            if (argValue != null) {
+                val containArgument = containsArgument(argName, argValue.toString())
                 this should containArgument
             }
         }

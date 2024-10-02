@@ -267,6 +267,10 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
     @get:Optional
     val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java)
 
+    @get:Input
+    @get:Optional
+    val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
+
 }
 
 open class GenerateTaskDefaults @Inject constructor(
@@ -453,5 +457,9 @@ open class GenerateModelDefaults @Inject constructor(objects: ObjectFactory) {
     @get:Input
     @get:Optional
     val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+
+    @get:Input
+    @get:Optional
+    val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
 
 }

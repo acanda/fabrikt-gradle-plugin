@@ -80,6 +80,7 @@ class FabriktPluginTest : WordSpec({
                         sealedInterfacesForOneOf.set(it.enabled)
                         nonNullMapValues.set(it.enabled)
                         ignoreUnknownProperties.set(it.enabled)
+                        suffix.set("Dto")
                     }
                 }
             }
@@ -126,6 +127,7 @@ class FabriktPluginTest : WordSpec({
                         sealedInterfacesForOneOf shouldContain true
                         nonNullMapValues shouldContain true
                         ignoreUnknownProperties shouldContain true
+                        suffix shouldContainString "Dto"
                     }
                 }
         }
@@ -185,6 +187,7 @@ class FabriktPluginTest : WordSpec({
                         includeCompanionObject shouldContain false
                         nonNullMapValues shouldContain false
                         sealedInterfacesForOneOf shouldContain false
+                        suffix shouldContain null
                     }
                 }
         }
