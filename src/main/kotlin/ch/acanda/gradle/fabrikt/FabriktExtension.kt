@@ -201,4 +201,6 @@ open class GenerateModelExtension @Inject constructor(objects: ObjectFactory) {
 
     val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java)
 
+    val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
+
 }

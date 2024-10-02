@@ -73,6 +73,7 @@ class GradleTest : StringSpec({
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      ignoreUnknownProperties = enabled
+            |      suffix = "Dto"
             |    }
             |    skip = false
             |  }
@@ -89,7 +90,7 @@ class GradleTest : StringSpec({
         val outputs = projectDir.resolve(outputPath).listFilesRelative()
 
         val basePath = "$sourcePath/${basePackage.packageToPath()}"
-        outputs shouldContain "$basePath/models/Dog.kt"
+        outputs shouldContain "$basePath/models/DogDto.kt"
         outputs shouldContain "$basePath/client/DogClient.kt"
         outputs shouldContain "$basePath/controllers/DogController.kt"
         outputs shouldContain "$resourcePath/reflection-config.json"
@@ -146,6 +147,7 @@ class GradleTest : StringSpec({
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      ignoreUnknownProperties = enabled
+            |      suffix = "Dto"
             |    }
             |  }
             |
@@ -168,7 +170,7 @@ class GradleTest : StringSpec({
         val outputs = projectDir.resolve(outputPath).listFilesRelative()
 
         val basePath = "$sourcePath/${basePackage.packageToPath()}"
-        outputs shouldContain "$basePath/models/Dog.kt"
+        outputs shouldContain "$basePath/models/DogDto.kt"
         outputs shouldContain "$basePath/client/DogClient.kt"
         outputs shouldContain "$basePath/controllers/DogController.kt"
         outputs shouldContain "$resourcePath/reflection-config.json"

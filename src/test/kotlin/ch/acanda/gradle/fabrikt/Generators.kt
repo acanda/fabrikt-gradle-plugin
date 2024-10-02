@@ -7,6 +7,7 @@ import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.set
+import io.kotest.property.arbitrary.string
 import io.kotest.property.arbitrary.stringPattern
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
@@ -43,6 +44,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.includeCompanionObject.set(Arb.boolean().orNull(0.2).bind())
         model.nonNullMapValues.set(Arb.boolean().orNull(0.2).bind())
         model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
+        model.suffix.set(Arb.string(0..3).orNull(0.2).bind())
         skip.set(Arb.boolean().orNull(0.2).bind())
     }
 }
