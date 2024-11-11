@@ -55,8 +55,8 @@ abstract class FabriktGenerateTask @Inject constructor(
                     generate(config)
                 } catch (e: GeneratorException) {
                     progress.fail(apiFile)
-                    val problemReporter = services.get(Problems::class.java).forNamespace(FabriktPlugin.PLUGIN_ID)
-                    problemReporter.rethrowing(e, generatorProblem(e, config.name))
+                    val problemReporter = services.get(Problems::class.java).reporter
+                    problemReporter.throwing(generatorProblem(e, config.name))
                 }
             }
         }
@@ -68,6 +68,7 @@ abstract class FabriktGenerateTask @Inject constructor(
             .contextualLabel("Fabrikt failed to generate code for configuration $name.")
             .details("Fabrikt failed to generate code for the OpenAPI specification ${e.apiFile}.")
             .severity(Severity.ERROR)
+            .withException(e)
     }
 
 }
