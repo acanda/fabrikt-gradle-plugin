@@ -12,13 +12,13 @@ contract and code always match, even as your APIs evolve in complexity.
 
 [![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/ch.acanda.gradle.fabrikt?style=flat)](https://plugins.gradle.org/plugin/ch.acanda.gradle.fabrikt)
 
-The plugin requires at least Gradle 8.10 and a JRE 21.
+The plugin requires at least Gradle 8.11 and a JRE 21.
 
 To use it with the Kotlin DSL (build.gradle.kts):
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "1.5.0"
+    id("ch.acanda.gradle.fabrikt") version "1.6.0"
 }
 
 fabrikt {
@@ -33,7 +33,7 @@ To use it with the Groovy DSL (build.gradle):
 
 ```groovy
 plugins {
-    id 'ch.acanda.gradle.fabrikt' version '1.5.0'
+    id 'ch.acanda.gradle.fabrikt' version '1.6.0'
 }
 
 fabrikt {
@@ -63,7 +63,7 @@ The plugin provides the following tasks:
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "1.5.0"
+    id("ch.acanda.gradle.fabrikt") version "1.6.0"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
     // output directory as a generated sources directory.
     idea
