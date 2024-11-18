@@ -4,6 +4,7 @@ import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ExternalReferencesResolutionMode
+import com.cjbooms.fabrikt.cli.SerializationLibrary
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 
 sealed interface FabriktOption {
@@ -54,4 +55,11 @@ enum class ControllerTargetOption(
     Spring(ControllerCodeGenTargetType.SPRING),
     Micronaut(ControllerCodeGenTargetType.MICRONAUT),
     Ktor(ControllerCodeGenTargetType.KTOR),
+}
+
+enum class SerializationLibraryOption(
+    override val fabriktOption: SerializationLibrary,
+) : FabriktOption {
+    Jackson(SerializationLibrary.JACKSON),
+    Kotlin(SerializationLibrary.KOTLINX_SERIALIZATION),
 }

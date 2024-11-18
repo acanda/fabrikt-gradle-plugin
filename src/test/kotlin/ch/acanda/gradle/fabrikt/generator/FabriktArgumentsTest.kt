@@ -137,6 +137,10 @@ class FabriktArgumentsTest : StringSpec({
                         suffix,
                         ARG_MODEL_SUFFIX
                     )
+                    cliArgs.shouldContainOptionally(
+                        serializationLibrary,
+                        ARG_MODEL_SERIALIZATION_LIB,
+                    )
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs shouldNotContain ARG_MODEL_OPTS

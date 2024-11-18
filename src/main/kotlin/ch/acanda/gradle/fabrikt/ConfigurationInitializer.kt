@@ -54,6 +54,7 @@ internal fun initializeWithDefaults(
         nonNullMapValues.assign(s.nonNullMapValues, d.nonNullMapValues)
         ignoreUnknownProperties.assign(s.ignoreUnknownProperties, d.ignoreUnknownProperties)
         suffix.assign(s.suffix, d.suffix)
+        serializationLibrary.assign(s.serializationLibrary, d.serializationLibrary)
     }
     skip.assign(source.skip, defaults.skip)
     init.invoke(this)

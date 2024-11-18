@@ -81,6 +81,7 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues.set(it.enabled)
                         ignoreUnknownProperties.set(it.enabled)
                         suffix.set("Dto")
+                        serializationLibrary.set(Kotlin)
                     }
                 }
             }
@@ -128,6 +129,7 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues shouldContain true
                         ignoreUnknownProperties shouldContain true
                         suffix shouldContainString "Dto"
+                        serializationLibrary shouldContain SerializationLibraryOption.Kotlin
                     }
                 }
         }
@@ -188,6 +190,7 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues shouldContain false
                         sealedInterfacesForOneOf shouldContain false
                         suffix shouldContain null
+                        serializationLibrary shouldContain SerializationLibraryOption.Jackson
                     }
                 }
         }

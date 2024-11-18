@@ -110,6 +110,7 @@ fabrikt {
             includeCompanionObject = disabled
             sealedInterfacesForOneOf = disabled
             ignoreUnknownProperties = disabled
+            serializationLibrary = Jackson
         }
         skip = false
     }
@@ -150,6 +151,7 @@ fabrikt {
 | model.nonNullMapValues             | This option makes map values non-null when enabled. The default is to make map values nullable.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                | `disabled`                        |
 | model.ignoreUnknownProperties      | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
 | model.suffix                       | Specifies a custom suffix for all generated model classes.                                                                                                                                                                                                                                                                         | `null` (no suffix)                |
+| model.serializationLibrary         | Specifies the serialization library to use for annotations in generated model classes.<br/>Values: `Jackson`, `Kotlin`.                                                                                                                                                                                                            | `Jackson`                         |
 | skip                               | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
 ### Defaults

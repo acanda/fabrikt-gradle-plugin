@@ -271,6 +271,19 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
     @get:Optional
     val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
 
+    @get:Input
+    @get:Optional
+    val serializationLibrary: Property<SerializationLibraryOption> =
+        objects.property(SerializationLibraryOption::class.java)
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Jackson: SerializationLibraryOption = SerializationLibraryOption.Jackson
+
+    @get:Internal
+    @Suppress("VariableNaming")
+    val Kotlin: SerializationLibraryOption = SerializationLibraryOption.Kotlin
+
 }
 
 open class GenerateTaskDefaults @Inject constructor(
@@ -461,5 +474,16 @@ open class GenerateModelDefaults @Inject constructor(objects: ObjectFactory) {
     @get:Input
     @get:Optional
     val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
+
+    @get:Input
+    @get:Optional
+    val serializationLibrary: Property<SerializationLibraryOption> =
+        objects.property(SerializationLibraryOption::class.java).convention(SerializationLibraryOption.Jackson)
+
+    @Suppress("VariableNaming")
+    val Jackson: SerializationLibraryOption = SerializationLibraryOption.Jackson
+
+    @Suppress("VariableNaming")
+    val Kotlin: SerializationLibraryOption = SerializationLibraryOption.Kotlin
 
 }

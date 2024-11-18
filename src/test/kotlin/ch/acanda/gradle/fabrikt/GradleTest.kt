@@ -74,6 +74,7 @@ class GradleTest : StringSpec({
             |      nonNullMapValues = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
+            |      serializationLibrary = Kotlin
             |    }
             |    skip = false
             |  }
@@ -148,6 +149,7 @@ class GradleTest : StringSpec({
             |      nonNullMapValues = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
+            |      serializationLibrary = Kotlin
             |    }
             |  }
             |

@@ -203,4 +203,13 @@ open class GenerateModelExtension @Inject constructor(objects: ObjectFactory) {
 
     val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
 
+    val serializationLibrary: Property<SerializationLibraryOption> =
+        objects.property(SerializationLibraryOption::class.java)
+
+    @Suppress("VariableNaming")
+    val Jackson: SerializationLibraryOption = SerializationLibraryOption.Jackson
+
+    @Suppress("VariableNaming")
+    val Kotlin: SerializationLibraryOption = SerializationLibraryOption.Kotlin
+
 }

@@ -25,6 +25,7 @@ internal const val ARG_CONTROLLER_OPTS = "--http-controller-opts"
 internal const val ARG_CONTROLLER_TARGET = "--http-controller-target"
 internal const val ARG_MODEL_OPTS = "--http-model-opts"
 internal const val ARG_MODEL_SUFFIX = "--http-model-suffix"
+internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -129,6 +130,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             suffix.orNull?.let {
                 args.add(ARG_MODEL_SUFFIX)
                 args.add(it.toString())
+            }
+            serializationLibrary.orNull?.let {
+                args.add(ARG_MODEL_SERIALIZATION_LIB)
+                args.add(it.fabriktOption.name)
             }
         }
     }

@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ExternalReferencesResolutionMode
+import com.cjbooms.fabrikt.cli.SerializationLibrary
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.assertions.withClue
 import io.kotest.core.spec.style.StringSpec
@@ -25,6 +26,10 @@ class FabriktOptionsTest : StringSpec({
 
     "ControllerTarget" {
         ControllerTargetOption::class shouldMatch ControllerCodeGenTargetType::class
+    }
+
+    "SerializationLibrary" {
+        SerializationLibraryOption::class shouldMatch SerializationLibrary::class
     }
 
 }) {
