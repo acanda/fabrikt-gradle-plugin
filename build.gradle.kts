@@ -86,7 +86,7 @@ signing {
 tasks {
 
     wrapper {
-        gradleVersion = "8.11"
+        gradleVersion = "8.11.1"
     }
 
     withType<Detekt>().configureEach {
