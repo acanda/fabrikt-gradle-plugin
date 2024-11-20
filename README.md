@@ -2,7 +2,7 @@
 
 The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds.
 [Fabrikt](https://github.com/cjbooms/fabrikt) generates Kotlin data classes with
-support for advanced features, Spring or Micronaut controllers, and OkHttp or
+support for advanced features, Spring or Micronaut controllers, Ktor route handlers, and OkHttp or
 OpenFeign clients.
 
 This plugin can be permanently integrated into your Gradle build and will ensure
