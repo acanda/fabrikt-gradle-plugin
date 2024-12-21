@@ -3,11 +3,11 @@ import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
 plugins {
-    kotlin("jvm")
+    alias(libs.plugins.kotlin.jvm)
     `java-gradle-plugin`
     idea
-    id("io.gitlab.arturbosch.detekt") version "1.23.7"
-    id("com.gradle.plugin-publish") version "1.3.0"
+    alias(libs.plugins.detekt)
+    alias(libs.plugins.publish)
     signing
 }
 
@@ -37,13 +37,13 @@ repositories {
 }
 
 dependencies {
-    implementation("com.cjbooms:fabrikt:19.1.0")
+    implementation(libs.fabrikt)
     testImplementation(kotlin("test"))
-    detektPlugins("io.gitlab.arturbosch.detekt:detekt-formatting:1.23.7")
+    detektPlugins(libs.detekt.formatting)
 }
 
 kotlin {
-    jvmToolchain(21)
+    jvmToolchain(libs.versions.jvm.get().toInt())
 }
 
 sourceSets {
@@ -70,12 +70,11 @@ testing {
     suites {
         @Suppress("unused")
         val test by getting(JvmTestSuite::class) {
-            useJUnitJupiter("5.10.0")
+            useJUnitJupiter(libs.versions.junit)
             dependencies {
-                val kotestVersion = "5.9.1"
-                implementation("io.kotest:kotest-runner-junit5:$kotestVersion")
-                implementation("io.kotest:kotest-property:$kotestVersion")
-                runtimeOnly("org.junit.platform:junit-platform-launcher:1.11.4")
+                implementation(libs.kotest.runner.junit5)
+                implementation(libs.kotest.property)
+                runtimeOnly(libs.junit.platform.launcher)
             }
         }
     }
@@ -101,7 +100,7 @@ tasks {
     }
 
     wrapper {
-        gradleVersion = "8.12"
+        gradleVersion = libs.versions.gradle.get()
     }
 
     withType<Detekt>().configureEach {
