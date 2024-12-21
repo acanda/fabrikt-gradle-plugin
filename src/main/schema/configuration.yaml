@@ -1,0 +1,46 @@
+options:
+
+  ExternalReferencesResolutionOption:
+    source: com.cjbooms.fabrikt.cli.ExternalReferencesResolutionMode
+    mapping:
+      targeted: TARGETED
+      aggressive: AGGRESSIVE
+
+  DateTimeOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      OffsetDateTime: null
+      Instant: DATETIME_AS_INSTANT
+      LocalDateTime: DATETIME_AS_LOCALDATETIME
+
+  BinaryOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      ByteArray: null
+      InputStream: BYTEARRAY_AS_INPUTSTREAM
+
+  ValidationLibraryOption:
+    source: com.cjbooms.fabrikt.cli.ValidationLibrary
+    mapping:
+      Jakarta: JAKARTA_VALIDATION
+      Javax: JAVAX_VALIDATION
+      NoValidation: NO_VALIDATION
+
+  ClientTargetOption:
+    source: com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
+    mapping:
+      OkHttp: OK_HTTP
+      OpenFeign: OPEN_FEIGN
+
+  ControllerTargetOption:
+    source: com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
+    mapping:
+      Spring: SPRING
+      Micronaut: MICRONAUT
+      Ktor: KTOR
+
+  SerializationLibraryOption:
+    source: com.cjbooms.fabrikt.cli.SerializationLibrary
+    mapping:
+      Jackson: JACKSON
+      Kotlin: KOTLINX_SERIALIZATION

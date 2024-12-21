@@ -1,3 +1,4 @@
+import ch.acanda.gradle.fabrikt.build.GeneratePluginClassesTask
 import io.gitlab.arturbosch.detekt.Detekt
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
@@ -56,6 +57,7 @@ sourceSets {
 idea {
     module {
         generatedSourceDirs.add(generatedSources.get().asFile)
+        isDownloadSources = true
     }
 }
 
@@ -84,6 +86,19 @@ signing {
 }
 
 tasks {
+
+    val generatePluginClasses by registering(GeneratePluginClassesTask::class) {
+        schema = file("src/main/schema/configuration.yaml")
+        outputDirectory = generatedSources
+    }
+
+    compileKotlin {
+        dependsOn(generatePluginClasses)
+    }
+
+    withType<Jar>().configureEach {
+        dependsOn(generatePluginClasses)
+    }
 
     wrapper {
         gradleVersion = "8.12"
