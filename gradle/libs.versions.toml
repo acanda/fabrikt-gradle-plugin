@@ -12,7 +12,7 @@ junit = "5.10.0"
 [libraries]
 fabrikt = { group = "com.cjbooms", name = "fabrikt", version = "19.1.0" }
 detekt-formatting = { group = "io.gitlab.arturbosch.detekt", name = "detekt-formatting", version.ref = "detekt" }
-kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version = "1.18.1" }
+kotlinpoet = { group = "com.squareup", name = "kotlinpoet", version = "2.0.0" }
 jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackson-module-kotlin", version.ref = "jackson" }
 jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
 kotest-runner-junit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
