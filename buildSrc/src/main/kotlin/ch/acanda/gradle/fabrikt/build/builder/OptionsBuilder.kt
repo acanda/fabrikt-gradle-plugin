@@ -19,14 +19,14 @@ private const val OPTION_PARAM_NAME = "fabriktOption"
  * holding the information to map the gradle plugin's options to their
  * respective Fabrikt options.
  */
-internal fun buildOptions(packageName: String, options: OptionDefinitions): FileSpec {
-    val builder = FileSpec.builder(packageName, "FabriktOptions")
+internal fun buildOptions(options: OptionDefinitions): FileSpec {
+    val builder = FileSpec.builder(PACKAGE, "FabriktOptions")
     builder.addAnnotation(generated())
-    val optionInterfaceName = ClassName(packageName, "FabriktOption")
+    val optionInterfaceName = ClassName(PACKAGE, "FabriktOption")
     builder.addType(buildOptionInterface(optionInterfaceName))
     options.forEach { (name, definition) ->
         builder.addType(
-            buildOption(ClassName(packageName, name), optionInterfaceName, definition)
+            buildOption(ClassName(PACKAGE, name), optionInterfaceName, definition)
         )
     }
     return builder.build()

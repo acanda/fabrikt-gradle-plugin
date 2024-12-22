@@ -1,3 +1,97 @@
+configurations:
+
+  GenerateTask:
+    named: true
+    properties:
+      apiFile:
+        type: RegularFileProperty
+      apiFragments:
+        type: ConfigurableFileCollection
+      externalReferenceResolution:
+        type: ExternalReferencesResolutionOption
+      basePackage:
+        type: CharSequence
+      outputDirectory:
+        type: DirectoryProperty
+      sourcesPath:
+        type: CharSequence
+      resourcesPath:
+        type: CharSequence
+      validationLibrary:
+        type: ValidationLibraryOption
+      quarkusReflectionConfig:
+        type: Boolean
+      typeOverrides:
+        type: TypeOverrides
+      client:
+        type: GenerateClient
+      controller:
+        type: GenerateController
+      model:
+        type: GenerateModel
+      skip:
+        type: Boolean
+
+  TypeOverrides:
+    properties:
+      datetime:
+        type: DateTimeOverrideOption
+      binary:
+        type: BinaryOverrideOption
+
+  GenerateClient:
+    properties:
+      generate:
+        type: Boolean
+      resilience4j:
+        type: Boolean
+      suspendModifier:
+        type: Boolean
+      springResponseEntityWrapper:
+        type: Boolean
+      target:
+        type: ClientTargetOption
+
+  GenerateController:
+    properties:
+      generate:
+        type: Boolean
+      authentication:
+        type: Boolean
+      suspendModifier:
+        type: Boolean
+      completionStage:
+        type: Boolean
+      target:
+        type: ControllerTargetOption
+
+  GenerateModel:
+    properties:
+      generate:
+        type: Boolean
+      extensibleEnums:
+        type: Boolean
+      javaSerialization:
+        type: Boolean
+      quarkusReflection:
+        type: Boolean
+      micronautIntrospection:
+        type: Boolean
+      micronautReflection:
+        type: Boolean
+      includeCompanionObject:
+        type: Boolean
+      sealedInterfacesForOneOf:
+        type: Boolean
+      nonNullMapValues:
+        type: Boolean
+      ignoreUnknownProperties:
+        type: Boolean
+      suffix:
+        type: CharSequence
+      serializationLibrary:
+        type: SerializationLibraryOption
+
 options:
 
   ExternalReferencesResolutionOption:

@@ -5,6 +5,8 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.TypeName
 import javax.annotation.processing.Generated
 
+internal const val PACKAGE = "ch.acanda.gradle.fabrikt"
+
 internal fun generated() = AnnotationSpec.builder(Generated::class)
     .addMember("\"${GeneratePluginClassesTask::class.qualifiedName}\"")
     .build()
