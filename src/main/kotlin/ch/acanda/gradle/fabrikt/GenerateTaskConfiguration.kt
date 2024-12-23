@@ -286,10 +286,7 @@ open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory
 
 }
 
-open class GenerateTaskDefaults @Inject constructor(
-    internal val objects: ObjectFactory,
-    internal val layouts: ProjectLayout,
-) {
+abstract class GenerateTaskDefaults @Inject constructor(layouts: ProjectLayout) {
 
     // apiFile and basePackage are meant to be different for each
     // configuration and therefore cannot have a default value.
@@ -298,27 +295,21 @@ open class GenerateTaskDefaults @Inject constructor(
 
     val disabled: Boolean = false
 
-    val apiFragments: ConfigurableFileCollection = objects.fileCollection()
+    abstract val apiFragments: ConfigurableFileCollection
 
-    val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
-        objects.property(ExternalReferencesResolutionOption::class.java)
-            .convention(ExternalReferencesResolutionOption.targeted)
+    abstract val externalReferenceResolution: Property<ExternalReferencesResolutionOption>
 
     val targeted: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.targeted
 
     val aggressive: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.aggressive
 
-    val outputDirectory: DirectoryProperty = objects.directoryProperty()
-        .convention(layouts.buildDirectory.dir("generated/sources/fabrikt"))
+    abstract val outputDirectory: DirectoryProperty
 
-    val sourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
-        .convention("src/main/kotlin")
+    abstract val sourcesPath: Property<CharSequence>
 
-    val resourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
-        .convention("src/main/resources")
+    abstract val resourcesPath: Property<CharSequence>
 
-    val validationLibrary: Property<ValidationLibraryOption> =
-        objects.property(ValidationLibraryOption::class.java).convention(ValidationLibraryOption.Jakarta)
+    abstract val validationLibrary: Property<ValidationLibraryOption>
 
     @Suppress("VariableNaming")
     val Jakarta: ValidationLibraryOption = ValidationLibraryOption.Jakarta
@@ -329,43 +320,53 @@ open class GenerateTaskDefaults @Inject constructor(
     @Suppress("VariableNaming")
     val NoValidation: ValidationLibraryOption = ValidationLibraryOption.NoValidation
 
-    val quarkusReflectionConfig: Property<Boolean> = objects.property(Boolean::class.java)
-        .convention(false)
+    abstract val quarkusReflectionConfig: Property<Boolean>
 
-    val typeOverrides: TypeOverridesDefaults = objects.newInstance(TypeOverridesDefaults::class.java)
+    @get:Nested
+    abstract val typeOverrides: TypeOverridesDefaults
 
     fun typeOverrides(action: Action<TypeOverridesDefaults>) {
         action.execute(typeOverrides)
     }
 
-    val client: GenerateClientDefaults = objects.newInstance(GenerateClientDefaults::class.java)
+    @get:Nested
+    abstract val client: GenerateClientDefaults
 
     fun client(action: Action<GenerateClientDefaults>) {
         action.execute(client)
     }
 
-    val controller: GenerateControllerDefaults = objects.newInstance(GenerateControllerDefaults::class.java)
+    @get:Nested
+    abstract val controller: GenerateControllerDefaults
 
     fun controller(action: Action<GenerateControllerDefaults>) {
         action.execute(controller)
     }
 
-    val model: GenerateModelDefaults =
-        objects.newInstance(GenerateModelDefaults::class.java)
+    @get:Nested
+    abstract val model: GenerateModelDefaults
 
     fun model(action: Action<GenerateModelDefaults>) {
         action.execute(model)
     }
 
-    open val skip: Property<Boolean> = objects.property(Boolean::class.java)
-        .convention(false)
+    abstract val skip: Property<Boolean>
+
+    init {
+        externalReferenceResolution.convention(ExternalReferencesResolutionOption.targeted)
+        outputDirectory.convention(layouts.buildDirectory.dir("generated/sources/fabrikt"))
+        sourcesPath.convention("src/main/kotlin")
+        resourcesPath.convention("src/main/resources")
+        validationLibrary.convention(ValidationLibraryOption.Jakarta)
+        quarkusReflectionConfig.convention(false)
+        skip.convention(false)
+    }
 
 }
 
-open class TypeOverridesDefaults @Inject constructor(objects: ObjectFactory) {
+abstract class TypeOverridesDefaults {
 
-    val datetime: Property<DateTimeOverrideOption> =
-        objects.property(DateTimeOverrideOption::class.java).convention(DateTimeOverrideOption.OffsetDateTime)
+    abstract val datetime: Property<DateTimeOverrideOption>
 
     @Suppress("VariableNaming")
     val OffsetDateTime: DateTimeOverrideOption = DateTimeOverrideOption.OffsetDateTime
@@ -376,8 +377,7 @@ open class TypeOverridesDefaults @Inject constructor(objects: ObjectFactory) {
     @Suppress("VariableNaming")
     val LocalDateTime: DateTimeOverrideOption = DateTimeOverrideOption.LocalDateTime
 
-    val binary: Property<BinaryOverrideOption> =
-        objects.property(BinaryOverrideOption::class.java).convention(BinaryOverrideOption.ByteArray)
+    abstract val binary: Property<BinaryOverrideOption>
 
     @Suppress("VariableNaming")
     val ByteArray: BinaryOverrideOption = BinaryOverrideOption.ByteArray
@@ -385,20 +385,23 @@ open class TypeOverridesDefaults @Inject constructor(objects: ObjectFactory) {
     @Suppress("VariableNaming")
     val InputStream: BinaryOverrideOption = BinaryOverrideOption.InputStream
 
+    init {
+        datetime.convention(DateTimeOverrideOption.OffsetDateTime)
+        binary.convention(BinaryOverrideOption.ByteArray)
+    }
 }
 
-open class GenerateClientDefaults @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateClientDefaults {
 
-    val generate: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val generate: Property<Boolean>
 
-    val resilience4j: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val resilience4j: Property<Boolean>
 
-    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val suspendModifier: Property<Boolean>
 
-    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val springResponseEntityWrapper: Property<Boolean>
 
-    val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
-        .convention(ClientTargetOption.OkHttp)
+    abstract val target: Property<ClientTargetOption>
 
     @Suppress("VariableNaming")
     val OkHttp: ClientTargetOption = ClientTargetOption.OkHttp
@@ -406,20 +409,27 @@ open class GenerateClientDefaults @Inject constructor(objects: ObjectFactory) {
     @Suppress("VariableNaming")
     val OpenFeign: ClientTargetOption = ClientTargetOption.OpenFeign
 
+    init {
+        generate.convention(false)
+        resilience4j.convention(false)
+        suspendModifier.convention(false)
+        springResponseEntityWrapper.convention(false)
+        target.convention(ClientTargetOption.OkHttp)
+    }
+
 }
 
-open class GenerateControllerDefaults @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateControllerDefaults {
 
-    val generate: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val generate: Property<Boolean>
 
-    val authentication: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val authentication: Property<Boolean>
 
-    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val suspendModifier: Property<Boolean>
 
-    val completionStage: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val completionStage: Property<Boolean>
 
-    val target: Property<ControllerTargetOption> = objects.property(ControllerTargetOption::class.java)
-        .convention(ControllerTargetOption.Spring)
+    abstract val target: Property<ControllerTargetOption>
 
     @Suppress("VariableNaming")
     val Spring: ControllerTargetOption = ControllerTargetOption.Spring
@@ -427,63 +437,60 @@ open class GenerateControllerDefaults @Inject constructor(objects: ObjectFactory
     @Suppress("VariableNaming")
     val Micronaut: ControllerTargetOption = ControllerTargetOption.Micronaut
 
+    init {
+        generate.convention(false)
+        authentication.convention(false)
+        suspendModifier.convention(false)
+        completionStage.convention(false)
+        target.convention(ControllerTargetOption.Spring)
+    }
+
 }
 
-open class GenerateModelDefaults @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateModelDefaults {
 
-    @get:Input
-    @get:Optional
-    val generate: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+    abstract val generate: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val extensibleEnums: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val extensibleEnums: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val javaSerialization: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val javaSerialization: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val quarkusReflection: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val quarkusReflection: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val micronautIntrospection: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val micronautIntrospection: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val micronautReflection: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val micronautReflection: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val includeCompanionObject: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val includeCompanionObject: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val sealedInterfacesForOneOf: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val sealedInterfacesForOneOf: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val nonNullMapValues: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val nonNullMapValues: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
+    abstract val ignoreUnknownProperties: Property<Boolean>
 
-    @get:Input
-    @get:Optional
-    val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val suffix: Property<CharSequence>
 
-    @get:Input
-    @get:Optional
-    val serializationLibrary: Property<SerializationLibraryOption> =
-        objects.property(SerializationLibraryOption::class.java).convention(SerializationLibraryOption.Jackson)
+    abstract val serializationLibrary: Property<SerializationLibraryOption>
 
     @Suppress("VariableNaming")
     val Jackson: SerializationLibraryOption = SerializationLibraryOption.Jackson
 
     @Suppress("VariableNaming")
     val Kotlin: SerializationLibraryOption = SerializationLibraryOption.Kotlin
+
+    init {
+        generate.convention(true)
+        extensibleEnums.convention(false)
+        javaSerialization.convention(false)
+        quarkusReflection.convention(false)
+        micronautIntrospection.convention(false)
+        micronautReflection.convention(false)
+        includeCompanionObject.convention(false)
+        sealedInterfacesForOneOf.convention(false)
+        nonNullMapValues.convention(false)
+        ignoreUnknownProperties.convention(false)
+        serializationLibrary.convention(SerializationLibraryOption.Jackson)
+    }
 
 }
