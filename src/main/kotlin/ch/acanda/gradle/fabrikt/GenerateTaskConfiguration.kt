@@ -5,7 +5,6 @@ import org.gradle.api.Named
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
-import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Input
 import org.gradle.api.tasks.InputFile
@@ -16,9 +15,8 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import javax.inject.Inject
 
-open class GenerateTaskConfiguration @Inject constructor(
+abstract class GenerateTaskConfiguration @Inject constructor(
     private val name: String,
-    @get:Internal internal val objects: ObjectFactory,
 ) : Named {
 
     @Internal
@@ -31,16 +29,15 @@ open class GenerateTaskConfiguration @Inject constructor(
     val disabled: Boolean = false
 
     @get:InputFile
-    val apiFile: RegularFileProperty = objects.fileProperty()
+    abstract val apiFile: RegularFileProperty
 
     @get:InputFiles
     @get:Optional
-    val apiFragments: ConfigurableFileCollection = objects.fileCollection()
+    abstract val apiFragments: ConfigurableFileCollection
 
     @get:Input
     @get:Optional
-    val externalReferenceResolution: Property<ExternalReferencesResolutionOption> =
-        objects.property(ExternalReferencesResolutionOption::class.java)
+    abstract val externalReferenceResolution: Property<ExternalReferencesResolutionOption>
 
     @get:Internal
     val targeted: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.targeted
@@ -49,24 +46,23 @@ open class GenerateTaskConfiguration @Inject constructor(
     val aggressive: ExternalReferencesResolutionOption = ExternalReferencesResolutionOption.aggressive
 
     @get:Input
-    val basePackage: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val basePackage: Property<CharSequence>
 
     @get:OutputDirectory
     @get:Optional
-    val outputDirectory: DirectoryProperty = objects.directoryProperty()
+    abstract val outputDirectory: DirectoryProperty
 
     @get:Input
     @get:Optional
-    val sourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val sourcesPath: Property<CharSequence>
 
     @get:Input
     @get:Optional
-    val resourcesPath: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val resourcesPath: Property<CharSequence>
 
     @get:Input
     @get:Optional
-    val validationLibrary: Property<ValidationLibraryOption> =
-        objects.property(ValidationLibraryOption::class.java)
+    abstract val validationLibrary: Property<ValidationLibraryOption>
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -82,11 +78,11 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Input
     @get:Optional
-    val quarkusReflectionConfig: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val quarkusReflectionConfig: Property<Boolean>
 
     @get:Nested
     @get:Optional
-    val typeOverrides: TypeOverridesConfiguration = objects.newInstance(TypeOverridesConfiguration::class.java)
+    abstract val typeOverrides: TypeOverridesConfiguration
 
     fun typeOverrides(action: Action<TypeOverridesConfiguration>) {
         action.execute(typeOverrides)
@@ -94,7 +90,7 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Nested
     @get:Optional
-    val client: GenerateClientConfiguration = objects.newInstance(GenerateClientConfiguration::class.java)
+    abstract val client: GenerateClientConfiguration
 
     fun client(action: Action<GenerateClientConfiguration>) {
         action.execute(client)
@@ -102,8 +98,7 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Nested
     @get:Optional
-    val controller: GenerateControllerConfiguration =
-        objects.newInstance(GenerateControllerConfiguration::class.java)
+    abstract val controller: GenerateControllerConfiguration
 
     fun controller(action: Action<GenerateControllerConfiguration>) {
         action.execute(controller)
@@ -111,8 +106,7 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Nested
     @get:Optional
-    val model: GenerateModelConfiguration =
-        objects.newInstance(GenerateModelConfiguration::class.java)
+    abstract val model: GenerateModelConfiguration
 
     fun model(action: Action<GenerateModelConfiguration>) {
         action.execute(model)
@@ -120,15 +114,15 @@ open class GenerateTaskConfiguration @Inject constructor(
 
     @get:Input
     @get:Optional
-    open val skip: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val skip: Property<Boolean>
 
 }
 
-open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory) {
+abstract class TypeOverridesConfiguration {
 
     @get:Input
     @get:Optional
-    val datetime: Property<DateTimeOverrideOption> = objects.property(DateTimeOverrideOption::class.java)
+    abstract val datetime: Property<DateTimeOverrideOption>
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -144,7 +138,7 @@ open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory
 
     @get:Input
     @get:Optional
-    val binary: Property<BinaryOverrideOption> = objects.property(BinaryOverrideOption::class.java)
+    abstract val binary: Property<BinaryOverrideOption>
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -156,27 +150,27 @@ open class TypeOverridesConfiguration @Inject constructor(objects: ObjectFactory
 
 }
 
-open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateClientConfiguration {
 
     @get:Input
     @get:Optional
-    val generate: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val generate: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val resilience4j: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val resilience4j: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val suspendModifier: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val springResponseEntityWrapper: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val springResponseEntityWrapper: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val target: Property<ClientTargetOption> = objects.property(ClientTargetOption::class.java)
+    abstract val target: Property<ClientTargetOption>
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -188,27 +182,27 @@ open class GenerateClientConfiguration @Inject constructor(objects: ObjectFactor
 
 }
 
-open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateControllerConfiguration {
 
     @get:Input
     @get:Optional
-    val generate: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val generate: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val authentication: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val authentication: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val suspendModifier: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val suspendModifier: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val completionStage: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val completionStage: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val target: Property<ControllerTargetOption> = objects.property(ControllerTargetOption::class.java)
+    abstract val target: Property<ControllerTargetOption>
 
     @get:Internal
     @Suppress("VariableNaming")
@@ -224,56 +218,55 @@ open class GenerateControllerConfiguration @Inject constructor(objects: ObjectFa
 
 }
 
-open class GenerateModelConfiguration @Inject constructor(objects: ObjectFactory) {
+abstract class GenerateModelConfiguration {
 
     @get:Input
     @get:Optional
-    val generate: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val generate: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val extensibleEnums: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val extensibleEnums: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val javaSerialization: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val javaSerialization: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val quarkusReflection: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val quarkusReflection: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val micronautIntrospection: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val micronautIntrospection: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val micronautReflection: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val micronautReflection: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val includeCompanionObject: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val includeCompanionObject: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val sealedInterfacesForOneOf: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val sealedInterfacesForOneOf: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val nonNullMapValues: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val nonNullMapValues: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val ignoreUnknownProperties: Property<Boolean> = objects.property(Boolean::class.java)
+    abstract val ignoreUnknownProperties: Property<Boolean>
 
     @get:Input
     @get:Optional
-    val suffix: Property<CharSequence> = objects.property(CharSequence::class.java)
+    abstract val suffix: Property<CharSequence>
 
     @get:Input
     @get:Optional
-    val serializationLibrary: Property<SerializationLibraryOption> =
-        objects.property(SerializationLibraryOption::class.java)
+    abstract val serializationLibrary: Property<SerializationLibraryOption>
 
     @get:Internal
     @Suppress("VariableNaming")
