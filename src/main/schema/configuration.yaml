@@ -5,22 +5,30 @@ configurations:
     properties:
       apiFile:
         type: RegularFileProperty
+        includeInDefaults: false
       apiFragments:
         type: ConfigurableFileCollection
       externalReferenceResolution:
         type: ExternalReferencesResolutionOption
+        default: targeted
       basePackage:
         type: CharSequence
+        includeInDefaults: false
       outputDirectory:
         type: DirectoryProperty
+        default: ProjectLayout.buildDirectory.dir("generated/sources/fabrikt")
       sourcesPath:
         type: CharSequence
+        default: src/main/kotlin
       resourcesPath:
         type: CharSequence
+        default: src/main/resources
       validationLibrary:
         type: ValidationLibraryOption
+        default: Jakarta
       quarkusReflectionConfig:
         type: Boolean
+        default: false
       typeOverrides:
         type: TypeOverrides
       client:
@@ -31,66 +39,91 @@ configurations:
         type: GenerateModel
       skip:
         type: Boolean
+        default: false
 
   TypeOverrides:
     properties:
       datetime:
         type: DateTimeOverrideOption
+        default: OffsetDateTime
       binary:
         type: BinaryOverrideOption
+        default: ByteArray
 
   GenerateClient:
     properties:
       generate:
         type: Boolean
+        default: false
       resilience4j:
         type: Boolean
+        default: false
       suspendModifier:
         type: Boolean
+        default: false
       springResponseEntityWrapper:
         type: Boolean
+        default: false
       target:
         type: ClientTargetOption
+        default: OkHttp
 
   GenerateController:
     properties:
       generate:
         type: Boolean
+        default: false
       authentication:
         type: Boolean
+        default: false
       suspendModifier:
         type: Boolean
+        default: false
       completionStage:
         type: Boolean
+        default: false
       target:
         type: ControllerTargetOption
+        default: Spring
 
   GenerateModel:
     properties:
       generate:
         type: Boolean
+        default: true
       extensibleEnums:
         type: Boolean
+        default: false
       javaSerialization:
         type: Boolean
+        default: false
       quarkusReflection:
         type: Boolean
+        default: false
       micronautIntrospection:
         type: Boolean
+        default: false
       micronautReflection:
         type: Boolean
+        default: false
       includeCompanionObject:
         type: Boolean
+        default: false
       sealedInterfacesForOneOf:
         type: Boolean
+        default: false
       nonNullMapValues:
         type: Boolean
+        default: false
       ignoreUnknownProperties:
         type: Boolean
+        default: false
       suffix:
         type: CharSequence
+        default: null
       serializationLibrary:
         type: SerializationLibraryOption
+        default: Jackson
 
 options:
 

@@ -46,6 +46,21 @@ data class PropertyDefinition(
      * or the name of one of the options or configurations.
      */
     val type: String,
+    /**
+     * Set to false if this property should not be available in the extention
+     * defaults.
+     */
+    val includeInDefaults: Boolean = true,
+    /**
+     * The default value that is set as the `convention` of the property.
+     * If the property has the type `CharSequence`, the value will be put in
+     * double quotes (`"`). For all other types, the value will be used as is
+     * and can therefore be an expression. If the expressions starts with
+     * `ProjectLayout`, then a `ProjectLayout` will be injected into the
+     * respective defaults class and it will be replaced with the respective
+     * class property in the expressions.
+     */
+    val default: String? = null,
 )
 
 data class OptionDefinition(
