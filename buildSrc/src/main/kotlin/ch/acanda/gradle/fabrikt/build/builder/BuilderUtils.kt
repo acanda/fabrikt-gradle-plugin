@@ -44,22 +44,28 @@ internal fun buildProperty(
     name: String,
     property: PropertyDefinition,
     schema: ConfigurationSchema,
-    nestedSuffix: String
+    nestedSuffix: String,
+    init: PropertySpec.Builder.() -> Unit = {}
 ): PropertySpec =
     if (property.isNested(schema.configurations)) {
-        buildNestedProperty(name, property, schema, nestedSuffix)
+        buildNestedProperty(name, property, schema, nestedSuffix, init)
     } else {
-        PropertySpec.builder(name, property.getPropertyType(schema, nestedSuffix), KModifier.ABSTRACT).build()
+        PropertySpec
+            .builder(name, property.getPropertyType(schema, nestedSuffix), KModifier.ABSTRACT)
+            .apply { init() }
+            .build()
     }
 
 internal fun buildNestedProperty(
     name: String,
     property: PropertyDefinition,
     schema: ConfigurationSchema,
-    nestedSuffix: String
+    nestedSuffix: String,
+    init: PropertySpec.Builder.() -> Unit
 ): PropertySpec =
     PropertySpec.builder(name, property.getClassName(schema, nestedSuffix), KModifier.ABSTRACT)
         .addAnnotation(nestedAnnotation)
+        .apply { init() }
         .build()
 
 internal val nestedAnnotation =
@@ -85,11 +91,14 @@ internal fun PropertyDefinition.getClassName(schema: ConfigurationSchema, nested
 internal fun PropertyDefinition.isOption(options: OptionDefinitions): Boolean =
     options.containsKey(type)
 
-internal fun PropertyDefinition.buildOptionProperties(options: OptionDefinitions): List<PropertySpec> =
-    options[type]?.mapping.orEmpty().map { (name, _) -> buildOptionProperty(name, ClassName(PACKAGE, type)) }
+internal fun PropertyDefinition.buildOptionProperties(
+    options: OptionDefinitions,
+    init: PropertySpec.Builder.() -> Unit = {}
+): List<PropertySpec> =
+    options[type]?.mapping.orEmpty().map { (name, _) -> buildOptionProperty(name, ClassName(PACKAGE, type), init) }
 
-internal fun buildOptionProperty(name: String, type: TypeName): PropertySpec =
-    PropertySpec.builder(name, type).initializer("%T.%N", type, name).build()
+internal fun buildOptionProperty(name: String, type: TypeName, init: PropertySpec.Builder.() -> Unit): PropertySpec =
+    PropertySpec.builder(name, type).initializer("%T.%N", type, name).apply { init() }.build()
 
 internal fun PropertyDefinition.isNested(configs: ConfigurationDefinitions): Boolean =
     configs.containsKey(type)

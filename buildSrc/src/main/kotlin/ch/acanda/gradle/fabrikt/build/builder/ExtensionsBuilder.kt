@@ -18,12 +18,12 @@ internal fun buildExtensions(schema: ConfigurationSchema): FileSpec {
     val builder = FileSpec.builder(PACKAGE, "FabriktExtensions")
     builder.addAnnotation(generated())
     schema.configurations.forEach { name, definition ->
-        builder.addType(buildDefaults(ClassName(PACKAGE, "$name$CLASS_NAME_SUFFIX"), definition, schema))
+        builder.addType(buildExtensions(ClassName(PACKAGE, "$name$CLASS_NAME_SUFFIX"), definition, schema))
     }
     return builder.build()
 }
 
-private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, schema: ConfigurationSchema): TypeSpec {
+private fun buildExtensions(name: ClassName, config: ConfigurationDefinition, schema: ConfigurationSchema): TypeSpec {
     val spec = TypeSpec.classBuilder(name).addModifiers(KModifier.ABSTRACT)
     if (config.named) {
         spec.addSuperinterface(Named::class.asClassName())

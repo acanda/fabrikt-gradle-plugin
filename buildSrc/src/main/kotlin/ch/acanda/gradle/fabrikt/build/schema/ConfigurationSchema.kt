@@ -25,6 +25,8 @@ typealias OptionDefinitions = Map<String, OptionDefinition>
  */
 typealias OptionMapping = Map<String, String?>
 
+enum class Dataflow { Input, Output }
+
 data class ConfigurationSchema(
     val configurations: ConfigurationDefinitions,
     val options: OptionDefinitions,
@@ -46,6 +48,15 @@ data class PropertyDefinition(
      * or the name of one of the options or configurations.
      */
     val type: String,
+    /**
+     * Set to true if this property needs to be specified before the task can
+     * be executed.
+     */
+    val mandatory: Boolean = false,
+    /**
+     * Specifies whether the property holds input or output data.
+     */
+    val dataflow: Dataflow = Dataflow.Input,
     /**
      * Set to false if this property should not be available in the extention
      * defaults.

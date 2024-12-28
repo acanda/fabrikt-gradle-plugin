@@ -6,6 +6,7 @@ configurations:
       apiFile:
         type: RegularFileProperty
         includeInDefaults: false
+        mandatory: true
       apiFragments:
         type: ConfigurableFileCollection
       externalReferenceResolution:
@@ -14,8 +15,10 @@ configurations:
       basePackage:
         type: CharSequence
         includeInDefaults: false
+        mandatory: true
       outputDirectory:
         type: DirectoryProperty
+        dataflow: Output
         default: ProjectLayout.buildDirectory.dir("generated/sources/fabrikt")
       sourcesPath:
         type: CharSequence
