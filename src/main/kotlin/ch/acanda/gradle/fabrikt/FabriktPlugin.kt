@@ -64,7 +64,7 @@ class FabriktPlugin : Plugin<Project> {
             task.description = "Generates the classes for all Fabrikt configurations."
             val configurations = extension.getGenerateExtensions()
             val defaults = extension.getDefaults()
-            task.addConfigurations(configurations, defaults, initializeWithDefaults())
+            task.addConfigurations(configurations, defaults, initializeGenerateTaskConfiguration())
             project.addOutputDirectoryToKotlinSourceSet(extension)
         }
 
@@ -82,7 +82,11 @@ class FabriktPlugin : Plugin<Project> {
                                 .relativeTo(project.layout.projectDirectory.asFile)
                             task.description = "Generates the classes for $apiFile."
                             val defaults = extension.getDefaults()
-                            task.addConfigurations(configurations, defaults, initializeWithDefaults { skip.set(false) })
+                            task.addConfigurations(
+                                configurations,
+                                defaults,
+                                initializeGenerateTaskConfiguration { skip.set(false) }
+                            )
                             project.addOutputDirectoryToKotlinSourceSet(extension)
                         }
                     }

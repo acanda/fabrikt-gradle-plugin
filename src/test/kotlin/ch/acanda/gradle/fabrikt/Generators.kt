@@ -54,7 +54,7 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = generateTas
     val project = ProjectBuilder.builder().build()
     val taskConfig = project.objects.newInstance(GenerateTaskConfiguration::class.java, "api")
     val defaults = project.objects.newInstance(GenerateTaskDefaults::class.java)
-    initializeWithDefaults().invoke(taskConfig, extConfig, defaults)
+    initializeGenerateTaskConfiguration().invoke(taskConfig, extConfig, defaults)
     taskConfig
 }
 

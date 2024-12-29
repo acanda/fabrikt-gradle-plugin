@@ -16,9 +16,6 @@ import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import javax.inject.Inject
 
-typealias GenerateTaskConfigurationInitializer =
-    GenerateTaskConfiguration.(source: GenerateTaskExtension, defaults: GenerateTaskDefaults) -> Unit
-
 abstract class FabriktGenerateTask @Inject constructor(
     private val objects: ObjectFactory
 ) : DefaultTask() {

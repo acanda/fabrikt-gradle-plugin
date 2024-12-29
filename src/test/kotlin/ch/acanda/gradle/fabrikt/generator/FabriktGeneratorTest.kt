@@ -3,7 +3,7 @@ package ch.acanda.gradle.fabrikt.generator
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import ch.acanda.gradle.fabrikt.GenerateTaskDefaults
 import ch.acanda.gradle.fabrikt.GenerateTaskExtension
-import ch.acanda.gradle.fabrikt.initializeWithDefaults
+import ch.acanda.gradle.fabrikt.initializeGenerateTaskConfiguration
 import ch.acanda.gradle.fabrikt.listFilesRelative
 import ch.acanda.gradle.fabrikt.packageToPath
 import io.kotest.core.TestConfiguration
@@ -134,7 +134,7 @@ class FabriktGeneratorTest : WordSpec({
             val taskConfig = project.objects.newInstance(GenerateTaskConfiguration::class.java, "dog")
             val extConfig = project.objects.newInstance(GenerateTaskExtension::class.java, "dog")
             val defaults = project.objects.newInstance(GenerateTaskDefaults::class.java)
-            initializeWithDefaults().invoke(taskConfig, extConfig, defaults)
+            initializeGenerateTaskConfiguration().invoke(taskConfig, extConfig, defaults)
             return taskConfig
         }
 
