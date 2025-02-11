@@ -58,6 +58,9 @@ configurations:
       generate:
         type: Boolean
         default: false
+      target:
+        type: ClientTargetOption
+        default: OkHttp
       resilience4j:
         type: Boolean
         default: false
@@ -67,9 +70,12 @@ configurations:
       springResponseEntityWrapper:
         type: Boolean
         default: false
-      target:
-        type: ClientTargetOption
-        default: OkHttp
+      springCloudOpenFeignStarterAnnotation:
+        type: Boolean
+        default: false
+      openFeignClientName:
+        type: CharSequence
+        default: "fabrikt-client"
 
   GenerateController:
     properties:

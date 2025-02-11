@@ -25,6 +25,7 @@ internal const val ARG_CONTROLLER_OPTS = "--http-controller-opts"
 internal const val ARG_CONTROLLER_TARGET = "--http-controller-target"
 internal const val ARG_MODEL_OPTS = "--http-model-opts"
 internal const val ARG_MODEL_SUFFIX = "--http-model-suffix"
+internal const val ARG_OPENFEIGN_CLIENT_NAME = "--openfeign-client-name"
 internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
@@ -83,6 +84,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (generate.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CLIENT.name)
+            target.orNull?.let {
+                args.add(ARG_CLIENT_TARGET)
+                args.add(it.fabriktOption.name)
+            }
             args.addIfEnabled(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
             args.addIfEnabled(suspendModifier, ARG_CLIENT_OPTS, ClientCodeGenOptionType.SUSPEND_MODIFIER)
             args.addIfEnabled(
@@ -90,9 +95,14 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 ARG_CLIENT_OPTS,
                 ClientCodeGenOptionType.SPRING_RESPONSE_ENTITY_WRAPPER
             )
-            target.orNull?.let {
-                args.add(ARG_CLIENT_TARGET)
-                args.add(it.fabriktOption.name)
+            args.addIfEnabled(
+                springCloudOpenFeignStarterAnnotation,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.SPRING_CLOUD_OPENFEIGN_STARTER_ANNOTATION
+            )
+            openFeignClientName.orNull?.let {
+                args.add(ARG_OPENFEIGN_CLIENT_NAME)
+                args.add(it.toString())
             }
         }
     }

@@ -59,11 +59,19 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.SPRING_RESPONSE_ENTITY_WRAPPER
                     )
+                    cliArgs.shouldContainOptionally(
+                        springCloudOpenFeignStarterAnnotation,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.SPRING_CLOUD_OPENFEIGN_STARTER_ANNOTATION
+                    )
+                    cliArgs shouldContainInOrder listOf(
+                        ARG_OPENFEIGN_CLIENT_NAME, config.client.openFeignClientName.get().toString()
+                    )
                     cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
 
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
-                    cliArgs shouldNotContainAnyOf listOf(ARG_CLIENT_OPTS, ARG_CLIENT_TARGET)
+                    cliArgs shouldNotContainAnyOf listOf(ARG_CLIENT_OPTS, ARG_CLIENT_TARGET, ARG_OPENFEIGN_CLIENT_NAME)
                 }
             }
             with(config.controller) {

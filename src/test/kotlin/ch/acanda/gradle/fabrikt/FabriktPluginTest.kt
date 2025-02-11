@@ -61,6 +61,8 @@ class FabriktPluginTest : WordSpec({
                         resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
                         springResponseEntityWrapper.set(it.enabled)
+                        springCloudOpenFeignStarterAnnotation.set(it.enabled)
+                        openFeignClientName.set("api-client")
                     }
                     with(it.controller) {
                         generate.set(it.enabled)
@@ -105,10 +107,12 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(client) {
                         generate shouldContain true
+                        target shouldContain ClientTargetOption.OpenFeign
                         resilience4j shouldContain true
                         suspendModifier shouldContain true
                         springResponseEntityWrapper shouldContain true
-                        target shouldContain ClientTargetOption.OpenFeign
+                        springCloudOpenFeignStarterAnnotation shouldContain true
+                        openFeignClientName shouldContain "api-client"
                     }
                     with(controller) {
                         generate shouldContain true
@@ -171,6 +175,8 @@ class FabriktPluginTest : WordSpec({
                         resilience4j shouldContain false
                         suspendModifier shouldContain false
                         springResponseEntityWrapper shouldContain false
+                        springCloudOpenFeignStarterAnnotation shouldContain false
+                        openFeignClientName shouldContain "fabrikt-client"
                     }
                     with(controller) {
                         generate shouldContain false

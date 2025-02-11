@@ -54,6 +54,8 @@ class GradleTest : StringSpec({
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
+            |      springCloudOpenFeignStarterAnnotation = enabled
+            |      openFeignClientName = "custom-client"
             |    }
             |    controller {
             |      generate = enabled
@@ -129,6 +131,8 @@ class GradleTest : StringSpec({
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
+            |      springCloudOpenFeignStarterAnnotation = enabled
+            |      openFeignClientName = "custom-client"
             |    }
             |    controller {
             |      generate = enabled
