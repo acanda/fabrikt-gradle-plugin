@@ -92,6 +92,8 @@ fabrikt {
             resilience4j = disabled
             suspendModifier = disabled
             springResponseEntityWrapper = disabled
+            springCloudOpenFeignStarterAnnotation = disabled
+            openFeignClientName = "fabrikt-client"
         }
         controller {
             generate = disabled
