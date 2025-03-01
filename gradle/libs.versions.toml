@@ -5,7 +5,7 @@ gradle = "8.12"
 # See https://docs.gradle.org/current/userguide/compatibility.html#kotlin.
 kotlin = "1.9.24"
 detekt = "1.23.8"
-jackson = "2.18.2"
+jackson = "2.18.3"
 kotest = "5.9.1"
 junit = "5.10.0"
 
