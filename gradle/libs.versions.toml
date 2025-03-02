@@ -1,9 +1,9 @@
 [versions]
 jvm = "21"
-gradle = "8.12"
+gradle = "8.13"
 # The Kotlin version has to match the one embedded in Gradle.
 # See https://docs.gradle.org/current/userguide/compatibility.html#kotlin.
-kotlin = "1.9.24"
+kotlin = "2.0.21"
 detekt = "1.23.8"
 jackson = "2.18.3"
 kotest = "5.9.1"
