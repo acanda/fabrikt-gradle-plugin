@@ -5,6 +5,8 @@ import org.gradle.api.Action
 import org.gradle.api.DefaultTask
 import org.gradle.api.file.RegularFile
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.problems.ProblemGroup
+import org.gradle.api.problems.ProblemId
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
 import org.gradle.api.problems.Severity
@@ -53,7 +55,9 @@ abstract class FabriktGenerateTask @Inject constructor(
                 } catch (e: GeneratorException) {
                     progress.fail(apiFile)
                     val problemReporter = services.get(Problems::class.java).reporter
-                    problemReporter.throwing(generatorProblem(e, config.name))
+                    val group = ProblemGroup.create("fabrikt-code-generation", "Fabrikt Code Generation")
+                    val id = ProblemId.create("generator", "Fabrikt failed to generate code.", group)
+                    problemReporter.throwing(e, id, generatorProblem(e, config.name))
                 }
             }
         }
@@ -61,11 +65,9 @@ abstract class FabriktGenerateTask @Inject constructor(
 
     private fun generatorProblem(e: GeneratorException, name: String) = Action { problem: ProblemSpec ->
         problem
-            .id("fabrikt-code-generation", "Fabrikt failed to generate code.")
             .contextualLabel("Fabrikt failed to generate code for configuration $name.")
             .details("Fabrikt failed to generate code for the OpenAPI specification ${e.apiFile}.")
             .severity(Severity.ERROR)
-            .withException(e)
     }
 
 }
