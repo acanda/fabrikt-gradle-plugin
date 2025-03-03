@@ -30,6 +30,7 @@ class GradleTest : StringSpec({
         projectDir.resolve("build.gradle.kts").writeText(
             """
             |plugins {
+            |  id("com.google.cloud.artifactregistry.gradle-plugin") version "2.2.4"
             |  id("ch.acanda.gradle.fabrikt")
             |}
             |
@@ -45,8 +46,9 @@ class GradleTest : StringSpec({
             |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
             |    typeOverrides {
-            |      datetime = Instant
             |      binary = InputStream
+            |      byte = String
+            |      datetime = Instant
             |    }
             |    client {
             |      generate = enabled
@@ -122,8 +124,9 @@ class GradleTest : StringSpec({
             |    validationLibrary = Jakarta
             |    quarkusReflectionConfig = enabled
             |    typeOverrides {
-            |      datetime = Instant
             |      binary = InputStream
+            |      byte = String
+            |      datetime = Instant
             |    }
             |    client {
             |      generate = enabled

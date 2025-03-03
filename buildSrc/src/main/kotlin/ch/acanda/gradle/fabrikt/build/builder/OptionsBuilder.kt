@@ -10,7 +10,12 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeSpec
+import com.squareup.kotlinpoet.TypeVariableName
+import com.squareup.kotlinpoet.WildcardTypeName
+import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
+import java.util.*
+import kotlin.reflect.KClass
 
 private const val OPTION_PARAM_NAME = "fabriktOption"
 
@@ -22,13 +27,41 @@ private const val OPTION_PARAM_NAME = "fabriktOption"
 internal fun buildOptions(options: OptionDefinitions): FileSpec {
     val builder = FileSpec.builder(PACKAGE, "FabriktOptions")
     builder.addAnnotation(generated())
-    val optionInterfaceName = ClassName(PACKAGE, "FabriktOption")
-    builder.addType(buildOptionInterface(optionInterfaceName))
+    val fabriktOptionInterfaceName = ClassName(PACKAGE, "FabriktOption")
+    builder.addType(buildOptionInterface(fabriktOptionInterfaceName))
     options.forEach { (name, definition) ->
         builder.addType(
-            buildOption(ClassName(PACKAGE, name), optionInterfaceName, definition)
+            buildOption(ClassName(PACKAGE, name), fabriktOptionInterfaceName, definition)
+        )
+        val t = TypeVariableName("T", fabriktOptionInterfaceName)
+        val enum = Enum::class.asClassName().parameterizedBy(STAR).nullable(definition)
+        builder.addType(
+            TypeSpec.interfaceBuilder(ClassName(PACKAGE, "I$name"))
+                .addFunction(
+                    FunSpec.builder("getOptionFor")
+                        .addTypeVariable(t)
+                        .addModifiers(KModifier.ABSTRACT)
+                        .addParameter(
+                            "type",
+                            KClass::class.asClassName()
+                                .parameterizedBy(WildcardTypeName.producerOf(t))
+                        )
+                        .returns(t)
+                        .build()
+                )
+                .addProperty(
+                    PropertySpec.builder("fabriktOption", enum)
+                        .getter(
+                            FunSpec.getterBuilder()
+                                .addStatement("return getOptionFor(%T::class).fabriktOption", ClassName(PACKAGE, name))
+                                .build()
+                        )
+                        .build()
+                )
+                .build()
         )
     }
+    builder.addTypes(createPolymorphicOptions(options, fabriktOptionInterfaceName))
     return builder.build()
 }
 
@@ -43,9 +76,7 @@ private val nullableEnumType =
     Enum::class.asTypeName().parameterizedBy(STAR).copy(nullable = true)
 
 private fun buildOption(name: ClassName, optionInterface: ClassName, definition: OptionDefinition): TypeSpec {
-    val paramType = Class.forName(definition.source)
-        .asTypeName()
-        .nullable(definition.mapping.any { (_, source) -> source == null })
+    val paramType = Class.forName(definition.source).asTypeName().nullable(definition)
     return TypeSpec
         .enumBuilder(name)
         .addSuperinterface(optionInterface)
@@ -95,3 +126,42 @@ private fun enumValueSpec(enumTypeName: String, enumConstantName: String): TypeS
 private operator fun Class<Enum<*>>.get(name: String): String =
     this.enumConstants.firstOrNull() { it.name == name }?.name
         ?: throw EnumConstantNotPresentException(this, name)
+
+private fun createPolymorphicOptions(
+    options: OptionDefinitions,
+    fabriktOptionInterfaceName: ClassName
+) = options
+    .flatMap { (option, definition) -> definition.mapping.keys.map { it to option } }
+    .groupByTo(TreeMap(), { it.first }, { it.second })
+    .map { (optionValue, options) ->
+        TypeSpec.classBuilder(polymorphicOptionName(optionValue))
+            .primaryConstructor(
+                FunSpec
+                    .constructorBuilder()
+                    .addParameter("options", fabriktOptionInterfaceName, KModifier.VARARG)
+                    .build()
+            )
+            .addSuperinterfaces(options.map { option -> ClassName(PACKAGE, "I$option") })
+            .addProperty(
+                PropertySpec
+                    .builder("options", List::class.asClassName().parameterizedBy(fabriktOptionInterfaceName))
+                    .initializer("listOf(*options)")
+                    .build()
+            )
+            .addFunction(
+                FunSpec
+                    .builder("getOptionFor")
+                    .addModifiers(KModifier.OVERRIDE)
+                    .addParameter(
+                        "type",
+                        KClass::class.asClassName().parameterizedBy(
+                            WildcardTypeName.producerOf(fabriktOptionInterfaceName)
+                        )
+                    )
+                    .returns(fabriktOptionInterfaceName)
+                    .addCode("return options.first { it::class == type }")
+                    .build()
+            )
+            .build()
+    }
+

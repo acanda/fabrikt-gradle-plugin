@@ -29,11 +29,8 @@ private fun buildExtensions(name: ClassName, config: ConfigurationDefinition, sc
         spec.addSuperinterface(Named::class.asClassName())
         spec.primaryConstructor(FunSpec.constructorBuilder().addAnnotation(Inject::class).build())
     }
-    config.properties.map { (name, property) ->
+    val optionTypes = config.properties.flatMap { (name, property) ->
         spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX))
-        if (property.isOption(schema.options)) {
-            spec.addProperties(property.buildOptionProperties(schema.options))
-        }
         if (property.isNested(schema.configurations)) {
             spec.addFunction(
                 FunSpec.builder(name)
@@ -42,7 +39,17 @@ private fun buildExtensions(name: ClassName, config: ConfigurationDefinition, sc
                     .build()
             )
         }
+        if (property.isOption(schema.options)) {
+            listOf(property.type)
+        } else {
+            emptyList()
+        }
     }
+    spec.addProperties(
+        schema.options
+            .filter { (type, _) -> optionTypes.contains(type) }
+            .buildPolymorphicOptions()
+    )
     if (config.containsBooleanProperty()) {
         spec.addProperty(PropertySpec.builder("enabled", Boolean::class).initializer("true").build())
         spec.addProperty(PropertySpec.builder("disabled", Boolean::class).initializer("false").build())
