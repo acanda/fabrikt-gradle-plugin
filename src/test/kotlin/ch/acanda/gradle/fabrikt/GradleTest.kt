@@ -45,8 +45,9 @@ class GradleTest : StringSpec({
             |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
             |    typeOverrides {
-            |      datetime = Instant
             |      binary = InputStream
+            |      byte = String
+            |      datetime = Instant
             |    }
             |    client {
             |      generate = enabled
@@ -122,8 +123,9 @@ class GradleTest : StringSpec({
             |    validationLibrary = Jakarta
             |    quarkusReflectionConfig = enabled
             |    typeOverrides {
-            |      datetime = Instant
             |      binary = InputStream
+            |      byte = String
+            |      datetime = Instant
             |    }
             |    client {
             |      generate = enabled

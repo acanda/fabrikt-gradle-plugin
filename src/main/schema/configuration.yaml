@@ -46,12 +46,15 @@ configurations:
 
   TypeOverrides:
     properties:
-      datetime:
-        type: DateTimeOverrideOption
-        default: OffsetDateTime
       binary:
         type: BinaryOverrideOption
         default: ByteArray
+      byte:
+        type: ByteOverrideOption
+        default: ByteArray
+      datetime:
+        type: DateTimeOverrideOption
+        default: OffsetDateTime
 
   GenerateClient:
     properties:
@@ -142,18 +145,24 @@ options:
       targeted: TARGETED
       aggressive: AGGRESSIVE
 
+  BinaryOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      ByteArray: null
+      InputStream: BYTEARRAY_AS_INPUTSTREAM
+
+  ByteOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      ByteArray: null
+      String: BYTE_AS_STRING
+
   DateTimeOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
       OffsetDateTime: null
       Instant: DATETIME_AS_INSTANT
       LocalDateTime: DATETIME_AS_LOCALDATETIME
-
-  BinaryOverrideOption:
-    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
-    mapping:
-      ByteArray: null
-      InputStream: BYTEARRAY_AS_INPUTSTREAM
 
   ValidationLibraryOption:
     source: com.cjbooms.fabrikt.cli.ValidationLibrary

@@ -27,6 +27,10 @@ import javax.inject.Inject
 
 private const val CLASS_NAME_SUFFIX = "Configuration"
 
+/**
+ * Builds the file GenerateTaskConfiguration.kt. This file contains the
+ * configuration classes for the `FabriktGenerateTask`.
+ */
 internal fun buildConfigurations(schema: ConfigurationSchema): FileSpec {
     val builder = FileSpec.builder(PACKAGE, "GenerateTaskConfiguration")
     builder.addAnnotation(generated())
@@ -43,25 +47,9 @@ private fun buildConfigurations(
 ): TypeSpec {
     val spec = TypeSpec.classBuilder(name).addModifiers(KModifier.ABSTRACT)
     if (config.named) {
-        spec.addSuperinterface(Named::class.asClassName())
-        spec.primaryConstructor(
-            FunSpec.constructorBuilder()
-                .addAnnotation(Inject::class)
-                .addParameter("name", String::class)
-                .build()
-        )
-        spec.addProperty(PropertySpec.builder("name", String::class, KModifier.PRIVATE).initializer("name").build())
-        spec.addFunction(
-            FunSpec
-                .builder("getName")
-                .addAnnotation(Internal::class)
-                .addModifiers(KModifier.OVERRIDE)
-                .returns(String::class)
-                .addCode("return name")
-                .build()
-        )
+        spec.addNamed()
     }
-    config.properties.map { (name, property) ->
+    val optionTypes = config.properties.flatMap { (name, property) ->
         spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX) {
             if (!property.isNested(schema.configurations)) {
                 addAnnotation(AnnotationSpec.builder(property.dataflowAnnotation).useSiteTarget(GET).build())
@@ -70,13 +58,6 @@ private fun buildConfigurations(
                 addAnnotation(AnnotationSpec.builder(Optional::class).useSiteTarget(GET).build())
             }
         })
-        if (property.isOption(schema.options)) {
-            spec.addProperties(
-                property.buildOptionProperties(schema.options) {
-                    internal()
-                }
-            )
-        }
         if (property.isNested(schema.configurations)) {
             spec.addFunction(
                 FunSpec.builder(name)
@@ -85,12 +66,55 @@ private fun buildConfigurations(
                     .build()
             )
         }
+        if (property.isOption(schema.options)) {
+            listOf(property.type)
+        } else {
+            emptyList()
+        }
     }
+    spec.addProperties(
+        schema.options
+            .filter { (type, _) -> optionTypes.contains(type) }
+            .buildPolymorphicOptions()
+    )
     if (config.containsBooleanProperty()) {
         spec.addProperty(PropertySpec.builder("enabled", Boolean::class).internal().initializer("true").build())
         spec.addProperty(PropertySpec.builder("disabled", Boolean::class).internal().initializer("false").build())
     }
     return spec.build()
+}
+
+/**
+ * Adds the `Named` interface, the name property and the `getName` function to
+ * the configuration class.
+ *
+ * ```kotlin
+ * public abstract class GenerateTaskConfiguration @Inject constructor(
+ *   private val name: String,
+ * ) : Named {
+ *   @Internal
+ *   override fun getName(): String = name
+ * }
+ * ```
+ */
+private fun TypeSpec.Builder.addNamed() {
+    addSuperinterface(Named::class.asClassName())
+    primaryConstructor(
+        FunSpec.constructorBuilder()
+            .addAnnotation(Inject::class)
+            .addParameter("name", String::class)
+            .build()
+    )
+    addProperty(PropertySpec.builder("name", String::class, KModifier.PRIVATE).initializer("name").build())
+    addFunction(
+        FunSpec
+            .builder("getName")
+            .addAnnotation(Internal::class)
+            .addModifiers(KModifier.OVERRIDE)
+            .returns(String::class)
+            .addCode("return name")
+            .build()
+    )
 }
 
 private val PropertyDefinition.dataflowAnnotation

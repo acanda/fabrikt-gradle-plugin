@@ -3,8 +3,8 @@ package ch.acanda.gradle.fabrikt
 import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
-import io.kotest.property.arbitrary.enum
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.string
@@ -18,17 +18,17 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
     objects.newInstance(GenerateTaskExtension::class.java, "api").apply {
         apiFile.set(pathGen.bind())
         apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
-        externalReferenceResolution.set(Arb.enum<ExternalReferencesResolutionOption>().orNull(0.2).bind())
+        externalReferenceResolution.set(Arb.of(IExternalReferencesResolutionOption.options).orNull(0.2).bind())
         basePackage.set(Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
         outputDirectory.set(pathGen.bind())
         sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         quarkusReflectionConfig.set(Arb.boolean().orNull(0.2).bind())
-        typeOverrides.datetime.set(Arb.enum<DateTimeOverrideOption>().orNull(0.2).bind())
-        typeOverrides.binary.set(Arb.enum<BinaryOverrideOption>().orNull(0.2).bind())
-        validationLibrary.set(Arb.enum<ValidationLibraryOption>().orNull(0.2).bind())
+        typeOverrides.datetime.set(Arb.of(IDateTimeOverrideOption.options).orNull(0.2).bind())
+        typeOverrides.binary.set(Arb.of(IBinaryOverrideOption.options).orNull(0.2).bind())
+        validationLibrary.set(Arb.of(IValidationLibraryOption.options).orNull(0.2).bind())
         client.generate.set(Arb.boolean().orNull(0.2).bind())
-        client.target.set(Arb.enum<ClientTargetOption>().orNull(0.2).bind())
+        client.target.set(Arb.of(IClientTargetOption.options).orNull(0.2).bind())
         client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
         client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
         client.springResponseEntityWrapper.set(Arb.boolean().orNull(0.2).bind())
@@ -37,7 +37,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         controller.generate.set(Arb.boolean().orNull(0.2).bind())
         controller.authentication.set(Arb.boolean().orNull(0.2).bind())
         controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
-        controller.target.set(Arb.enum<ControllerTargetOption>().orNull(0.2).bind())
+        controller.target.set(Arb.of(IControllerTargetOption.options).orNull(0.2).bind())
         model.generate.set(Arb.boolean().orNull(0.2).bind())
         model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())
         model.javaSerialization.set(Arb.boolean().orNull(0.2).bind())
@@ -48,7 +48,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.nonNullMapValues.set(Arb.boolean().orNull(0.2).bind())
         model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
         model.suffix.set(Arb.string(0..3).orNull(0.2).bind())
-        model.serializationLibrary.set(Arb.enum<SerializationLibraryOption>().orNull(0.2).bind())
+        model.serializationLibrary.set(Arb.of(ISerializationLibraryOption.options).orNull(0.2).bind())
         skip.set(Arb.boolean().orNull(0.2).bind())
     }
 }

@@ -3,6 +3,8 @@ package ch.acanda.gradle.fabrikt.build.builder
 import ch.acanda.gradle.fabrikt.build.schema.ConfigurationDefinition
 import ch.acanda.gradle.fabrikt.build.schema.ConfigurationSchema
 import ch.acanda.gradle.fabrikt.build.schema.PropertyDefinition
+import com.squareup.kotlinpoet.AnnotationSpec
+import com.squareup.kotlinpoet.AnnotationSpec.UseSiteTarget.GET
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -11,11 +13,18 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import org.gradle.api.file.ProjectLayout
+import org.gradle.api.tasks.Internal
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
 private const val CLASS_NAME_SUFFIX = "Defaults"
 
+/**
+ * Builds the file FabriktExtensionDefaults.kt. This file contains the
+ * defaults classes for the `FabriktGenerateTask`. Those classes are almost
+ * identical to the extension classes, but the properties are initialized with
+ * their default values.
+ */
 internal fun buildDefaults(schema: ConfigurationSchema): FileSpec {
     val builder = FileSpec.builder(PACKAGE, "FabriktExtensionDefaults")
     builder.addAnnotation(generated())
@@ -25,6 +34,44 @@ internal fun buildDefaults(schema: ConfigurationSchema): FileSpec {
     return builder.build()
 }
 
+/**
+ * Builds the defaults class for a configuration.
+ * ```kotlin
+ * public abstract class GenerateTaskDefaults @Inject constructor(
+ *   projectLayout: ProjectLayout,
+ * ) {
+ *   // properties
+ *   public abstract val apiFragments: ConfigurableFileCollection
+ *
+ *   // nested defaults classes
+ *   @get:Nested
+ *   public abstract val typeOverrides: TypeOverridesDefaults
+ *
+ *   // polymorphic options
+ *   @get:Internal
+ *   public val Jakarta: PolymorphicJakartaOption =
+ *       PolymorphicJakartaOption(ValidationLibraryOption.Jakarta)
+ *
+ *   // boolean values
+ *   @get:Internal
+ *   public val enabled: Boolean = true
+ *   @get:Internal
+ *   public val disabled: Boolean = false
+ *
+ *   // initializer block
+ *   init {
+ *     externalReferenceResolution.convention(targeted)
+ *     outputDirectory.convention(projectLayout.buildDirectory.dir("generated/sources/fabrikt"))
+ *   }
+ *
+ *   // functions to configure nested defaults classes
+ *   public fun typeOverrides(action: Action<TypeOverridesDefaults>) {
+ *     action.execute(typeOverrides)
+ *   }
+ *
+ * }
+ * ```
+ */
 private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, schema: ConfigurationSchema): TypeSpec {
     val spec = TypeSpec.classBuilder(name).addModifiers(KModifier.ABSTRACT)
     if (config.injects.isNotEmpty()) {
@@ -37,13 +84,10 @@ private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, sche
                 .build()
         )
     }
-    config.properties
+    val optionTypes = config.properties
         .filter { (_, property) -> property.includeInDefaults == true }
-        .map { (name, property) ->
+        .flatMap { (name, property) ->
             spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX))
-            if (property.isOption(schema.options)) {
-                spec.addProperties(property.buildOptionProperties(schema.options))
-            }
             if (property.isNested(schema.configurations)) {
                 spec.addFunction(
                     FunSpec.builder(name)
@@ -52,15 +96,36 @@ private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, sche
                         .build()
                 )
             }
+            if (property.isOption(schema.options)) {
+                listOf(property.type)
+            } else {
+                emptyList()
+            }
         }
+    spec.addProperties(
+        schema.options
+            .filter { (type, _) -> optionTypes.contains(type) }
+            .buildPolymorphicOptions()
+    )
     if (config.containsBooleanProperty()) {
-        spec.addProperty(PropertySpec.builder("enabled", Boolean::class).initializer("true").build())
-        spec.addProperty(PropertySpec.builder("disabled", Boolean::class).initializer("false").build())
+        spec.addProperty(buildBooleanProperty("enabled", "true"))
+        spec.addProperty(buildBooleanProperty("disabled", "false"))
     }
     spec.addInitializerBlock(buildInitializerBlock(config))
     return spec.build()
 }
 
+/**
+ * Builds the initializer block for the defaults class. This block initilizes
+ * the properties with their respective default value.
+ * ```kotlin
+ *   init {
+ *     binary.convention(ByteArray)
+ *     byte.convention(ByteArray)
+ *     datetime.convention(OffsetDateTime)
+ *   }
+ * ```
+ */
 private fun buildInitializerBlock(config: ConfigurationDefinition): CodeBlock =
     config.properties.entries
         .filter { (_, property) -> property.default != null }
@@ -86,4 +151,3 @@ private val ConfigurationDefinition.injects: Set<Pair<String, KClass<*>>>
             else -> null
         }
     }.toSet()
-

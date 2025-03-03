@@ -18,6 +18,11 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
+/**
+ * Builds the file ConfigurationInitializer.kt. This file contains the
+ * functions to initialize the configuration classes with the data from the
+ * extension and defaults.
+ */
 internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
     val spec = FileSpec.builder(PACKAGE, "ConfigurationInitializer")
     spec.addAnnotation(generated())
@@ -30,6 +35,12 @@ internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
     return spec.build()
 }
 
+/**
+ * Builds the type alias `GenerateTaskConfigurationInitializer`.
+ * ```kotlin
+ * public typealias GenerateTaskConfigurationInitializer = GenerateTaskConfiguration.(source: GenerateTaskExtension, defaults: GenerateTaskDefaults) -> Unit
+ * ```
+ */
 private fun initializerTypeAlias(name: String): TypeAliasSpec =
     TypeAliasSpec.builder(
         "${name}ConfigurationInitializer",
@@ -43,6 +54,21 @@ private fun initializerTypeAlias(name: String): TypeAliasSpec =
         )
     ).build()
 
+/**
+ * Builds the funtion for initializing a configuration class, including its
+ * nested configuration classes.
+ * ```kotlin
+ * internal fun initializeGenerateTaskConfiguration(`init`: GenerateTaskConfiguration.() -> Unit = {}): GenerateTaskConfigurationInitializer = { source, defaults ->
+ *   apiFile.set(source.apiFile)
+ *   apiFragments.assign(source.apiFragments, defaults.apiFragments)
+ *   // initialize more properties...
+ *   initializeTypeOverridesConfiguration().invoke(typeOverrides, source.typeOverrides, defaults.typeOverrides)
+ *   initializeGenerateClientConfiguration().invoke(client, source.client, defaults.client)
+ *   // initialize more nested classes...
+ *   init(this)
+ * }
+ * ```
+ */
 private fun buildInitializer(name: String, config: ConfigurationDefinition, schema: ConfigurationSchema): FunSpec =
     FunSpec.builder("initialize${name}Configuration")
         .addModifiers(KModifier.INTERNAL)
@@ -79,12 +105,19 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
             else -> block.addStatement("%1N.assign(source.%1N, defaults.%1N)", name)
         }
     }
-
     block.addStatement("init(this)")
     block.endControlFlow()
     return block.build()
 }
 
+/**
+ * Builds the function for assigning a property.
+ * ```kotlin
+ * private fun <T> Property<T>.assign(`value`: Provider<out T>, defaultValue: Provider<out T>) {
+ *   if (value.isPresent) { set(value.get()) } else { set(defaultValue.orNull) }
+ * }
+ * ```
+ */
 private fun assignPropertyFunction(): FunSpec =
     FunSpec.builder("assign")
         .addModifiers(KModifier.PRIVATE)
@@ -95,7 +128,14 @@ private fun assignPropertyFunction(): FunSpec =
         .addStatement("if (value.isPresent) { set(value.get()) } else { set(defaultValue.orNull) }")
         .build()
 
-
+/**
+ * Builds the function for assigning a ConfigurableFileCollection.
+ * ```kotlin
+ * private fun ConfigurableFileCollection.assign(`value`: ConfigurableFileCollection, defaultValue: ConfigurableFileCollection) {
+ *   if (!value.isEmpty) { setFrom(value) } else { setFrom(defaultValue) }
+ * }
+ * ```
+ */
 private fun assignConfigurableFileCollectionFunction(): FunSpec =
     FunSpec.builder("assign")
         .addModifiers(KModifier.PRIVATE)

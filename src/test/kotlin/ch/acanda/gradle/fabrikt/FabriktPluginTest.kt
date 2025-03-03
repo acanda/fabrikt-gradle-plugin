@@ -54,6 +54,7 @@ class FabriktPluginTest : WordSpec({
                     it.quarkusReflectionConfig.set(it.enabled)
                     with(it.typeOverrides) {
                         datetime.set(Instant)
+                        binary.set(InputStream)
                     }
                     with(it.client) {
                         generate.set(it.enabled)
@@ -95,19 +96,20 @@ class FabriktPluginTest : WordSpec({
                 .first().run {
                     this.apiFile shouldContain apiFile
                     this.apiFragments.files shouldContainExactly listOf(apiFragment)
-                    this.externalReferenceResolution shouldContain ExternalReferencesResolutionOption.aggressive
+                    this.externalReferenceResolution.option shouldBe ExternalReferencesResolutionOption.aggressive
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContainString srcDir
                     this.resourcesPath shouldContainString resDir
-                    this.validationLibrary shouldContain ValidationLibraryOption.Javax
+                    this.validationLibrary.option shouldBe ValidationLibraryOption.Javax
                     this.quarkusReflectionConfig shouldContain true
                     with(typeOverrides) {
-                        datetime shouldContain DateTimeOverrideOption.Instant
+                        datetime.option shouldBe DateTimeOverrideOption.Instant
+                        binary.option shouldBe BinaryOverrideOption.InputStream
                     }
                     with(client) {
                         generate shouldContain true
-                        target shouldContain ClientTargetOption.OpenFeign
+                        target.option shouldBe ClientTargetOption.OpenFeign
                         resilience4j shouldContain true
                         suspendModifier shouldContain true
                         springResponseEntityWrapper shouldContain true
@@ -119,7 +121,7 @@ class FabriktPluginTest : WordSpec({
                         authentication shouldContain true
                         suspendModifier shouldContain true
                         completionStage shouldContain true
-                        target shouldContain ControllerTargetOption.Micronaut
+                        target.option shouldBe ControllerTargetOption.Micronaut
                     }
                     with(model) {
                         generate shouldContain false
@@ -133,7 +135,7 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues shouldContain true
                         ignoreUnknownProperties shouldContain true
                         suffix shouldContainString "Dto"
-                        serializationLibrary shouldContain SerializationLibraryOption.Kotlin
+                        serializationLibrary.option shouldBe SerializationLibraryOption.Kotlin
                     }
                 }
         }
@@ -159,19 +161,20 @@ class FabriktPluginTest : WordSpec({
                 .first().run {
                     this.apiFile shouldContain apiFile
                     this.apiFragments.files should beEmpty()
-                    this.externalReferenceResolution shouldContain ExternalReferencesResolutionOption.targeted
+                    this.externalReferenceResolution.option shouldBe ExternalReferencesResolutionOption.targeted
                     this.basePackage shouldContainString basePackage
                     this.outputDirectory shouldContain outputDirectory
                     this.sourcesPath shouldContain "src/main/kotlin"
                     this.resourcesPath shouldContain "src/main/resources"
-                    this.validationLibrary shouldContain ValidationLibraryOption.Jakarta
+                    this.validationLibrary.option shouldBe ValidationLibraryOption.Jakarta
                     this.quarkusReflectionConfig shouldContain false
                     with(typeOverrides) {
-                        datetime shouldContain DateTimeOverrideOption.OffsetDateTime
+                        datetime.option shouldBe DateTimeOverrideOption.OffsetDateTime
+                        binary.option shouldBe BinaryOverrideOption.ByteArray
                     }
                     with(client) {
                         generate shouldContain false
-                        target shouldContain ClientTargetOption.OkHttp
+                        target.option shouldBe ClientTargetOption.OkHttp
                         resilience4j shouldContain false
                         suspendModifier shouldContain false
                         springResponseEntityWrapper shouldContain false
@@ -180,7 +183,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(controller) {
                         generate shouldContain false
-                        target shouldContain ControllerTargetOption.Spring
+                        target.option shouldBe ControllerTargetOption.Spring
                         authentication shouldContain false
                         suspendModifier shouldContain false
                         completionStage shouldContain false
@@ -196,7 +199,7 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues shouldContain false
                         sealedInterfacesForOneOf shouldContain false
                         suffix shouldContain null
-                        serializationLibrary shouldContain SerializationLibraryOption.Jackson
+                        serializationLibrary.option shouldBe SerializationLibraryOption.Jackson
                     }
                 }
         }
