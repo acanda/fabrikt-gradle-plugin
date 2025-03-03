@@ -1,12 +1,11 @@
 package ch.acanda.gradle.fabrikt.generator
 
-import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
+import ch.acanda.gradle.fabrikt.withOptionName
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
-import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
@@ -32,7 +31,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
 
     fun getCliArgs(): Array<String> = with(config) {
         @Suppress("ArgumentListWrapping")
-        val args = mutableListOf(
+        val args = mutableListOf<String>(
             ARG_API_FILE, apiFile.asFile.get().absolutePath,
             ARG_BASE_PACKAGE, basePackage.get().toString(),
             ARG_OUT_DIR, outputDirectory.asFile.get().absolutePath,
@@ -41,9 +40,9 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_API_FRAGMENT)
             args.add(fragment.absolutePath)
         }
-        externalReferenceResolution.orNull?.let { resolution ->
+        externalReferenceResolution.withOptionName { resolution ->
             args.add(ARG_EXT_REF_RESOLUTION)
-            args.add(resolution.fabriktOption.name)
+            args.add(resolution)
         }
         sourcesPath.orNull?.let { path ->
             args.add(ARG_SRC_PATH)
@@ -53,9 +52,9 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_RESOURCES_PATH)
             args.add(path.toString())
         }
-        validationLibrary.orNull?.let { library ->
+        validationLibrary.withOptionName { library ->
             args.add(ARG_VALIDATION_LIB)
-            args.add(library.fabriktOption.name)
+            args.add(library)
         }
         if (quarkusReflectionConfig.get()) {
             args.add(ARG_TARGETS)
@@ -69,14 +68,13 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
     }
 
     private fun GenerateTaskConfiguration.addTypeOverridesArgs(args: MutableList<String>) = with(typeOverrides) {
-        addTypeOverrideArg(args, datetime)
-        addTypeOverrideArg(args, binary)
-    }
-
-    private fun addTypeOverrideArg(args: MutableList<String>, property: Property<out FabriktOption>) {
-        property.orNull?.fabriktOption?.let { option ->
+        datetime.withOptionName { override ->
             args.add(ARG_TYPE_OVERRIDES)
-            args.add(option.name)
+            args.add(override)
+        }
+        binary.withOptionName { override ->
+            args.add(ARG_TYPE_OVERRIDES)
+            args.add(override)
         }
     }
 
@@ -84,9 +82,9 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (generate.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CLIENT.name)
-            target.orNull?.let {
+            target.withOptionName { clientTarget ->
                 args.add(ARG_CLIENT_TARGET)
-                args.add(it.fabriktOption.name)
+                args.add(clientTarget)
             }
             args.addIfEnabled(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
             args.addIfEnabled(suspendModifier, ARG_CLIENT_OPTS, ClientCodeGenOptionType.SUSPEND_MODIFIER)
@@ -114,9 +112,9 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.addIfEnabled(authentication, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.AUTHENTICATION)
             args.addIfEnabled(suspendModifier, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.SUSPEND_MODIFIER)
             args.addIfEnabled(completionStage, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.COMPLETION_STAGE)
-            target.orNull?.let {
+            target.withOptionName { controllerTarget ->
                 args.add(ARG_CONTROLLER_TARGET)
-                args.add(it.fabriktOption.name)
+                args.add(controllerTarget)
             }
         }
     }
@@ -141,9 +139,9 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 args.add(ARG_MODEL_SUFFIX)
                 args.add(it.toString())
             }
-            serializationLibrary.orNull?.let {
+            serializationLibrary.withOptionName { library ->
                 args.add(ARG_MODEL_SERIALIZATION_LIB)
-                args.add(it.fabriktOption.name)
+                args.add(library)
             }
         }
     }

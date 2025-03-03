@@ -61,7 +61,7 @@ private fun buildConfigurations(
                 .build()
         )
     }
-    config.properties.map { (name, property) ->
+    val optionTypes = config.properties.flatMap { (name, property) ->
         spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX) {
             if (!property.isNested(schema.configurations)) {
                 addAnnotation(AnnotationSpec.builder(property.dataflowAnnotation).useSiteTarget(GET).build())
@@ -70,13 +70,6 @@ private fun buildConfigurations(
                 addAnnotation(AnnotationSpec.builder(Optional::class).useSiteTarget(GET).build())
             }
         })
-        if (property.isOption(schema.options)) {
-            spec.addProperties(
-                property.buildOptionProperties(schema.options) {
-                    internal()
-                }
-            )
-        }
         if (property.isNested(schema.configurations)) {
             spec.addFunction(
                 FunSpec.builder(name)
@@ -85,7 +78,17 @@ private fun buildConfigurations(
                     .build()
             )
         }
+        if (property.isOption(schema.options)) {
+            listOf(property.type)
+        } else {
+            emptyList()
+        }
     }
+    spec.addProperties(
+        schema.options
+            .filter { (type, _) -> optionTypes.contains(type) }
+            .buildPolymorphicOptions()
+    )
     if (config.containsBooleanProperty()) {
         spec.addProperty(PropertySpec.builder("enabled", Boolean::class).internal().initializer("true").build())
         spec.addProperty(PropertySpec.builder("disabled", Boolean::class).internal().initializer("false").build())

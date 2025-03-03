@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.FabriktOption
 import ch.acanda.gradle.fabrikt.generateTaskConfigGen
+import ch.acanda.gradle.fabrikt.option
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
@@ -27,12 +28,12 @@ class FabriktArgumentsTest : StringSpec({
             val cliArgs = FabriktArguments(config).getCliArgs()
             cliArgs shouldNotContain "null"
             cliArgs shouldContainInOrder listOf(ARG_API_FILE, config.apiFile.asFile.get().absolutePath)
-            cliArgs.shouldContainOptionally(config.externalReferenceResolution, ARG_EXT_REF_RESOLUTION)
+            cliArgs.shouldContainOptionally(config.externalReferenceResolution.option, ARG_EXT_REF_RESOLUTION)
             cliArgs shouldContainInOrder listOf(ARG_BASE_PACKAGE, config.basePackage.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
             cliArgs shouldContainInOrder listOf(ARG_SRC_PATH, config.sourcesPath.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_RESOURCES_PATH, config.resourcesPath.get().toString())
-            cliArgs.shouldContainOptionally(config.validationLibrary, ARG_VALIDATION_LIB)
+            cliArgs.shouldContainOptionally(config.validationLibrary.option, ARG_VALIDATION_LIB)
             cliArgs.shouldContainOptionally(
                 config.quarkusReflectionConfig,
                 ARG_TARGETS,
@@ -42,8 +43,8 @@ class FabriktArgumentsTest : StringSpec({
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
             with(config.typeOverrides) {
-                cliArgs.shouldContainOptionally(datetime, ARG_TYPE_OVERRIDES)
-                cliArgs.shouldContainOptionally(binary, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(datetime.option, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(binary.option, ARG_TYPE_OVERRIDES)
             }
             with(config.client) {
                 if (generate.get()) {
@@ -67,7 +68,7 @@ class FabriktArgumentsTest : StringSpec({
                     cliArgs shouldContainInOrder listOf(
                         ARG_OPENFEIGN_CLIENT_NAME, config.client.openFeignClientName.get().toString()
                     )
-                    cliArgs.shouldContainOptionally(target, ARG_CLIENT_TARGET)
+                    cliArgs.shouldContainOptionally(target.option, ARG_CLIENT_TARGET)
 
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
@@ -92,7 +93,7 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CONTROLLER_OPTS,
                         ControllerCodeGenOptionType.COMPLETION_STAGE
                     )
-                    cliArgs.shouldContainOptionally(target, ARG_CONTROLLER_TARGET)
+                    cliArgs.shouldContainOptionally(target.option, ARG_CONTROLLER_TARGET)
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CONTROLLERS.name)
                     cliArgs shouldNotContainAnyOf listOf(ARG_CONTROLLER_OPTS, ARG_CONTROLLER_TARGET)
@@ -146,7 +147,7 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_MODEL_SUFFIX
                     )
                     cliArgs.shouldContainOptionally(
-                        serializationLibrary,
+                        serializationLibrary.option,
                         ARG_MODEL_SERIALIZATION_LIB,
                     )
                 } else {
@@ -177,10 +178,10 @@ class FabriktArgumentsTest : StringSpec({
 
         @JvmName(name = "shouldContainOptionOptionally")
         private fun Array<String>.shouldContainOptionally(
-            valueProvider: Provider<out FabriktOption>,
+            option: FabriktOption?,
             argName: String
         ) {
-            val argValue = valueProvider.orNull?.fabriktOption?.name
+            val argValue = option?.fabriktOption?.name
             if (argValue != null) {
                 val containArgument = containsArgument(argName, argValue)
                 this should containArgument
