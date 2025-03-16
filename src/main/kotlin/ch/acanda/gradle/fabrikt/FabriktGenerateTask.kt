@@ -94,7 +94,7 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
     }
 
     override fun close() {
-        progressLogger.completed(null, failed)
+        progressLogger.completed("", failed)
     }
 
 }
