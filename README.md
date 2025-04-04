@@ -62,6 +62,9 @@ The plugin provides the following tasks:
 ## Configuration
 
 ```kotlin
+import java.net.URI
+import kotlin.uuid.Uuid
+
 plugins {
     id("ch.acanda.gradle.fabrikt") version "1.13.0"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
@@ -83,9 +86,12 @@ fabrikt {
         validationLibrary = Javax
         quarkusReflectionConfig = enabled
         typeOverrides {
-            binary = ByteArray
-            byte = String
             datetime = OffsetDateTime
+            byte = ByteArray
+            binary = ByteArray
+            uri = URI
+            uuid = UUID
+            date = LocalDate
         }
         client {
             generate = disabled
@@ -129,9 +135,12 @@ fabrikt {
 | outputDirectory                              | The directory to which the generated classes are written, interpreted relative to the project directory.                                                                                                                                                                                                                           | `build/generated/sources/fabrikt` |
 | sourcesPath                                  | The path for generated source files, interpreted relative to the output directory.                                                                                                                                                                                                                                                 | `src/main/kotlin`                 |
 | resourcesPath                                | The path for generated resource files, interpreted relative to the output directory.                                                                                                                                                                                                                                               | `src/main/resources`              |
-| typeOverrides.binary                         | Specifies the Kotlin type for the OAS type `string` with format `binary`.<br/>Values: `ByteArray`, `InputStream`.                                                                                                                                                                                                                  | `ByteArray`                       |
-| typeOverrides.byte                           | Specifies the Kotlin type for the OAS type `string` with format `byte`.<br/>Values: `ByteArray`, `String`.                                                                                                                                                                                                                         | `ByteArray`                       |
 | typeOverrides.datetime                       | Specifies the Kotlin type for the OAS type `datetime`.<br/>Values: `OffsetDateTime`, `Instant`, `LocalDateTime`.                                                                                                                                                                                                                   | `OffsetDateTime`                  |
+| typeOverrides.byte                           | Specifies the Kotlin type for the OAS type `string` with format `byte`.<br/>Values: `ByteArray`, `String`.                                                                                                                                                                                                                         | `ByteArray`                       |
+| typeOverrides.binary                         | Specifies the Kotlin type for the OAS type `string` with format `binary`.<br/>Values: `ByteArray`, `InputStream`, `String`.                                                                                                                                                                                                        | `ByteArray`                       |
+| typeOverrides.uri                            | Specifies the Kotlin type for the OAS type `string` with format `uri`.<br/>Values: `URI`, `String`.                                                                                                                                                                                                                                | `URI`                             |
+| typeOverrides.uuid                           | Specifies the Kotlin type for the OAS type `string` with format `uuid`.<br/>Values: `UUID`, `String`.                                                                                                                                                                                                                              | `UUID`                            |
+| typeOverrides.date                           | Specifies the Kotlin type for the OAS type `string` with format `date`.<br/>Values: `LocalDate`, `String`.                                                                                                                                                                                                                         | `LocalDate`                       |
 | validationLibrary                            | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`, `NoValidation`.                                                                                                                                                                                                  | `Jakarta`                         |
 | quarkusReflectionConfig                      | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
 | client.generate                              | Enables generating the http client code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                       | `disabled`                        |

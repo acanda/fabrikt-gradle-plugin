@@ -46,15 +46,24 @@ configurations:
 
   TypeOverrides:
     properties:
-      binary:
-        type: BinaryOverrideOption
-        default: ByteArray
-      byte:
-        type: ByteOverrideOption
-        default: ByteArray
       datetime:
         type: DateTimeOverrideOption
         default: OffsetDateTime
+      byte:
+        type: ByteOverrideOption
+        default: ByteArray
+      binary:
+        type: BinaryOverrideOption
+        default: ByteArray
+      uri:
+        type: UriOverrideOption
+        default: URI
+      uuid:
+        type: UuidOverrideOption
+        default: UUID
+      date:
+        type: DateOverrideOption
+        default: LocalDate
 
   GenerateClient:
     properties:
@@ -145,11 +154,13 @@ options:
       targeted: TARGETED
       aggressive: AGGRESSIVE
 
-  BinaryOverrideOption:
+  DateTimeOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      ByteArray: null
-      InputStream: BYTEARRAY_AS_INPUTSTREAM
+      OffsetDateTime: null
+      Instant: DATETIME_AS_INSTANT
+      LocalDateTime: DATETIME_AS_LOCALDATETIME
+      String: DATETIME_AS_STRING
 
   ByteOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
@@ -157,12 +168,30 @@ options:
       ByteArray: null
       String: BYTE_AS_STRING
 
-  DateTimeOverrideOption:
+  BinaryOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      OffsetDateTime: null
-      Instant: DATETIME_AS_INSTANT
-      LocalDateTime: DATETIME_AS_LOCALDATETIME
+      ByteArray: null
+      InputStream: BYTEARRAY_AS_INPUTSTREAM
+      String: BINARY_AS_STRING
+
+  UriOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      URI: null
+      String: URI_AS_STRING
+
+  UuidOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      UUID: null
+      String: UUID_AS_STRING
+
+  DateOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      LocalDate: null
+      String: DATE_AS_STRING
 
   ValidationLibraryOption:
     source: com.cjbooms.fabrikt.cli.ValidationLibrary

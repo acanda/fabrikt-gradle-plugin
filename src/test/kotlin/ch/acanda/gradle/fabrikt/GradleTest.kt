@@ -101,7 +101,7 @@ class GradleTest : StringSpec({
     }
 
     "`gradle fabriktGenerate` with full configuration using defaults should run fabrikt" {
-        val projectDir = projectDir("full-configuration-with defaults")
+        val projectDir = projectDir("full-configuration-with-defaults")
         val basePackage = "ch.acanda"
         val outputPath = "build/generated/custom"
         val sourcePath = "src/fabrikt/kotlin"
@@ -123,9 +123,12 @@ class GradleTest : StringSpec({
             |    validationLibrary = Jakarta
             |    quarkusReflectionConfig = enabled
             |    typeOverrides {
-            |      binary = InputStream
-            |      byte = String
             |      datetime = Instant
+            |      byte = String
+            |      binary = String
+            |      uri = String
+            |      uuid = String
+            |      date = String
             |    }
             |    client {
             |      generate = enabled

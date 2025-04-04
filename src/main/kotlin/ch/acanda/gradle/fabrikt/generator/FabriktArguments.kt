@@ -72,7 +72,23 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_TYPE_OVERRIDES)
             args.add(override)
         }
+        byte.withOptionName { override ->
+            args.add(ARG_TYPE_OVERRIDES)
+            args.add(override)
+        }
         binary.withOptionName { override ->
+            args.add(ARG_TYPE_OVERRIDES)
+            args.add(override)
+        }
+        uri.withOptionName { override ->
+            args.add(ARG_TYPE_OVERRIDES)
+            args.add(override)
+        }
+        uuid.withOptionName { override ->
+            args.add(ARG_TYPE_OVERRIDES)
+            args.add(override)
+        }
+        date.withOptionName { override ->
             args.add(ARG_TYPE_OVERRIDES)
             args.add(override)
         }

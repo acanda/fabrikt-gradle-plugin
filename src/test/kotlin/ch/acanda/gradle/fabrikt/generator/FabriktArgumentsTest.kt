@@ -44,7 +44,11 @@ class FabriktArgumentsTest : StringSpec({
             }
             with(config.typeOverrides) {
                 cliArgs.shouldContainOptionally(datetime.option, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(byte.option, ARG_TYPE_OVERRIDES)
                 cliArgs.shouldContainOptionally(binary.option, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(uri.option, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(uuid.option, ARG_TYPE_OVERRIDES)
+                cliArgs.shouldContainOptionally(date.option, ARG_TYPE_OVERRIDES)
             }
             with(config.client) {
                 if (generate.get()) {
