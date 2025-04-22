@@ -132,7 +132,7 @@ class GradleTest : StringSpec({
             |    }
             |    client {
             |      generate = enabled
-            |      target = OpenFeign
+            |      target = SpringHttpInterface
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
