@@ -62,9 +62,6 @@ The plugin provides the following tasks:
 ## Configuration
 
 ```kotlin
-import java.net.URI
-import kotlin.uuid.Uuid
-
 plugins {
     id("ch.acanda.gradle.fabrikt") version "1.15.1"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
