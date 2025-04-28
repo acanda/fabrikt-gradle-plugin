@@ -1,0 +1,42 @@
+= Fabrikt Gradle Plugin Developer Guide
+:description: Developer documentation for the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, development, contributing
+
+Welcome to the Fabrikt Gradle Plugin developer documentation. This guide is intended for developers who want to contribute to the plugin or understand its internal architecture.
+
+== Introduction
+
+The Fabrikt Gradle Plugin integrates Fabrikt into Gradle builds, allowing users to generate Kotlin code from OpenAPI specifications. This developer guide provides information about the plugin's architecture, development setup, and contribution guidelines.
+
+== Getting Started
+
+If you're new to the project, we recommend starting with the following sections:
+
+* xref:architecture.adoc[Architecture Overview] - Understand the plugin's design and components
+* xref:development-setup.adoc[Development Setup] - Set up your development environment
+* xref:contributing.adoc[Contributing Guidelines] - Learn how to contribute to the project
+
+== Project Structure
+
+The project follows a standard Gradle plugin structure:
+
+* `src/main/kotlin` - The main source code for the plugin
+* `src/main/schema` - Schema definitions used for code generation
+* `src/test/kotlin` - Test cases for the plugin
+* `buildSrc` - Custom build logic for the plugin itself
+
+== Key Components
+
+The plugin consists of several key components:
+
+* `FabriktPlugin` - The main plugin class that integrates with Gradle
+* `FabriktExtension` - The extension that provides the DSL for configuring the plugin
+* `FabriktTask` - The task that generates code from OpenAPI specifications
+* Configuration model - Classes that represent the plugin's configuration options
+
+== Further Reading
+
+* xref:architecture.adoc[Architecture] - Detailed architecture documentation
+* xref:contributing.adoc[Contributing] - Guidelines for contributing to the project
+* xref:development-setup.adoc[Development Setup] - How to set up your development environment
+* xref:release-process.adoc[Release Process] - How to release a new version of the plugin

@@ -1,0 +1,5 @@
+* xref:index.adoc[Home]
+* xref:architecture.adoc[Architecture]
+* xref:contributing.adoc[Contributing]
+* xref:development-setup.adoc[Development Setup]
+* xref:release-process.adoc[Release Process]

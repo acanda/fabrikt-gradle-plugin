@@ -1,0 +1,189 @@
+= Configuration Options
+:description: Configuration options for the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, configuration, options
+
+This page describes the configuration options available for the Fabrikt Gradle Plugin.
+
+== Basic Configuration
+
+The basic configuration requires two mandatory properties:
+
+* `apiFile`: The path to an Open API v3 specification
+* `basePackage`: The base package under which all code is built
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+    }
+}
+----
+
+== All Configuration Options
+
+Below is a comprehensive list of all available configuration options with their descriptions and default values.
+
+[cols="1,3,1"]
+|===
+|Property |Description |Default Value
+
+|`apiFile`
+|The path to an Open API v3 specification, interpreted relative to the project directory.
+|_Required_
+
+|`apiFragments`
+|A set of paths to Open API v3 specification fragments, interpreted relative to the project directory.
+|`files()`
+
+|`externalReferenceResolution`
+|Specify to which degree referenced schemas from external files are included in model generation. `targeted` generates models only for directly referenced schemas in external API files. `aggressive` triggers generation of every external schema in a file containing a referenced schema. Values: `targeted`, `aggressive`.
+|`targeted`
+
+|`basePackage`
+|The base package under which all code is built.
+|_Required_
+
+|`outputDirectory`
+|The directory to which the generated classes are written, interpreted relative to the project directory.
+|`build/generated/sources/fabrikt`
+
+|`sourcesPath`
+|The path for generated source files, interpreted relative to the output directory.
+|`src/main/kotlin`
+
+|`resourcesPath`
+|The path for generated resource files, interpreted relative to the output directory.
+|`src/main/resources`
+
+|`validationLibrary`
+|Specifies the validation library used for annotations in generated model classes. Values: `Javax`, `Jakarta`, `NoValidation`.
+|`Jakarta`
+
+|`quarkusReflectionConfig`
+|Enables generating the reflection-config.json file for quarkus integration projects. Values: `enabled`, `disabled`, `true`, `false`.
+|`enabled`
+
+|`skip`
+|Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting. Values: `true`, `false`.
+|`false`
+|===
+
+== Type Overrides
+
+You can customize the Kotlin types used for specific OpenAPI types:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        typeOverrides {
+            datetime = OffsetDateTime
+            byte = ByteArray
+            binary = ByteArray
+            uri = URI
+            uuid = UUID
+            date = LocalDate
+        }
+    }
+}
+----
+
+== Client Configuration
+
+Configure client code generation:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        client {
+            generate = enabled
+            target = OkHttp
+            resilience4j = disabled
+            suspendModifier = disabled
+            springResponseEntityWrapper = disabled
+            springCloudOpenFeignStarterAnnotation = disabled
+            openFeignClientName = "fabrikt-client"
+        }
+    }
+}
+----
+
+== Controller Configuration
+
+Configure controller code generation:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        controller {
+            generate = enabled
+            authentication = disabled
+            suspendModifier = disabled
+            completionStage = disabled
+            target = Spring
+        }
+    }
+}
+----
+
+== Model Configuration
+
+Configure model code generation:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        model {
+            generate = enabled
+            extensibleEnums = disabled
+            javaSerialization = disabled
+            quarkusReflection = disabled
+            micronautIntrospection = disabled
+            micronautReflection = disabled
+            includeCompanionObject = disabled
+            sealedInterfacesForOneOf = disabled
+            ignoreUnknownProperties = disabled
+            serializationLibrary = Jackson
+        }
+    }
+}
+----
+
+== Default Configuration
+
+If you have many OpenAPI specifications with nearly the same configuration, you can set common values in the `defaults` block:
+
+[source,kotlin]
+----
+fabrikt {
+    defaults {
+        client {
+            generate = true
+            target = OpenFeign
+        }
+    }
+    generate("dog") {
+        apiFile = file("src/main/openapi/dog.yaml")
+        basePackage = "com.example.dog"
+    }
+    generate("cat") {
+        apiFile = file("src/main/openapi/cat.yaml")
+        basePackage = "com.example.cat"
+    }
+}
+----
+
+For more detailed information about each configuration option, refer to the xref:usage.adoc[usage examples].

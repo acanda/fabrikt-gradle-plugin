@@ -1,0 +1,135 @@
+= Release Process
+:description: Process for releasing new versions of the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, release, versioning
+
+This page describes the process for releasing new versions of the Fabrikt Gradle Plugin.
+
+== Version Numbering
+
+We follow semantic versioning (SemVer) for the plugin:
+
+* **Major version** (X.0.0): Incompatible API changes
+* **Minor version** (0.X.0): New functionality in a backward-compatible manner
+* **Patch version** (0.0.X): Backward-compatible bug fixes
+
+== Release Checklist
+
+Before releasing a new version, ensure:
+
+1. All tests pass
+2. Code quality checks pass
+3. Documentation is up to date
+4. CHANGELOG.md is updated with the new version and changes
+5. Version number is updated in build.gradle.kts
+
+== Release Steps
+
+=== 1. Prepare the Release
+
+1. Update the version in `build.gradle.kts`:
+
+[source,kotlin]
+----
+version = "X.Y.Z" // Remove -SNAPSHOT suffix
+----
+
+2. Update CHANGELOG.md with the new version and changes
+3. Commit the changes:
+
+[source,bash]
+----
+git add build.gradle.kts CHANGELOG.md
+git commit -m "Prepare release X.Y.Z"
+----
+
+4. Create a tag for the release:
+
+[source,bash]
+----
+git tag -a vX.Y.Z -m "Release X.Y.Z"
+----
+
+=== 2. Validate the Release
+
+1. Build the plugin:
+
+[source,bash]
+----
+./gradlew clean build
+----
+
+2. Validate the plugin:
+
+[source,bash]
+----
+./gradlew publishPlugins --validate-only
+----
+
+=== 3. Publish the Release
+
+1. Publish to Gradle Plugin Portal:
+
+[source,bash]
+----
+./gradlew publishPlugins \
+  -Pgradle.publish.key=... \ 
+  -Pgradle.publish.secret=... \
+  -Psigning.gnupg.keyName=...
+----
+
+2. Push the changes and tag:
+
+[source,bash]
+----
+git push origin main
+git push origin vX.Y.Z
+----
+
+=== 4. Prepare for Next Development Cycle
+
+1. Update the version in `build.gradle.kts` to the next development version:
+
+[source,kotlin]
+----
+version = "X.Y.Z+1-SNAPSHOT" // Increment patch version and add -SNAPSHOT suffix
+----
+
+2. Commit the changes:
+
+[source,bash]
+----
+git add build.gradle.kts
+git commit -m "Prepare for next development cycle"
+git push origin main
+----
+
+== Release Announcement
+
+After releasing a new version:
+
+1. Create a GitHub release with release notes
+2. Announce the release on relevant channels
+
+== Troubleshooting
+
+=== Common Issues
+
+* **Signing Issues**: Ensure your GPG key is properly set up and the passphrase is available
+* **Gradle Plugin Portal Issues**: Check that your API key and secret are correct
+* **Version Conflicts**: Ensure the version in the tag matches the version in build.gradle.kts
+
+=== Rollback Procedure
+
+If issues are discovered after release:
+
+1. Fix the issues
+2. Release a new patch version
+3. Document the issues and fixes in CHANGELOG.md
+
+== Release Schedule
+
+We aim to release:
+
+* Patch versions: As needed for bug fixes
+* Minor versions: Every 1-2 months for new features
+* Major versions: Only when necessary for breaking changes

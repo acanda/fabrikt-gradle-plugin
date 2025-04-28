@@ -1,0 +1,121 @@
+= Development Setup
+:description: Setting up a development environment for the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, development, setup
+
+This page provides instructions for setting up a development environment for the Fabrikt Gradle Plugin.
+
+== Prerequisites
+
+Before you begin, ensure you have the following installed:
+
+* JDK 21 or later
+* Gradle 8.13 or later
+* Git
+* An IDE (IntelliJ IDEA recommended)
+
+== Clone the Repository
+
+First, clone the repository:
+
+[source,bash]
+----
+git clone https://github.com/acanda/fabrikt-gradle-plugin.git
+cd fabrikt-gradle-plugin
+----
+
+== Import the Project
+
+=== IntelliJ IDEA
+
+1. Open IntelliJ IDEA
+2. Select "Open" or "Import Project"
+3. Navigate to the cloned repository
+4. Select the `build.gradle.kts` file
+5. Click "Open as Project"
+6. Wait for the project to be imported and indexed
+
+== Build the Project
+
+To build the project, run:
+
+[source,bash]
+----
+./gradlew build
+----
+
+This will compile the code, run the tests, and check for code quality issues.
+
+== Run the Tests
+
+To run the tests, use:
+
+[source,bash]
+----
+./gradlew test
+----
+
+== Local Installation
+
+To install the plugin to your local Maven repository for testing with other projects:
+
+[source,bash]
+----
+./gradlew publishToMavenLocal
+----
+
+Then, in the project where you want to use the plugin, add the local Maven repository to `settings.gradle.kts`:
+
+[source,kotlin]
+----
+pluginManagement {
+    repositories {
+        mavenLocal()
+        // other repositories go here
+    }
+}
+----
+
+== Development Workflow
+
+1. Create a new branch for your changes
+2. Make your changes
+3. Write tests for your changes
+4. Run the tests to ensure they pass
+5. Check code quality with Detekt: `./gradlew detekt`
+6. Submit a pull request
+
+== Debugging
+
+To debug the plugin during development:
+
+1. Create a test project that uses the plugin
+2. Install the plugin locally using `publishToMavenLocal`
+3. Run the test project with the `--debug-jvm` flag:
+
+[source,bash]
+----
+cd /path/to/test/project
+./gradlew --debug-jvm fabriktGenerate
+----
+
+4. Connect your IDE's remote debugger to the JVM
+
+== Troubleshooting
+
+=== Common Issues
+
+* **Gradle Wrapper Issues**: If you encounter issues with the Gradle wrapper, try running `gradle wrapper` to regenerate it.
+* **IDE Indexing**: If your IDE is having trouble indexing the project, try invalidating caches and restarting.
+* **Test Failures**: If tests are failing, check the test output for details on what's failing and why.
+
+=== Getting Help
+
+If you need help with development setup, you can:
+
+* Open an issue on GitHub
+* Reach out to the maintainers
+* Check the documentation
+
+== Next Steps
+
+Once you have your development environment set up, you can start contributing to the project. See xref:contributing.adoc[Contributing] for guidelines on how to contribute.

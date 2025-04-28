@@ -1,0 +1,98 @@
+= Architecture
+:description: Architecture overview of the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, architecture, design
+
+This page provides an overview of the Fabrikt Gradle Plugin's architecture and design.
+
+== Overview
+
+The Fabrikt Gradle Plugin is designed to integrate Fabrikt into Gradle builds. It follows the standard Gradle plugin architecture, with a main plugin class, an extension for configuration, and tasks for execution.
+
+== Components
+
+=== Plugin Class
+
+The main plugin class `FabriktPlugin` is responsible for:
+
+* Registering the plugin extension
+* Creating and configuring tasks
+* Setting up task dependencies
+
+[source,kotlin]
+----
+class FabriktPlugin : Plugin<Project> {
+    override fun apply(project: Project) {
+        // Register extension
+        // Configure tasks
+        // Set up dependencies
+    }
+}
+----
+
+=== Extension
+
+The `FabriktExtension` class provides the DSL for configuring the plugin:
+
+* Defines configuration options
+* Provides methods for creating and configuring code generation tasks
+* Handles default configuration values
+
+[source,kotlin]
+----
+open class FabriktExtension(private val project: Project) {
+    // Configuration properties
+    // Configuration methods
+}
+----
+
+=== Tasks
+
+The plugin defines several tasks:
+
+* `FabriktGenerateTask` - Generates code from OpenAPI specifications
+* `FabriktGenerateAllTask` - Aggregates all code generation tasks
+
+=== Configuration Model
+
+The configuration model consists of several classes that represent the plugin's configuration options:
+
+* `FabriktConfiguration` - Represents a single code generation configuration
+* `ClientConfiguration` - Configuration for client code generation
+* `ControllerConfiguration` - Configuration for controller code generation
+* `ModelConfiguration` - Configuration for model code generation
+* `TypeOverrides` - Configuration for type mappings
+
+== Code Generation Process
+
+The code generation process follows these steps:
+
+1. Parse the OpenAPI specification
+2. Apply configuration options
+3. Generate code using Fabrikt
+4. Write generated code to the output directory
+
+== Integration with Gradle
+
+The plugin integrates with Gradle in several ways:
+
+* Uses Gradle's task system for execution
+* Uses Gradle's configuration system for setup
+* Integrates with Gradle's build lifecycle
+* Supports Gradle's incremental build feature
+
+== Dependency Management
+
+The plugin manages dependencies in the following ways:
+
+* Uses Fabrikt as a direct dependency
+* Allows users to configure validation and serialization libraries
+* Supports integration with various frameworks (Spring, Micronaut, Ktor)
+
+== Extension Points
+
+The plugin provides several extension points:
+
+* Custom type mappings
+* Custom validation libraries
+* Custom serialization libraries
+* Custom code generation targets

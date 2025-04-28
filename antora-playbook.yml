@@ -1,0 +1,23 @@
+site:
+  title: Fabrikt Gradle Plugin Documentation
+  url: https://acanda.github.io/fabrikt-gradle-plugin
+  start_page: user-docs::index.adoc
+
+content:
+  sources:
+    - url: .
+      start_path: documentation/user
+      branches: HEAD
+      edit_url: '{web_url}/edit/{refname}/{path}'
+    - url: .
+      start_path: documentation/developer
+      branches: HEAD
+      edit_url: '{web_url}/edit/{refname}/{path}'
+
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/HEAD/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+
+runtime:
+  fetch: true

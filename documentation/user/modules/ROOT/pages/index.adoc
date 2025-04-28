@@ -1,0 +1,28 @@
+= Fabrikt Gradle Plugin User Guide
+:description: User documentation for the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, openapi, kotlin
+
+Welcome to the Fabrikt Gradle Plugin user documentation. This guide will help you get started with using the plugin to generate Kotlin code from OpenAPI specifications.
+
+== What is Fabrikt Gradle Plugin?
+
+The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds. Fabrikt generates Kotlin data classes with support for advanced features, Spring or Micronaut controllers, Ktor route handlers, and OkHttp or OpenFeign clients.
+
+This plugin can be permanently integrated into your Gradle build and will ensure contract and code always match, even as your APIs evolve in complexity.
+
+== Key Features
+
+* Generate Kotlin data classes from OpenAPI specifications
+* Support for Spring, Micronaut controllers, and Ktor route handlers
+* Generate OkHttp or OpenFeign clients
+* Customizable type mappings and validation libraries
+* Seamless integration with Gradle build process
+
+== Getting Started
+
+To get started with the Fabrikt Gradle Plugin, see the xref:getting-started.adoc[Getting Started] guide.
+
+== Further Reading
+
+* xref:configuration.adoc[Configuration Options]
+* xref:usage.adoc[Usage Examples]

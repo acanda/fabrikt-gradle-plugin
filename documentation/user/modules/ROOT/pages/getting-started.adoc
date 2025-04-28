@@ -1,0 +1,77 @@
+= Getting Started with Fabrikt Gradle Plugin
+:description: How to get started with the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, openapi, kotlin, getting started
+
+This guide will help you get started with the Fabrikt Gradle Plugin to generate Kotlin code from OpenAPI specifications.
+
+== Prerequisites
+
+* Gradle 8.13 or later
+* JRE 21 or later
+* An OpenAPI specification file (YAML or JSON)
+
+== Installation
+
+To use the Fabrikt Gradle Plugin in your project, add it to your build script.
+
+=== Kotlin DSL (build.gradle.kts)
+
+[source,kotlin]
+----
+plugins {
+    id("ch.acanda.gradle.fabrikt") version "1.15.2"
+}
+----
+
+=== Groovy DSL (build.gradle)
+
+[source,groovy]
+----
+plugins {
+    id 'ch.acanda.gradle.fabrikt' version '1.15.2'
+}
+----
+
+== Basic Configuration
+
+After adding the plugin to your build script, you need to configure it to generate code from your OpenAPI specification.
+
+=== Kotlin DSL (build.gradle.kts)
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+    }
+}
+----
+
+=== Groovy DSL (build.gradle)
+
+[source,groovy]
+----
+fabrikt {
+    api {
+        apiFile = file('src/main/openapi/api.yaml')
+        basePackage = 'com.example.api'
+    }
+}
+----
+
+== Generating Code
+
+To generate code from your OpenAPI specification, run the following Gradle task:
+
+[source,bash]
+----
+./gradlew fabriktGenerate
+----
+
+This will generate Kotlin code in the `build/generated/sources/fabrikt/src/main/kotlin/` directory.
+
+== Next Steps
+
+* Learn more about the xref:configuration.adoc[configuration options] available for the Fabrikt Gradle Plugin.
+* See xref:usage.adoc[usage examples] for common use cases.

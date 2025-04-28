@@ -1,0 +1,94 @@
+= Contributing
+:description: Guidelines for contributing to the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, contributing, development
+
+This page provides guidelines for contributing to the Fabrikt Gradle Plugin.
+
+== Code of Conduct
+
+We expect all contributors to follow our code of conduct. Please be respectful and considerate of others when contributing to the project.
+
+== Getting Started
+
+1. Fork the repository on GitHub
+2. Clone your fork locally
+3. Set up your development environment (see xref:development-setup.adoc[Development Setup])
+4. Create a new branch for your changes
+5. Make your changes
+6. Write tests for your changes
+7. Run the tests to ensure they pass
+8. Submit a pull request
+
+== Pull Request Process
+
+1. Ensure your code follows the project's coding standards
+2. Update the documentation to reflect any changes
+3. Add tests for your changes
+4. Ensure all tests pass
+5. Submit a pull request with a clear description of the changes
+
+== Coding Standards
+
+=== Kotlin Style Guide
+
+We follow the official Kotlin style guide. Some key points:
+
+* Use 4 spaces for indentation
+* Use camelCase for variable and function names
+* Use PascalCase for class names
+* Use UPPER_SNAKE_CASE for constants
+* Keep lines under 120 characters
+
+=== Testing
+
+All code should be covered by tests. We use JUnit 5 and Kotest for testing.
+
+* Write unit tests for all new code
+* Ensure existing tests pass
+* Use descriptive test names
+
+=== Documentation
+
+All code should be documented:
+
+* Use KDoc comments for classes, functions, and properties
+* Update the user and developer documentation as needed
+* Keep the README up to date
+
+== Commit Messages
+
+We follow the conventional commits specification:
+
+* Use a consistent format for commit messages
+* Start with a type (feat, fix, docs, style, refactor, test, chore)
+* Include a scope if applicable
+* Include a brief description of the change
+* Use the imperative mood ("Add feature" not "Added feature")
+
+Example:
+```
+feat(client): add support for resilience4j
+```
+
+== Issue Tracking
+
+We use GitHub Issues for tracking work:
+
+* Check existing issues before creating a new one
+* Use descriptive titles
+* Provide detailed information about the issue
+* Use labels to categorize issues
+
+== Release Process
+
+See xref:release-process.adoc[Release Process] for information about how we release new versions of the plugin.
+
+== Getting Help
+
+If you need help with contributing, you can:
+
+* Open an issue on GitHub
+* Reach out to the maintainers
+* Check the documentation
+
+Thank you for contributing to the Fabrikt Gradle Plugin!

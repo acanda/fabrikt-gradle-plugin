@@ -1,0 +1,227 @@
+= Usage Examples
+:description: Usage examples for the Fabrikt Gradle Plugin
+:keywords: fabrikt, gradle, plugin, usage, examples
+
+This page provides usage examples for common scenarios when using the Fabrikt Gradle Plugin.
+
+== Basic Usage
+
+The most basic usage of the Fabrikt Gradle Plugin is to generate model classes from an OpenAPI specification:
+
+[source,kotlin]
+----
+plugins {
+    id("ch.acanda.gradle.fabrikt") version "1.15.2"
+}
+
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+    }
+}
+----
+
+Running `./gradlew fabriktGenerate` will generate model classes in `build/generated/sources/fabrikt/src/main/kotlin/`.
+
+== Multiple API Specifications
+
+You can generate code from multiple API specifications:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("users") {
+        apiFile = file("src/main/openapi/users.yaml")
+        basePackage = "com.example.users"
+    }
+    
+    generate("products") {
+        apiFile = file("src/main/openapi/products.yaml")
+        basePackage = "com.example.products"
+    }
+}
+----
+
+You can run `./gradlew fabriktGenerateUsers` or `./gradlew fabriktGenerateProducts` to generate code for a specific API.
+
+== Generating Client Code
+
+To generate client code for consuming an API:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        client {
+            generate = enabled
+            target = OkHttp
+        }
+    }
+}
+----
+
+For OpenFeign clients:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        client {
+            generate = enabled
+            target = OpenFeign
+            springCloudOpenFeignStarterAnnotation = enabled
+            openFeignClientName = "my-api-client"
+        }
+    }
+}
+----
+
+== Generating Controller Code
+
+To generate controller code for implementing an API:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        controller {
+            generate = enabled
+            target = Spring
+        }
+    }
+}
+----
+
+For Micronaut controllers:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        controller {
+            generate = enabled
+            target = Micronaut
+        }
+    }
+}
+----
+
+For Ktor route handlers:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        controller {
+            generate = enabled
+            target = Ktor
+        }
+    }
+}
+----
+
+== Customizing Model Generation
+
+To customize the generated model classes:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        model {
+            extensibleEnums = enabled
+            javaSerialization = enabled
+            includeCompanionObject = enabled
+            sealedInterfacesForOneOf = enabled
+            ignoreUnknownProperties = enabled
+        }
+    }
+}
+----
+
+== Using Default Configuration
+
+If you have multiple API specifications with similar configuration, you can use the `defaults` block:
+
+[source,kotlin]
+----
+fabrikt {
+    defaults {
+        client {
+            generate = enabled
+            target = OkHttp
+        }
+        model {
+            javaSerialization = enabled
+            ignoreUnknownProperties = enabled
+        }
+    }
+    
+    generate("users") {
+        apiFile = file("src/main/openapi/users.yaml")
+        basePackage = "com.example.users"
+    }
+    
+    generate("products") {
+        apiFile = file("src/main/openapi/products.yaml")
+        basePackage = "com.example.products"
+    }
+}
+----
+
+== Integration with IntelliJ IDEA
+
+To ensure IntelliJ IDEA recognizes the generated code as source files, add the `idea` plugin:
+
+[source,kotlin]
+----
+plugins {
+    id("ch.acanda.gradle.fabrikt") version "1.15.2"
+    idea
+}
+----
+
+== Using External References
+
+If your OpenAPI specification references external files, you can control how those references are resolved:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        basePackage = "com.example.api"
+        externalReferenceResolution = targeted
+    }
+}
+----
+
+== Using API Fragments
+
+If you have parts of your API defined in separate files, you can include them as fragments:
+
+[source,kotlin]
+----
+fabrikt {
+    generate("api") {
+        apiFile = file("src/main/openapi/api.yaml")
+        apiFragments = files("src/main/openapi/fragments/common.yaml", "src/main/openapi/fragments/errors.yaml")
+        basePackage = "com.example.api"
+    }
+}
+----
+
+For more detailed information about configuration options, refer to the xref:configuration.adoc[configuration documentation].

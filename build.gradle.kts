@@ -117,4 +117,86 @@ tasks {
         }
     }
 
+    register("buildDocs") {
+        group = "documentation"
+        description = "Build the documentation site using Antora"
+
+        // Disable configuration caching for this task
+        notCompatibleWithConfigurationCache("This task uses external processes")
+
+        doLast {
+            val isWindows = System.getProperty("os.name").lowercase().contains("windows")
+            val nodeInstalled = try {
+                val process = if (isWindows) {
+                    ProcessBuilder("cmd", "/c", "node", "--version").start()
+                } else {
+                    ProcessBuilder("node", "--version").start()
+                }
+                process.waitFor(5, TimeUnit.SECONDS)
+                process.exitValue() == 0
+            } catch (e: Exception) {
+                false
+            }
+
+            if (!nodeInstalled) {
+                throw GradleException("""
+                    Node.js is not installed or not in the PATH. 
+                    Please install Node.js and npm from https://nodejs.org/ 
+                    and make sure they are available in your PATH.
+
+                    After installing Node.js and npm, you can install Antora with:
+                    npm i -g @antora/cli @antora/site-generator
+                """.trimIndent())
+            }
+
+            // Install Antora CLI and Site Generator locally if not already installed
+            try {
+                println("Checking if Antora packages are installed...")
+                val installCommand = if (isWindows) {
+                    arrayOf("cmd", "/c", "npm", "install", "--no-save", "@antora/cli", "@antora/site-generator")
+                } else {
+                    arrayOf("npm", "install", "--no-save", "@antora/cli", "@antora/site-generator")
+                }
+
+                exec {
+                    workingDir(projectDir)
+                    commandLine(*installCommand)
+                }
+
+                println("Running Antora to build documentation...")
+                val antoraCommand = if (isWindows) {
+                    arrayOf("cmd", "/c", "npx", "@antora/cli", "antora-playbook.yml")
+                } else {
+                    arrayOf("npx", "@antora/cli", "antora-playbook.yml")
+                }
+
+                exec {
+                    workingDir(projectDir)
+                    commandLine(*antoraCommand)
+                }
+
+                println("Documentation built successfully. Open build/site/index.html to view it.")
+            } catch (e: Exception) {
+                if (e.message?.contains("Cannot run program") == true && 
+                    e.message?.contains("npx") == true) {
+                    throw GradleException("""
+                        The 'npx' command was not found. This usually means npm is not installed correctly.
+                        Please ensure npm is installed and available in your PATH.
+
+                        After installing npm, you can install Antora with:
+                        npm i -g @antora/cli @antora/site-generator
+                    """.trimIndent())
+                } else {
+                    throw GradleException("""
+                        Failed to build documentation: ${e.message}
+
+                        Make sure Node.js and npm are installed and in your PATH.
+                        You can install Antora with:
+                        npm i -g @antora/cli @antora/site-generator
+                    """.trimIndent())
+                }
+            }
+        }
+    }
+
 }
