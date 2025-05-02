@@ -1,0 +1,70 @@
+name: Update Fabrikt README
+
+on:
+  push:
+    tags:
+      - 'release/**'
+
+jobs:
+
+  update-fabrikt-readme:
+    name: Update Fabrikt README.md
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Synchronize acanda/fabrikt with cjbooms/fabrikt
+        env:
+          GH_TOKEN: '${{ secrets.UPDATE_FABRIKT_README_TOKEN }}'
+        run: gh repo sync acanda/fabrikt
+
+      - name: Checkout acanda/fabrikt
+        uses: actions/checkout@v4
+        with:
+          repository: acanda/fabrikt
+          path: acanda-fabrikt
+          token: '${{ secrets.UPDATE_FABRIKT_README_TOKEN }}'
+
+      - name: Checkout acanda/fabrikt-gradle-plugin
+        uses: actions/checkout@v4
+        with:
+          repository: acanda/fabrikt-gradle-plugin
+          path: acanda-fabrikt-gradle-plugin
+
+      - name: Extract release and Fabrikt versions
+        run: |
+          RELEASE_VERSION=${GITHUB_REF#refs/tags/release/}
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "Release version: $RELEASE_VERSION"
+          FABRIKT_VERSION=$(grep -oP 'fabrikt = \{ group = "com.cjbooms", name = "fabrikt", version = "\K[^"]+' acanda-fabrikt-gradle-plugin/gradle/libs.versions.toml)
+          echo "FABRIKT_VERSION=$FABRIKT_VERSION" >> $GITHUB_ENV
+          echo "Fabrikt version: $FABRIKT_VERSION"
+
+      - name: Update README.md
+        run: |
+          cd acanda-fabrikt
+          if git show-ref --verify --quiet refs/heads/fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}; then
+            echo "Branch fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }} already exists, stopping workflow."
+          else
+            # Replace the version in README.md
+            sed -Ei 's/id\("ch.acanda.gradle.fabrikt"\) version "[^"]+"/id("ch.acanda.gradle.fabrikt") version "${{ env.RELEASE_VERSION }}"/g' README.md
+            if git diff --quiet README.md; then
+              echo "No changes to README.md, stopping workflow."
+              echo "No changes to README.md, stopping workflow." >> $GITHUB_STEP_SUMMARY
+              echo "README_CHANGED=false" >> $GITHUB_ENV
+            else
+              echo "README.md has been updated."
+              git checkout -b fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}
+              git config --global user.email "git@acanda.ch"
+              git config --global user.name "Philip Graf"
+              git commit --all -m "Update version of fabrikt-gradle-plugin in README.md to ${{ env.RELEASE_VERSION }}"
+              echo "README_CHANGED=true" >> $GITHUB_ENV
+            fi
+          fi
+
+      - name: Create pull request
+        if: env.README_CHANGED == 'true'
+        run: |
+          cd acanda-fabrikt
+          echo "Pushing changes to remote repository"
+          git push origin fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}
+          echo "Open a [pull request](https://github.com/cjbooms/fabrikt/compare/master...acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}?expand=1&title=Update+version+of+fabrikt-gradle-plugin+in+README.md+to+${{ env.RELEASE_VERSION }}&body=I+updated+the+gradle+plugin+to+Fabrikt+${{ env.FABRIKT_VERSION }}.)." >> $GITHUB_STEP_SUMMARY
