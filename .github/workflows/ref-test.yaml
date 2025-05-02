@@ -1,0 +1,23 @@
+name: Update Fabrikt README
+
+on:
+  push:
+    tags:
+      - 'test/**'
+
+jobs:
+
+  update-fabrikt-readme:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract version
+        id: extract_version
+        run: |
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/test/}"
+          echo "RELEASE_VERSION=${GITHUB_REF#refs/tags/test/}" >> $GITHUB_ENV
+
+      - name: Print version
+        id: print_version
+        run: |
+          echo "Release version: ${{ env.RELEASE_VERSION }}"
