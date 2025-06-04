@@ -64,6 +64,9 @@ configurations:
       date:
         type: DateOverrideOption
         default: LocalDate
+      duration:
+        type: DurationOverrideOption
+        default: Duration
 
   GenerateClient:
     properties:
@@ -153,6 +156,12 @@ options:
     mapping:
       targeted: TARGETED
       aggressive: AGGRESSIVE
+
+  DurationOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      Duration: null
+      String: DURATION_AS_STRING
 
   DateTimeOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride

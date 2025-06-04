@@ -89,6 +89,7 @@ fabrikt {
             uri = URI
             uuid = UUID
             date = LocalDate
+            duration = Duration
         }
         client {
             generate = disabled
@@ -138,6 +139,7 @@ fabrikt {
 | typeOverrides.uri                            | Specifies the Kotlin type for the OAS type `string` with format `uri`.<br/>Values: `URI`, `String`.                                                                                                                                                                                                                                | `URI`                             |
 | typeOverrides.uuid                           | Specifies the Kotlin type for the OAS type `string` with format `uuid`.<br/>Values: `UUID`, `String`.                                                                                                                                                                                                                              | `UUID`                            |
 | typeOverrides.date                           | Specifies the Kotlin type for the OAS type `string` with format `date`.<br/>Values: `LocalDate`, `String`.                                                                                                                                                                                                                         | `LocalDate`                       |
+| typeOverrides.duration                       | Specifies the Kotlin type for the OAS type `string` with format `duration`.<br/>Values: `Duration`, `String`.                                                                                                                                                                                                                      | `Duration`                        |
 | validationLibrary                            | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`, `NoValidation`.                                                                                                                                                                                                  | `Jakarta`                         |
 | quarkusReflectionConfig                      | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
 | client.generate                              | Enables generating the http client code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                       | `disabled`                        |

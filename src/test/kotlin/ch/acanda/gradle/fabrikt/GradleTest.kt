@@ -48,6 +48,7 @@ class GradleTest : StringSpec({
             |      binary = InputStream
             |      byte = String
             |      datetime = Instant
+            |      duration = Duration
             |    }
             |    client {
             |      generate = enabled
