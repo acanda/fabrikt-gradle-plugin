@@ -13,7 +13,6 @@ jobs:
     name: Update Fabrikt README.md
     runs-on: ubuntu-latest
     permissions:
-      pull-requests: write
       contents: write
 
     steps:
@@ -27,6 +26,7 @@ jobs:
         with:
           repository: acanda/fabrikt
           path: acanda-fabrikt
+          token: '${{ secrets.UPDATE_FABRIKT_README_TOKEN }}'
 
       - name: Checkout acanda/fabrikt-gradle-plugin
         uses: actions/checkout@v4
@@ -67,16 +67,8 @@ jobs:
 
       - name: Create pull request
         if: env.README_CHANGED == 'true'
-        env:
-          GH_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
         run: |
           cd acanda-fabrikt
           echo "Pushing changes to remote repository"
           git push origin fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}
-          echo "Creating pull request"
-          gh pr create \
-            --repo acanda/fabrikt \
-            --base master \
-            --head acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }} \
-            --title "Update version of fabrikt-gradle-plugin in README.md to ${{ env.RELEASE_VERSION }}" \
-            --body "I updated the gradle plugin to Fabrikt ${{ env.FABRIKT_VERSION }}."
+          echo "Open a [pull request](https://github.com/cjbooms/fabrikt/compare/master...acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}?expand=1&title=Update+version+of+fabrikt-gradle-plugin+in+README.md+to+${{ env.RELEASE_VERSION }}&body=I+updated+the+gradle+plugin+to+Fabrikt+${{ env.FABRIKT_VERSION }}.)" >> $GITHUB_STEP_SUMMARY
