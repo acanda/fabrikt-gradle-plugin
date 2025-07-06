@@ -296,6 +296,86 @@ class GradleTest : StringSpec({
         files shouldContain "cat/models/Cat.kt"
     }
 
+    "`gradle fabriktGenerate` with full groovy configurations should run fabrikt" {
+        val projectDir = projectDir("groovy-config")
+        val basePackage = "ch.acanda"
+        val outputPath = "build/generated/custom"
+        val sourcePath = "src/fabrikt/kotlin"
+        val resourcePath = "src/fabrikt/res"
+        val openapiPath = createSpec(projectDir)
+        val fragmentPaths = createSpecFragments(projectDir)
+        projectDir.resolve("build.gradle").writeText(
+            """
+            |plugins {
+            |    id 'ch.acanda.gradle.fabrikt'
+            |}
+            |
+            |fabrikt {
+            |  dog {
+            |    apiFile = file("$openapiPath")
+            |    apiFragments = files(${fragmentPaths.joinToString { "\"$it\"" }})
+            |    externalReferenceResolution = aggressive
+            |    basePackage = "$basePackage"
+            |    outputDirectory = file("$outputPath")
+            |    sourcesPath = "$sourcePath"
+            |    resourcesPath = "$resourcePath"
+            |    validationLibrary = NoValidation
+            |    quarkusReflectionConfig = enabled
+            |    typeOverrides {
+            |      binary = owner.InputStream
+            |      owner.'byte' = owner.String
+            |      datetime = owner.Instant
+            |    }
+            |    client {
+            |      generate = enabled
+            |      target = OpenFeign
+            |      resilience4j = enabled
+            |      suspendModifier = enabled
+            |      springResponseEntityWrapper = enabled
+            |      springCloudOpenFeignStarterAnnotation = enabled
+            |      openFeignClientName = "custom-client"
+            |    }
+            |    controller {
+            |      generate = enabled
+            |      authentication = enabled
+            |      suspendModifier = enabled
+            |      completionStage = enabled
+            |      target = Ktor
+            |    }
+            |    model {
+            |      generate = enabled
+            |      extensibleEnums = enabled
+            |      javaSerialization = enabled
+            |      quarkusReflection = enabled
+            |      micronautIntrospection = enabled
+            |      micronautReflection = enabled
+            |      includeCompanionObject = enabled
+            |      sealedInterfacesForOneOf = enabled
+            |      nonNullMapValues = enabled
+            |      ignoreUnknownProperties = enabled
+            |      suffix = "Dto"
+            |      serializationLibrary = Kotlin
+            |    }
+            |    skip = false
+            |  }
+            |}
+            """.trimMargin()
+        )
+        val result = runGradle(projectDir)
+
+        result.task(":fabriktGenerate")
+            .shouldNotBeNull()
+            .outcome shouldBe TaskOutcome.SUCCESS
+
+        val outputs = projectDir.resolve(outputPath).listFilesRelative()
+
+        val basePath = "$sourcePath/${basePackage.packageToPath()}"
+        outputs shouldContain "$basePath/models/DogDto.kt"
+        outputs shouldContain "$basePath/client/DogClient.kt"
+        outputs shouldContain "$basePath/controllers/DogController.kt"
+        outputs shouldContain "$resourcePath/reflection-config.json"
+    }
+
     "`gradle compileKotlin` should run fabrikt" {
         val projectDir = projectDir("compileKotlin")
         val basePackage = "ch.acanda"
