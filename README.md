@@ -43,6 +43,18 @@ fabrikt {
     }
 }
 ```
+> Note: `defaults` are currently not supported in the Groovy DSL. If you want to
+> use defaults, you have to use the Kotlin DSL.
+> 
+> Also, some configuration options are reserved words or type names that are 
+> imported by Groovy by default, so you have to prefix them with `owner.`.
+> ```groovy
+> typeOverrides {
+>   binary = owner.InputStream
+>   owner.'byte' = owner.String
+>   datetime = owner.Instant
+> }
+> ```
 
 When running `gradle fabriktGenerate`, the examples above will generate the
 model classes from the OpenAPI specification in `src/main/openapi/dog.yaml`. The
@@ -171,6 +183,9 @@ fabrikt {
 If you have many OpenAPI specifications with nearly the same configuration, you
 can set the common values in the `defaults`. All properties except `apiFile` and
 `basePackage` can be configured with default values.
+
+> Note: The `defaults` block is only supported in the Kotlin DSL and not in the 
+> Groovy DSL.
 
 ```kotlin
 fabrikt {

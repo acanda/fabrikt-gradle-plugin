@@ -131,7 +131,7 @@ internal fun Map<String, OptionDefinition>.buildPolymorphicOptions(): List<Prope
 /**
  * Builds a polymorphic option property that can be used to set the value of an option.
  * ```kotlin
- *   @get:Internal
+ *   @JvmField
  *   public val ByteArray: PolymorphicByteArrayOption =
  *       PolymorphicByteArrayOption(BinaryOverrideOption.ByteArray, ByteOverrideOption.ByteArray)
  * ```
@@ -139,7 +139,7 @@ internal fun Map<String, OptionDefinition>.buildPolymorphicOptions(): List<Prope
 private fun buildPolymorphicOption(optionValue: String, options: Iterable<String>): PropertySpec =
     PropertySpec
         .builder(optionValue, polymorphicOptionName(optionValue))
-        .addAnnotation(AnnotationSpec.builder(Internal::class).useSiteTarget(GET).build())
+        .addAnnotation(AnnotationSpec.builder(JvmField::class).build())
         .initializer(
             "%T(%L)",
             polymorphicOptionName(optionValue),
@@ -165,14 +165,14 @@ internal fun jvmName(name: String, target: AnnotationSpec.UseSiteTarget? = null)
         .build()
 
 /**
- * Builds a boolean property with the given name, initializer and @Internal.
+ * Builds a boolean property with the given name, initializer and @JvmField.
  * ```kotlin
- * @get:Internal
+ * @JvmField
  * public val enabled: Boolean = true
  * ```
  */
 internal fun buildBooleanProperty(name: String, initializer: String) =
     PropertySpec.builder(name, Boolean::class)
-        .addAnnotation(AnnotationSpec.builder(Internal::class).useSiteTarget(GET).build())
+        .addAnnotation(AnnotationSpec.builder(JvmField::class).build())
         .initializer(initializer)
         .build()
