@@ -12,7 +12,8 @@ contract and code always match, even as your APIs evolve in complexity.
 
 [![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/ch.acanda.gradle.fabrikt?style=flat)](https://plugins.gradle.org/plugin/ch.acanda.gradle.fabrikt)
 
-The plugin requires at least Gradle 8.13 and a JRE 21.
+The plugin requires at least Gradle 9.0 and a JRE 21.
+If you are using Gradle 8.x, you can use version 1.18.0 of the plugin.
 
 To use it with the Kotlin DSL (build.gradle.kts):
 

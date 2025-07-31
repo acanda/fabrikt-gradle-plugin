@@ -6,7 +6,7 @@ import org.gradle.api.file.FileSystemLocationProperty
 import org.gradle.api.provider.Property
 import java.io.File
 
-internal infix fun <T> Property<T>.shouldContain(expected: T?): Property<T> {
+internal infix fun <T : Any> Property<T>.shouldContain(expected: T?): Property<T> {
     getOrNull() shouldBe expected
     return this
 }
