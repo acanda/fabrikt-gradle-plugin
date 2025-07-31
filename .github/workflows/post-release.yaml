@@ -1,4 +1,4 @@
-name: Update Fabrikt README
+name: Run post release tasks
 
 on:
   push:
@@ -68,3 +68,22 @@ jobs:
           echo "Pushing changes to remote repository"
           git push origin fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}
           echo "Open a [pull request](https://github.com/cjbooms/fabrikt/compare/master...acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}?expand=1&title=Update+version+of+fabrikt-gradle-plugin+in+README.md+to+${{ env.RELEASE_VERSION }}&body=I+updated+the+gradle+plugin+to+Fabrikt+${{ env.FABRIKT_VERSION }}.)." >> $GITHUB_STEP_SUMMARY
+
+  create-release-draft:
+    name: Create Release Draft
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Extract release version
+        run: |
+          RELEASE_VERSION=${GITHUB_REF#refs/tags/release/}
+          echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
+          echo "Release version: $RELEASE_VERSION"
+
+      - name: Create release draft
+        env:
+          GH_TOKEN: '${{ secrets.UPDATE_FABRIKT_README_TOKEN }}'
+        run: |
+          echo "Creating release draft"
+          RELEASE_URL="$(gh release create "release/${{ env.RELEASE_VERSION }}" --title "${{env.RELEASE_VERSION}}" --generate-notes --draft --repo acanda/fabrikt-gradle-plugin)"
+          echo "Open the [release draft]($RELEASE_URL)." >> $GITHUB_STEP_SUMMARY
