@@ -113,7 +113,7 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
 /**
  * Builds the function for assigning a property.
  * ```kotlin
- * private fun <T> Property<T>.assign(`value`: Provider<out T>, defaultValue: Provider<out T>) {
+ * private fun <T : Any> Property<T>.assign(`value`: Provider<out T>, defaultValue: Provider<out T>) {
  *   if (value.isPresent) { set(value.get()) } else { set(defaultValue.orNull) }
  * }
  * ```
@@ -121,7 +121,7 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
 private fun assignPropertyFunction(): FunSpec =
     FunSpec.builder("assign")
         .addModifiers(KModifier.PRIVATE)
-        .addTypeVariable(TypeVariableName("T"))
+        .addTypeVariable(TypeVariableName("T", Any::class))
         .receiver(Property::class.asClassName().parameterizedBy(TypeVariableName("T")))
         .addParameter("value", Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")))
         .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")))

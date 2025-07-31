@@ -535,6 +535,9 @@ class GradleTest : StringSpec({
                 .build()
 
         private fun projectDir(name: String): File {
+            val kotlinVersion = File("gradle/libs.versions.toml").readLines()
+                .mapNotNull { Regex("""kotlin\s*=\s*"([^"]+)"""").find(it)?.groupValues?.get(1) }
+                .single()
             val projectDir = File("build/gradle-tests/$name")
             projectDir.deleteRecursivelyExcept(".gradle")
             projectDir.mkdirs()
@@ -542,7 +545,7 @@ class GradleTest : StringSpec({
                 """
                 |pluginManagement {
                 |  plugins {
-                |      kotlin("jvm") version "1.9.23"
+                |      kotlin("jvm") version "$kotlinVersion"
                 |  }
                 |}
                 """.trimMargin()
