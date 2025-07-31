@@ -68,3 +68,10 @@ jobs:
           echo "Pushing changes to remote repository"
           git push origin fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}
           echo "Open a [pull request](https://github.com/cjbooms/fabrikt/compare/master...acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}?expand=1&title=Update+version+of+fabrikt-gradle-plugin+in+README.md+to+${{ env.RELEASE_VERSION }}&body=I+updated+the+gradle+plugin+to+Fabrikt+${{ env.FABRIKT_VERSION }}.)." >> $GITHUB_STEP_SUMMARY
+
+      - name: Create release draft
+        if: env.README_CHANGED == 'true'
+        run: |
+          echo "Creating release for Fabrikt version ${{ env.FABRIKT_VERSION }}"
+          RELEASE_URL="$(gh release create "release/${{ env.RELEASE_VERSION }}" --title "${env.FABRIKT_VERSION}" --generate-notes --draft)"
+          echo "Open the [release draft]($RELEASE_URL)." >> $GITHUB_STEP_SUMMARY
