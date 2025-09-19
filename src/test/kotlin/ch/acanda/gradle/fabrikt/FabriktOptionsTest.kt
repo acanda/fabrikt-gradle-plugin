@@ -35,9 +35,9 @@ class FabriktOptionsTest : StringSpec({
 }) {
 
     companion object {
-        private infix fun KClass<out Enum<*>>.shouldMatch(that: KClass<out Enum<*>>) {
+        private infix fun KClass<out FabriktOption>.shouldMatch(that: KClass<out Enum<*>>) {
             withClue({ "${this.simpleName} should have the same number of enum values as ${that.simpleName}." }) {
-                this.java.enumConstants.size shouldBe that.java.enumConstants.size
+                this.java.enumConstants.map { it.fabriktOption }.toSet().size shouldBe that.java.enumConstants.size
             }
         }
     }

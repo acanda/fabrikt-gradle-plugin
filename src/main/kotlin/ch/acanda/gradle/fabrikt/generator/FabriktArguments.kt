@@ -26,6 +26,7 @@ internal const val ARG_MODEL_OPTS = "--http-model-opts"
 internal const val ARG_MODEL_SUFFIX = "--http-model-suffix"
 internal const val ARG_OPENFEIGN_CLIENT_NAME = "--openfeign-client-name"
 internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
+internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -157,6 +158,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             }
             serializationLibrary.withOptionName { library ->
                 args.add(ARG_MODEL_SERIALIZATION_LIB)
+                args.add(library)
+            }
+            instantLibrary.withOptionName { library ->
+                args.add(ARG_MODEL_INSTANT_LIB)
                 args.add(library)
             }
         }

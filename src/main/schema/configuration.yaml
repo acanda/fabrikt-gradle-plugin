@@ -145,6 +145,9 @@ configurations:
       serializationLibrary:
         type: SerializationLibraryOption
         default: Jackson
+      instantLibrary:
+        type: InstantLibraryOption
+        default: Kotlinx
 
 options:
 
@@ -219,3 +222,10 @@ options:
     mapping:
       Jackson: JACKSON
       Kotlin: KOTLINX_SERIALIZATION
+      Kotlinx: KOTLINX_SERIALIZATION
+
+  InstantLibraryOption:
+    source: com.cjbooms.fabrikt.cli.InstantLibrary
+    mapping:
+      Kotlinx: KOTLINX_INSTANT
+      Kotlin : KOTLIN_TIME_INSTANT
