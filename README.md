@@ -44,10 +44,11 @@ fabrikt {
     }
 }
 ```
+
 > Note: `defaults` are currently not supported in the Groovy DSL. If you want to
 > use defaults, you have to use the Kotlin DSL.
-> 
-> Also, some configuration options are reserved words or type names that are 
+>
+> Also, some configuration options are reserved words or type names that are
 > imported by Groovy by default, so you have to prefix them with `owner.`.
 > ```groovy
 > typeOverrides {
@@ -130,6 +131,7 @@ fabrikt {
             sealedInterfacesForOneOf = disabled
             ignoreUnknownProperties = disabled
             serializationLibrary = Jackson
+            instantLibrary = kotlinx.datetime
         }
         skip = false
     }
@@ -176,7 +178,8 @@ fabrikt {
 | model.nonNullMapValues                       | This option makes map values non-null when enabled. The default is to make map values nullable.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                | `disabled`                        |
 | model.ignoreUnknownProperties                | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
 | model.suffix                                 | Specifies a custom suffix for all generated model classes.                                                                                                                                                                                                                                                                         | `null` (no suffix)                |
-| model.serializationLibrary                   | Specifies the serialization library to use for annotations in generated model classes.<br/>Values: `Jackson`, `Kotlin`.                                                                                                                                                                                                            | `Jackson`                         |
+| model.serializationLibrary                   | Specifies the serialization library to use for annotations in generated model classes.<br/>Values: `Jackson`, `Kotlinx`.                                                                                                                                                                                                           | `Jackson`                         |
+| model.instantLibrary                         | Specifies the Instant library to use in generated model classes when using the `Kotlinx` serialization library.<br/>Values: `kotlinx.datetime`, `kotlin.time`.                                                                                                                                                                     | `kotlinx.datetime`                |
 | skip                                         | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
 ### Defaults
@@ -185,7 +188,7 @@ If you have many OpenAPI specifications with nearly the same configuration, you
 can set the common values in the `defaults`. All properties except `apiFile` and
 `basePackage` can be configured with default values.
 
-> Note: The `defaults` block is only supported in the Kotlin DSL and not in the 
+> Note: The `defaults` block is only supported in the Kotlin DSL and not in the
 > Groovy DSL.
 
 ```kotlin

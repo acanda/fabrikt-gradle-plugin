@@ -53,6 +53,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
         model.suffix.set(Arb.string(0..3).orNull(0.2).bind())
         model.serializationLibrary.set(Arb.of(ISerializationLibraryOption.options).orNull(0.2).bind())
+        model.instantLibrary.set(Arb.of(IInstantLibraryOption.options).orNull(0.2).bind())
         skip.set(Arb.boolean().orNull(0.2).bind())
     }
 }
