@@ -131,7 +131,7 @@ fabrikt {
             sealedInterfacesForOneOf = disabled
             ignoreUnknownProperties = disabled
             serializationLibrary = Jackson
-            instantLibrary = kotlinx.datetime
+            instantLibrary = Kotlinx
         }
         skip = false
     }
@@ -179,7 +179,7 @@ fabrikt {
 | model.ignoreUnknownProperties                | Enables adding `@JacksonIgnoreProperties(ignoreUnknown = true)` to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                       | `disabled`                        |
 | model.suffix                                 | Specifies a custom suffix for all generated model classes.                                                                                                                                                                                                                                                                         | `null` (no suffix)                |
 | model.serializationLibrary                   | Specifies the serialization library to use for annotations in generated model classes.<br/>Values: `Jackson`, `Kotlinx`.                                                                                                                                                                                                           | `Jackson`                         |
-| model.instantLibrary                         | Specifies the Instant library to use in generated model classes when using the `Kotlinx` serialization library.<br/>Values: `kotlinx.datetime`, `kotlin.time`.                                                                                                                                                                     | `kotlinx.datetime`                |
+| model.instantLibrary                         | Specifies the Instant library to use in generated model classes when using the `Kotlinx` serialization library.<br/>Values: `Kotlinx`, `Kotlin`.                                                                                                                                                                                   | `Kotlinx`                         |
 | skip                                         | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
 ### Defaults
