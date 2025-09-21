@@ -221,11 +221,14 @@ options:
     source: com.cjbooms.fabrikt.cli.SerializationLibrary
     mapping:
       Jackson: JACKSON
-      Kotlin: KOTLINX_SERIALIZATION
       Kotlinx: KOTLINX_SERIALIZATION
+      Kotlin:
+        value: KOTLINX_SERIALIZATION
+        deprecated:
+          replaceWith: Kotlinx
 
   InstantLibraryOption:
     source: com.cjbooms.fabrikt.cli.InstantLibrary
     mapping:
+      Kotlin: KOTLIN_TIME_INSTANT
       Kotlinx: KOTLINX_INSTANT
-      Kotlin : KOTLIN_TIME_INSTANT

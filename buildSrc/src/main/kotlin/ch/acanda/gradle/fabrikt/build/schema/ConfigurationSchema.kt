@@ -1,5 +1,12 @@
 package ch.acanda.gradle.fabrikt.build.schema
 
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.databind.DeserializationContext
+import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
+
 /**
  * Maps the Gradle plugin configuration names (keys) to their respsctive
  * configuration definitions (values).
@@ -23,7 +30,7 @@ typealias OptionDefinitions = Map<String, OptionDefinition>
  * names (values). The values must match an enum constant name of a Fabrikt
  * option enum class.
  */
-typealias OptionMapping = Map<String, String?>
+typealias OptionMapping = Map<String, OptionMappingValue?>
 
 enum class Dataflow { Input, Output }
 
@@ -77,5 +84,28 @@ data class PropertyDefinition(
 data class OptionDefinition(
     /** The fully qualified name of the Fabrikt option enum class. */
     val source: String,
+    @get:JsonDeserialize(contentUsing = OptionMappingValueDeserializer::class)
     val mapping: OptionMapping
 )
+
+data class OptionMappingValue(
+    val value: String?,
+    val deprecated: Deprecation? = null,
+) {
+    fun isDeprecated() = deprecated != null
+}
+
+data class Deprecation(
+    val replaceWith: String,
+)
+
+class OptionMappingValueDeserializer : StdDeserializer<OptionMappingValue?>(OptionMappingValue::class.java) {
+    override fun deserialize(parser: JsonParser, context: DeserializationContext): OptionMappingValue? {
+        val codec: ObjectMapper = parser.codec as ObjectMapper
+        val node: JsonNode = codec.readTree(parser)
+        return when {
+            node.isObject -> codec.convertValue<OptionMappingValue>(node, OptionMappingValue::class.java)
+            else -> OptionMappingValue(node.asText())
+        }
+    }
+}

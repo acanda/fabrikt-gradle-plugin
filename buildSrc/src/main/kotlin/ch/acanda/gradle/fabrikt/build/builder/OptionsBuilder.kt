@@ -1,7 +1,9 @@
 package ch.acanda.gradle.fabrikt.build.builder
 
+import ch.acanda.gradle.fabrikt.build.schema.Deprecation
 import ch.acanda.gradle.fabrikt.build.schema.OptionDefinition
 import ch.acanda.gradle.fabrikt.build.schema.OptionDefinitions
+import ch.acanda.gradle.fabrikt.build.schema.OptionMappingValue
 import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.AnnotationSpec.UseSiteTarget.GET
 import com.squareup.kotlinpoet.ClassName
@@ -236,26 +238,42 @@ private fun TypeSpec.Builder.addEnumConstants(definition: OptionDefinition) = th
     }
 }
 
-private fun enumConstantSpec(enumTypeName: String, enumConstantName: String?) =
-    if (enumConstantName == null) {
+private fun enumConstantSpec(enumTypeName: String, enumConstant: OptionMappingValue?): TypeSpec {
+    val spec = if (enumConstant == null || enumConstant.value == null) {
         nullSpec
     } else {
-        enumValueSpec(enumTypeName, enumConstantName)
+        enumValueSpec(enumTypeName, enumConstant.value)
     }
+    if (enumConstant?.deprecated != null) {
+        spec.addAnnotation(enumTypeName, enumConstant.deprecated)
+    }
+    return spec.build()
+}
 
-private val nullSpec =
-    TypeSpec.anonymousClassBuilder().addSuperclassConstructorParameter("null").build()
+private val nullSpec: TypeSpec.Builder =
+    TypeSpec.anonymousClassBuilder().addSuperclassConstructorParameter("null")
 
 
-private fun enumValueSpec(enumTypeName: String, enumConstantName: String): TypeSpec {
+private fun enumValueSpec(enumTypeName: String, enumConstantName: String): TypeSpec.Builder {
     val enumType = Class.forName(enumTypeName)
     require(enumType.isEnum) { "Type ${enumType.kotlin.qualifiedName} is not an enum class." }
     @Suppress("UNCHECKED_CAST")
     enumType as Class<Enum<*>>
     return TypeSpec.anonymousClassBuilder()
         .addSuperclassConstructorParameter("%T.%N", enumType, enumType[enumConstantName])
-        .build()
 }
+
+private fun TypeSpec.Builder.addAnnotation(enumTypeName: String, deprecation: Deprecation) =
+    addAnnotation(
+        AnnotationSpec.builder(Deprecated::class)
+            .addMember("message = %S", "This option is deprecated. Use `${deprecation.replaceWith}` instead.")
+            .addMember(
+                "replaceWith = ReplaceWith(%S, imports = [%S])",
+                deprecation.replaceWith,
+                "$enumTypeName.${deprecation.replaceWith}"
+            )
+            .build()
+    )
 
 @Suppress("UNCHECKED_CAST")
 private operator fun Class<Enum<*>>.get(name: String): String =
