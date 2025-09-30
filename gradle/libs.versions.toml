@@ -17,7 +17,7 @@ jackson-module-kotlin = { group = "com.fasterxml.jackson.module", name = "jackso
 jackson-dataformat-yaml = { group = "com.fasterxml.jackson.dataformat", name = "jackson-dataformat-yaml", version.ref = "jackson" }
 kotest-runner-junit5 = { group = "io.kotest", name = "kotest-runner-junit5", version.ref = "kotest" }
 kotest-property = { group = "io.kotest", name = "kotest-property", version.ref = "kotest" }
-junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version = "1.13.4" }
+junit-platform-launcher = { group = "org.junit.platform", name = "junit-platform-launcher", version = "6.0.0" }
 
 [bundles]
 jackson = ["jackson-module-kotlin", "jackson-dataformat-yaml"]
