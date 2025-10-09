@@ -1,9 +1,9 @@
 # Fabrikt Gradle Plugin
 
 The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds.
-[Fabrikt](https://github.com/cjbooms/fabrikt) generates Kotlin data classes with
-support for advanced features, Spring or Micronaut controllers, Ktor route handlers, and OkHttp or
-OpenFeign clients.
+[Fabrikt](https://github.com/cjbooms/fabrikt) generates Kotlin code from an OpenAPI 3 specification.
+It supports data classes with advanced features, Spring or Micronaut controllers,
+Ktor route handlers, and OkHttp or OpenFeign clients.
 
 This plugin can be permanently integrated into your Gradle build and will ensure
 contract and code always match, even as your APIs evolve in complexity.
@@ -87,7 +87,7 @@ fabrikt {
     generate("dog") {
         // mandatory properties
         apiFile = file("src/main/openapi/dog.yaml")
-        basePackage = "com.example.api"
+        basePackage = "com.example.dog.api"
         // optional properties with their default values
         apiFragments = files()
         externalReferenceResolution = targeted
@@ -201,11 +201,11 @@ fabrikt {
     }
     generate("dog") {
         apiFile = file("src/main/openapi/dog.yaml")
-        basePackage = "com.example.dog"
+        basePackage = "com.example.dog.api"
     }
     generate("cat") {
         apiFile = file("src/main/openapi/cat.yaml")
-        basePackage = "com.example.cat"
+        basePackage = "com.example.cat.api"
     }
 }
 ```
