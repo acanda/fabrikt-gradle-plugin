@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Synchronize acanda/fabrikt with cjbooms/fabrikt
+      - name: Synchronize acanda/fabrikt with fabrikt-io/fabrikt
         env:
           GH_TOKEN: '${{ secrets.UPDATE_FABRIKT_README_TOKEN }}'
         run: gh repo sync acanda/fabrikt
@@ -67,7 +67,7 @@ jobs:
           cd acanda-fabrikt
           echo "Pushing changes to remote repository"
           git push origin fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}
-          echo "Open a [pull request](https://github.com/cjbooms/fabrikt/compare/master...acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}?expand=1&title=Update+version+of+fabrikt-gradle-plugin+in+README.md+to+${{ env.RELEASE_VERSION }}&body=I+updated+the+gradle+plugin+to+Fabrikt+${{ env.FABRIKT_VERSION }}.)." >> $GITHUB_STEP_SUMMARY
+          echo "Open a [pull request](https://github.com/fabrikt-io/fabrikt/compare/master...acanda:fabrikt-gradle-plugin-${{ env.RELEASE_VERSION }}?expand=1&title=Update+version+of+fabrikt-gradle-plugin+in+README.md+to+${{ env.RELEASE_VERSION }}&body=I+updated+the+gradle+plugin+to+Fabrikt+${{ env.FABRIKT_VERSION }}.)." >> $GITHUB_STEP_SUMMARY
 
   create-release-draft:
     name: Create Release Draft
