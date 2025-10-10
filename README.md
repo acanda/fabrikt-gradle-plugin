@@ -19,7 +19,7 @@ To use it with the Kotlin DSL (build.gradle.kts):
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "1.20.1"
+    id("ch.acanda.gradle.fabrikt") version "1.21.0"
 }
 
 fabrikt {
@@ -34,7 +34,7 @@ To use it with the Groovy DSL (build.gradle):
 
 ```groovy
 plugins {
-    id 'ch.acanda.gradle.fabrikt' version '1.20.1'
+    id 'ch.acanda.gradle.fabrikt' version '1.21.0'
 }
 
 fabrikt {
@@ -77,7 +77,7 @@ The plugin provides the following tasks:
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "1.20.1"
+    id("ch.acanda.gradle.fabrikt") version "1.21.0"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
     // output directory as a generated sources directory.
     idea
