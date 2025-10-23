@@ -44,6 +44,7 @@ class GradleTest : StringSpec({
             |    resourcesPath = "$resourcePath"
             |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
+            |    addFileDisclaimer = enabled
             |    typeOverrides {
             |      binary = InputStream
             |      byte = String
@@ -123,6 +124,7 @@ class GradleTest : StringSpec({
             |    resourcesPath = "$resourcePath"
             |    validationLibrary = Jakarta
             |    quarkusReflectionConfig = enabled
+            |    addFileDisclaimer = enabled
             |    typeOverrides {
             |      datetime = Instant
             |      byte = String
@@ -323,6 +325,7 @@ class GradleTest : StringSpec({
             |    resourcesPath = "$resourcePath"
             |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
+            |    addFileDisclaimer = enabled
             |    typeOverrides {
             |      binary = owner.InputStream
             |      owner.'byte' = owner.String

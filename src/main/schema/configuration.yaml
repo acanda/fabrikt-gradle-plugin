@@ -32,6 +32,9 @@ configurations:
       quarkusReflectionConfig:
         type: Boolean
         default: false
+      addFileDisclaimer:
+        type: Boolean
+        default: false
       typeOverrides:
         type: TypeOverrides
       client:

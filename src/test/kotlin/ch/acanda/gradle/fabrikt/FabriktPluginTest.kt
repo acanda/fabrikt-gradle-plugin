@@ -52,6 +52,7 @@ class FabriktPluginTest : WordSpec({
                     it.resourcesPath.set(resDir)
                     it.validationLibrary.set(it.Javax)
                     it.quarkusReflectionConfig.set(it.enabled)
+                    it.addFileDisclaimer.set(it.enabled)
                     with(it.typeOverrides) {
                         datetime.set(Instant)
                         binary.set(InputStream)
@@ -85,6 +86,7 @@ class FabriktPluginTest : WordSpec({
                         ignoreUnknownProperties.set(it.enabled)
                         suffix.set("Dto")
                         serializationLibrary.set(Kotlin)
+                        instantLibrary.set(Kotlin)
                     }
                 }
             }
@@ -103,6 +105,7 @@ class FabriktPluginTest : WordSpec({
                     this.resourcesPath shouldContainString resDir
                     this.validationLibrary.option shouldBe ValidationLibraryOption.Javax
                     this.quarkusReflectionConfig shouldContain true
+                    this.addFileDisclaimer shouldContain true
                     with(typeOverrides) {
                         datetime.option shouldBe DateTimeOverrideOption.Instant
                         binary.option shouldBe BinaryOverrideOption.InputStream
@@ -136,6 +139,7 @@ class FabriktPluginTest : WordSpec({
                         ignoreUnknownProperties shouldContain true
                         suffix shouldContainString "Dto"
                         serializationLibrary.option shouldBe SerializationLibraryOption.Kotlin
+                        instantLibrary.option shouldBe InstantLibraryOption.Kotlin
                     }
                 }
         }
@@ -168,6 +172,7 @@ class FabriktPluginTest : WordSpec({
                     this.resourcesPath shouldContain "src/main/resources"
                     this.validationLibrary.option shouldBe ValidationLibraryOption.Jakarta
                     this.quarkusReflectionConfig shouldContain false
+                    this.addFileDisclaimer shouldContain false
                     with(typeOverrides) {
                         datetime.option shouldBe DateTimeOverrideOption.OffsetDateTime
                         binary.option shouldBe BinaryOverrideOption.ByteArray
@@ -200,6 +205,7 @@ class FabriktPluginTest : WordSpec({
                         sealedInterfacesForOneOf shouldContain false
                         suffix shouldContain null
                         serializationLibrary.option shouldBe SerializationLibraryOption.Jackson
+                        instantLibrary.option shouldBe InstantLibraryOption.Kotlinx
                     }
                 }
         }
