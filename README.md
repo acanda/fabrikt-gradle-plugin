@@ -96,6 +96,7 @@ fabrikt {
         resourcesPath = "src/main/resources"
         validationLibrary = Javax
         quarkusReflectionConfig = enabled
+        addFileDisclaimer = disabled
         typeOverrides {
             datetime = OffsetDateTime
             byte = ByteArray
@@ -155,6 +156,7 @@ fabrikt {
 | typeOverrides.date                           | Specifies the Kotlin type for the OAS type `string` with format `date`.<br/>Values: `LocalDate`, `String`.                                                                                                                                                                                                                         | `LocalDate`                       |
 | validationLibrary                            | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`, `NoValidation`.                                                                                                                                                                                                  | `Jakarta`                         |
 | quarkusReflectionConfig                      | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
+| addFileDisclaimer                            | Enables adding a disclaimer to the generated files.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                            | `disabled`                        |
 | client.generate                              | Enables generating the http client code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                       | `disabled`                        |
 | client.target                                | The type of client you want to be generated.<br/>`OkHttp`, `OpenFeign`.                                                                                                                                                                                                                                                            | `OkHttp`                          |
 | client.resilience4j                          | Generates a fault tolerance service for the client using the following library "io.github.resilience4j:resilience4j-all:+". Only for OkHttp clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                           | `disabled`                        |

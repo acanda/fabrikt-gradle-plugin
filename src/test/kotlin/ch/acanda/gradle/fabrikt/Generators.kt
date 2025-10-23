@@ -24,6 +24,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         quarkusReflectionConfig.set(Arb.boolean().orNull(0.2).bind())
+        addFileDisclaimer.set(Arb.boolean().orNull(0.2).bind())
         typeOverrides.datetime.set(Arb.of(IDateTimeOverrideOption.options).orNull(0.2).bind())
         typeOverrides.byte.set(Arb.of(IByteOverrideOption.options).orNull(0.2).bind())
         typeOverrides.binary.set(Arb.of(IBinaryOverrideOption.options).orNull(0.2).bind())

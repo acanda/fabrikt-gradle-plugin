@@ -7,6 +7,7 @@ import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import com.cjbooms.fabrikt.cli.OutputOptionType
 import io.kotest.assertions.print.print
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.Matcher
@@ -38,6 +39,11 @@ class FabriktArgumentsTest : StringSpec({
                 config.quarkusReflectionConfig,
                 ARG_TARGETS,
                 CodeGenerationType.QUARKUS_REFLECTION_CONFIG
+            )
+            cliArgs.shouldContainOptionally(
+                config.addFileDisclaimer,
+                ARG_OUTPUT_OPTS,
+                OutputOptionType.ADD_FILE_DISCLAIMER
             )
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)

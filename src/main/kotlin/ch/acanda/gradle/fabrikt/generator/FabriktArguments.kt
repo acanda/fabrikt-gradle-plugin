@@ -6,6 +6,7 @@ import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenOptionType
 import com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+import com.cjbooms.fabrikt.cli.OutputOptionType
 import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
@@ -27,6 +28,7 @@ internal const val ARG_MODEL_SUFFIX = "--http-model-suffix"
 internal const val ARG_OPENFEIGN_CLIENT_NAME = "--openfeign-client-name"
 internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
 internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
+internal const val ARG_OUTPUT_OPTS = "--output-opts"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -60,6 +62,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (quarkusReflectionConfig.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
+        }
+        if (addFileDisclaimer.get()) {
+            args.add(ARG_OUTPUT_OPTS)
+            args.add(OutputOptionType.ADD_FILE_DISCLAIMER.name)
         }
         addTypeOverridesArgs(args)
         addClientArgs(args)
