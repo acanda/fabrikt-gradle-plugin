@@ -26,7 +26,7 @@ jobs:
       - name: Run Build with Gradle Wrapper
         run: ./gradlew build --console=plain
       - name: Upload test report
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         if: ${{ failure() && hashFiles('build/reports/tests/test/index.html') != '' }}
         with:
           name: test-report
