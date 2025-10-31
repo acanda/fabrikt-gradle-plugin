@@ -59,7 +59,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(it.client) {
                         generate.set(it.enabled)
-                        target.set(OpenFeign)
+                        target.set(Ktor)
                         resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
                         springResponseEntityWrapper.set(it.enabled)
@@ -112,7 +112,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(client) {
                         generate shouldContain true
-                        target.option shouldBe ClientTargetOption.OpenFeign
+                        target.option shouldBe ClientTargetOption.Ktor
                         resilience4j shouldContain true
                         suspendModifier shouldContain true
                         springResponseEntityWrapper shouldContain true
