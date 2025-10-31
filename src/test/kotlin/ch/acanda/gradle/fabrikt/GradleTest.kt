@@ -52,7 +52,7 @@ class GradleTest : StringSpec({
             |    }
             |    client {
             |      generate = enabled
-            |      target = OpenFeign
+            |      target = Ktor
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
@@ -135,7 +135,7 @@ class GradleTest : StringSpec({
             |    }
             |    client {
             |      generate = enabled
-            |      target = SpringHttpInterface
+            |      target = Ktor
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
@@ -333,7 +333,7 @@ class GradleTest : StringSpec({
             |    }
             |    client {
             |      generate = enabled
-            |      target = OpenFeign
+            |      target = Ktor
             |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled

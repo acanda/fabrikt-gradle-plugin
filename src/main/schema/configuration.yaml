@@ -212,6 +212,7 @@ options:
       OkHttp: OK_HTTP
       OpenFeign: OPEN_FEIGN
       SpringHttpInterface: SPRING_HTTP_INTERFACE
+      Ktor: KTOR
 
   ControllerTargetOption:
     source: com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
