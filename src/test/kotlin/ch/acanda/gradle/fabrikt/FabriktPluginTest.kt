@@ -80,6 +80,7 @@ class FabriktPluginTest : WordSpec({
                         quarkusReflection.set(it.enabled)
                         micronautIntrospection.set(it.enabled)
                         micronautReflection.set(it.enabled)
+                        micronautSerdeable.set(it.enabled)
                         includeCompanionObject.set(it.enabled)
                         sealedInterfacesForOneOf.set(it.enabled)
                         nonNullMapValues.set(it.enabled)
@@ -133,6 +134,7 @@ class FabriktPluginTest : WordSpec({
                         quarkusReflection shouldContain true
                         micronautIntrospection shouldContain true
                         micronautReflection shouldContain true
+                        micronautSerdeable shouldContain true
                         includeCompanionObject shouldContain true
                         sealedInterfacesForOneOf shouldContain true
                         nonNullMapValues shouldContain true
@@ -200,6 +202,7 @@ class FabriktPluginTest : WordSpec({
                         quarkusReflection shouldContain false
                         micronautIntrospection shouldContain false
                         micronautReflection shouldContain false
+                        micronautSerdeable shouldContain false
                         includeCompanionObject shouldContain false
                         nonNullMapValues shouldContain false
                         sealedInterfacesForOneOf shouldContain false

@@ -73,6 +73,7 @@ class GradleTest : StringSpec({
             |      quarkusReflection = enabled
             |      micronautIntrospection = enabled
             |      micronautReflection = enabled
+            |      micronautSerdeable = enabled
             |      includeCompanionObject = enabled
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
@@ -156,6 +157,7 @@ class GradleTest : StringSpec({
             |      quarkusReflection = enabled
             |      micronautIntrospection = enabled
             |      micronautReflection = enabled
+            |      micronautSerdeable = enabled
             |      includeCompanionObject = enabled
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
@@ -354,6 +356,7 @@ class GradleTest : StringSpec({
             |      quarkusReflection = enabled
             |      micronautIntrospection = enabled
             |      micronautReflection = enabled
+            |      micronautSerdeable = enabled
             |      includeCompanionObject = enabled
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled

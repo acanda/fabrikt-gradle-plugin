@@ -138,6 +138,11 @@ class FabriktArgumentsTest : StringSpec({
                         ModelCodeGenOptionType.MICRONAUT_REFLECTION
                     )
                     cliArgs.shouldContainOptionally(
+                        micronautSerdeable,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.MICRONAUT_SERDEABLE
+                    )
+                    cliArgs.shouldContainOptionally(
                         includeCompanionObject,
                         ARG_MODEL_OPTS,
                         ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT

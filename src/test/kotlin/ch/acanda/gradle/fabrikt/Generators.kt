@@ -49,6 +49,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.quarkusReflection.set(Arb.boolean().orNull(0.2).bind())
         model.micronautIntrospection.set(Arb.boolean().orNull(0.2).bind())
         model.micronautReflection.set(Arb.boolean().orNull(0.2).bind())
+        model.micronautSerdeable.set(Arb.boolean().orNull(0.2).bind())
         model.includeCompanionObject.set(Arb.boolean().orNull(0.2).bind())
         model.nonNullMapValues.set(Arb.boolean().orNull(0.2).bind())
         model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
