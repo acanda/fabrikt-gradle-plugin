@@ -130,6 +130,9 @@ configurations:
       micronautReflection:
         type: Boolean
         default: false
+      micronautSerdeable:
+        type: Boolean
+        default: false
       includeCompanionObject:
         type: Boolean
         default: false

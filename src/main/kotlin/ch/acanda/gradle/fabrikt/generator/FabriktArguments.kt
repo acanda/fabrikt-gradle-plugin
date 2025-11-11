@@ -151,6 +151,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.addIfEnabled(quarkusReflection, ARG_MODEL_OPTS, ModelCodeGenOptionType.QUARKUS_REFLECTION)
             args.addIfEnabled(micronautIntrospection, ARG_MODEL_OPTS, ModelCodeGenOptionType.MICRONAUT_INTROSPECTION)
             args.addIfEnabled(micronautReflection, ARG_MODEL_OPTS, ModelCodeGenOptionType.MICRONAUT_REFLECTION)
+            args.addIfEnabled(micronautSerdeable, ARG_MODEL_OPTS, ModelCodeGenOptionType.MICRONAUT_SERDEABLE)
             args.addIfEnabled(includeCompanionObject, ARG_MODEL_OPTS, ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT)
             args.addIfEnabled(nonNullMapValues, ARG_MODEL_OPTS, ModelCodeGenOptionType.NON_NULL_MAP_VALUES)
             args.addIfEnabled(
