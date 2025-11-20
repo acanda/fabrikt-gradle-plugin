@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Project Sources
-        uses: actions/checkout@v5
+        uses: actions/checkout@v6
         with:
           show-progress: false
       - name: Setup Java
