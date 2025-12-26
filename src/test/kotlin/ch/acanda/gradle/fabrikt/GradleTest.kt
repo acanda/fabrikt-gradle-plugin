@@ -15,6 +15,7 @@ import org.gradle.tooling.ProjectConnection
 import org.gradle.tooling.internal.consumer.DefaultModelBuilder
 import org.gradle.tooling.model.idea.IdeaProject
 import java.io.File
+import java.io.FileWriter
 import kotlin.reflect.KClass
 
 class GradleTest : StringSpec({
@@ -79,7 +80,7 @@ class GradleTest : StringSpec({
             |      nonNullMapValues = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
-            |      serializationLibrary = Kotlinx
+            |      serializationLibrary = Kotlin
             |      instantLibrary = Kotlin
             |    }
             |    skip = false
@@ -539,6 +540,8 @@ class GradleTest : StringSpec({
             GradleRunner.create()
                 .withProjectDir(projectDir)
                 .forwardOutput()
+                //.forwardStdOutput(FileWriter(projectDir.resolve("out.log")))
+                //.forwardStdError(FileWriter(projectDir.resolve("err.log")))
                 .withArguments(*(arrayOf("--console=plain", "-i", "--configuration-cache") + arguments))
                 .withPluginClasspath()
                 .build()
