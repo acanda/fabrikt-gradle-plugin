@@ -20,6 +20,7 @@ import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.WildcardTypeName
 import com.squareup.kotlinpoet.asClassName
 import com.squareup.kotlinpoet.asTypeName
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Property
 import java.io.Serializable
 import java.util.*
@@ -56,9 +57,7 @@ internal fun buildOptions(options: OptionDefinitions): FileSpec {
                 )
                 .addStatement(
                     """
-                    |orNull?.let { option -> 
-                    |  option.getOptionFor(%T::class).fabriktOption?.name?.let { block(it) }
-                    |}
+                    |option?.fabriktOption?.name?.let { block(it) }
                     """.trimMargin(),
                     ClassName(PACKAGE, name)
                 )
@@ -90,11 +89,18 @@ private fun buildExtensionPropertyOption(name: String) =
             FunSpec.getterBuilder()
                 .addStatement(
                     """
-                    |return orNull?.let { option -> 
-                    |  option.getOptionFor(%1T::class) as %1T
+                    |return orNull?.let { polyOption -> 
+                    |  (polyOption.getOptionFor(%1T::class) as %1T)
+                    |  .also { option ->
+                    |    option::class.java.getField(option.name).getAnnotation(%2T::class.java)?.also { annotation -> 
+                    |      %3T.getLogger(%1T::class.java).warn(annotation.message)
+                    |    }
+                    |  }
                     |}
                     """.trimMargin(),
-                    ClassName(PACKAGE, name)
+                    ClassName(PACKAGE, name),
+                    Deprecated::class,
+                    Logging::class
                 )
                 .build()
         )
@@ -233,19 +239,19 @@ private fun buildOption(name: ClassName, optionInterface: ClassName, definition:
 
 @Suppress("UNCHECKED_CAST")
 private fun TypeSpec.Builder.addEnumConstants(definition: OptionDefinition) = this.apply {
-    definition.mapping.forEach { (pluginName, fabriktName) ->
-        addEnumConstant(pluginName, enumConstantSpec(definition.source, fabriktName))
+    definition.mapping.forEach { (optionName, fabriktName) ->
+        addEnumConstant(optionName, enumConstantSpec(optionName,definition.source, fabriktName))
     }
 }
 
-private fun enumConstantSpec(enumTypeName: String, enumConstant: OptionMappingValue?): TypeSpec {
+private fun enumConstantSpec(optionName: String, enumTypeName: String, enumConstant: OptionMappingValue?): TypeSpec {
     val spec = if (enumConstant == null || enumConstant.value == null) {
         nullSpec
     } else {
         enumValueSpec(enumTypeName, enumConstant.value)
     }
     if (enumConstant?.deprecated != null) {
-        spec.addAnnotation(enumTypeName, enumConstant.deprecated)
+        spec.addAnnotation(enumTypeName, optionName, enumConstant.deprecated)
     }
     return spec.build()
 }
@@ -263,10 +269,10 @@ private fun enumValueSpec(enumTypeName: String, enumConstantName: String): TypeS
         .addSuperclassConstructorParameter("%T.%N", enumType, enumType[enumConstantName])
 }
 
-private fun TypeSpec.Builder.addAnnotation(enumTypeName: String, deprecation: Deprecation) =
+private fun TypeSpec.Builder.addAnnotation(enumTypeName: String, enumValueName: String, deprecation: Deprecation) =
     addAnnotation(
         AnnotationSpec.builder(Deprecated::class)
-            .addMember("message = %S", "This option is deprecated. Use `${deprecation.replaceWith}` instead.")
+            .addMember("message = %S", "`$enumTypeName.$enumValueName` is deprecated. Use `${deprecation.replaceWith}` instead.")
             .addMember(
                 "replaceWith = ReplaceWith(%S, imports = [%S])",
                 deprecation.replaceWith,
