@@ -80,7 +80,7 @@ class GradleTest : StringSpec({
             |      faultTolerantEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
-            |      serializationLibrary = Kotlinx
+            |      serializationLibrary = Kotlin
             |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
             |    }
@@ -545,6 +545,8 @@ class GradleTest : StringSpec({
             GradleRunner.create()
                 .withProjectDir(projectDir)
                 .forwardOutput()
+                // .forwardStdOutput(FileWriter(projectDir.resolve("out.log")))
+                // .forwardStdError(FileWriter(projectDir.resolve("err.log")))
                 .withArguments(*(arrayOf("--console=plain", "-i", "--configuration-cache") + arguments))
                 .withPluginClasspath()
                 .build()
