@@ -86,7 +86,8 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues.set(it.enabled)
                         ignoreUnknownProperties.set(it.enabled)
                         suffix.set("Dto")
-                        serializationLibrary.set(Kotlin)
+                        serializationLibrary.set(Kotlinx)
+                        jacksonNullabilityMode.set(Strict)
                         instantLibrary.set(Kotlin)
                     }
                 }
@@ -140,7 +141,8 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues shouldContain true
                         ignoreUnknownProperties shouldContain true
                         suffix shouldContainString "Dto"
-                        serializationLibrary.option shouldBe SerializationLibraryOption.Kotlin
+                        serializationLibrary.option shouldBe SerializationLibraryOption.Kotlinx
+                        jacksonNullabilityMode.option shouldBe JacksonNullabilityModeOption.Strict
                         instantLibrary.option shouldBe InstantLibraryOption.Kotlin
                     }
                 }
@@ -208,6 +210,7 @@ class FabriktPluginTest : WordSpec({
                         sealedInterfacesForOneOf shouldContain false
                         suffix shouldContain null
                         serializationLibrary.option shouldBe SerializationLibraryOption.Jackson
+                        jacksonNullabilityMode.option shouldBe JacksonNullabilityModeOption.None
                         instantLibrary.option shouldBe InstantLibraryOption.Kotlinx
                     }
                 }

@@ -151,6 +151,9 @@ configurations:
       serializationLibrary:
         type: SerializationLibraryOption
         default: Jackson
+      jacksonNullabilityMode:
+        type: JacksonNullabilityModeOption
+        default: None
       instantLibrary:
         type: InstantLibraryOption
         default: Kotlinx
@@ -233,6 +236,14 @@ options:
         value: KOTLINX_SERIALIZATION
         deprecated:
           replaceWith: Kotlinx
+
+  JacksonNullabilityModeOption:
+    source: com.cjbooms.fabrikt.cli.JacksonNullabilityMode
+    mapping:
+      None: NONE
+      EnforceOptionalNonNull: ENFORCE_OPTIONAL_NON_NULL
+      EnforceRequiredNullable: ENFORCE_REQUIRED_NULLABLE
+      Strict: STRICT
 
   InstantLibraryOption:
     source: com.cjbooms.fabrikt.cli.InstantLibrary
