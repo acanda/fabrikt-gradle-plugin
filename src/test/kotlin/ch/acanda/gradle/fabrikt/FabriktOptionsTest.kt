@@ -3,6 +3,7 @@ package ch.acanda.gradle.fabrikt
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
 import com.cjbooms.fabrikt.cli.ExternalReferencesResolutionMode
+import com.cjbooms.fabrikt.cli.JacksonNullabilityMode
 import com.cjbooms.fabrikt.cli.SerializationLibrary
 import com.cjbooms.fabrikt.cli.ValidationLibrary
 import io.kotest.assertions.withClue
@@ -30,6 +31,10 @@ class FabriktOptionsTest : StringSpec({
 
     "SerializationLibrary" {
         SerializationLibraryOption::class shouldMatch SerializationLibrary::class
+    }
+
+    "JacksonNullabilityMode" {
+        JacksonNullabilityModeOption::class shouldMatch JacksonNullabilityMode::class
     }
 
 }) {

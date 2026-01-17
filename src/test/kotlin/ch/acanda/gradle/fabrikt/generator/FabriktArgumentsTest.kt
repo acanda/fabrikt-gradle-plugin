@@ -166,6 +166,10 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_MODEL_SERIALIZATION_LIB,
                     )
                     cliArgs.shouldContainOptionally(
+                        jacksonNullabilityMode.option,
+                        ARG_MODEL_JACKSON_NULLABILITY_MODE,
+                    )
+                    cliArgs.shouldContainOptionally(
                         instantLibrary.option,
                         ARG_MODEL_INSTANT_LIB,
                     )

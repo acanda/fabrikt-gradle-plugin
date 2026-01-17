@@ -80,6 +80,7 @@ class GradleTest : StringSpec({
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
+            |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
             |    }
             |    skip = false
@@ -164,6 +165,7 @@ class GradleTest : StringSpec({
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
+            |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
             |    }
             |  }
@@ -363,6 +365,7 @@ class GradleTest : StringSpec({
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
+            |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
             |    }
             |    skip = false

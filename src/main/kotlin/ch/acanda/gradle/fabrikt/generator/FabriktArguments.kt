@@ -27,6 +27,7 @@ internal const val ARG_MODEL_OPTS = "--http-model-opts"
 internal const val ARG_MODEL_SUFFIX = "--http-model-suffix"
 internal const val ARG_OPENFEIGN_CLIENT_NAME = "--openfeign-client-name"
 internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
+internal const val ARG_MODEL_JACKSON_NULLABILITY_MODE = "--jackson-nullability-mode"
 internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
 internal const val ARG_OUTPUT_OPTS = "--output-opts"
 
@@ -166,6 +167,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             serializationLibrary.withOptionName { library ->
                 args.add(ARG_MODEL_SERIALIZATION_LIB)
                 args.add(library)
+            }
+            jacksonNullabilityMode.withOptionName { mode ->
+                args.add(ARG_MODEL_JACKSON_NULLABILITY_MODE)
+                args.add(mode)
             }
             instantLibrary.withOptionName { library ->
                 args.add(ARG_MODEL_INSTANT_LIB)
