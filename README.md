@@ -45,10 +45,7 @@ fabrikt {
 }
 ```
 
-> Note: `defaults` are currently not supported in the Groovy DSL. If you want to
-> use defaults, you have to use the Kotlin DSL.
->
-> Also, some configuration options are reserved words or type names that are
+> Note: some configuration options are reserved words or type names that are
 > imported by Groovy by default, so you have to prefix them with `owner.`.
 > ```groovy
 > typeOverrides {
