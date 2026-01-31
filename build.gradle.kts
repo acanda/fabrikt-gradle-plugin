@@ -115,6 +115,14 @@ tasks {
             sarif.required.set(false)
             md.required.set(true)
         }
+
+        doFirst {
+            if (Runtime.version().feature() >= 25) {
+                logger.error(
+                    "[ERROR] Detekt 1.x does not support Java 25. The current runtime version is ${Runtime.version()}."
+                )
+            }
+        }
     }
 
 }
