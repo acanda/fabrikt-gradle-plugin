@@ -84,6 +84,7 @@ class FabriktPluginTest : WordSpec({
                         includeCompanionObject.set(it.enabled)
                         sealedInterfacesForOneOf.set(it.enabled)
                         nonNullMapValues.set(it.enabled)
+                        faultTolerantEnums.set(it.enabled)
                         ignoreUnknownProperties.set(it.enabled)
                         suffix.set("Dto")
                         serializationLibrary.set(Kotlinx)
@@ -139,6 +140,7 @@ class FabriktPluginTest : WordSpec({
                         includeCompanionObject shouldContain true
                         sealedInterfacesForOneOf shouldContain true
                         nonNullMapValues shouldContain true
+                        faultTolerantEnums shouldContain true
                         ignoreUnknownProperties shouldContain true
                         suffix shouldContainString "Dto"
                         serializationLibrary.option shouldBe SerializationLibraryOption.Kotlinx
@@ -207,6 +209,7 @@ class FabriktPluginTest : WordSpec({
                         micronautSerdeable shouldContain false
                         includeCompanionObject shouldContain false
                         nonNullMapValues shouldContain false
+                        faultTolerantEnums shouldContain false
                         sealedInterfacesForOneOf shouldContain false
                         suffix shouldContain null
                         serializationLibrary.option shouldBe SerializationLibraryOption.Jackson

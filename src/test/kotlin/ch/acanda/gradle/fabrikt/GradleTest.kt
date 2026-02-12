@@ -77,6 +77,7 @@ class GradleTest : StringSpec({
             |      includeCompanionObject = enabled
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
+            |      faultTolerantEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
@@ -162,6 +163,7 @@ class GradleTest : StringSpec({
             |      includeCompanionObject = enabled
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
+            |      faultTolerantEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
@@ -362,6 +364,7 @@ class GradleTest : StringSpec({
             |      includeCompanionObject = enabled
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
+            |      faultTolerantEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
