@@ -155,6 +155,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.addIfEnabled(micronautSerdeable, ARG_MODEL_OPTS, ModelCodeGenOptionType.MICRONAUT_SERDEABLE)
             args.addIfEnabled(includeCompanionObject, ARG_MODEL_OPTS, ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT)
             args.addIfEnabled(nonNullMapValues, ARG_MODEL_OPTS, ModelCodeGenOptionType.NON_NULL_MAP_VALUES)
+            args.addIfEnabled(faultTolerantEnums, ARG_MODEL_OPTS, ModelCodeGenOptionType.FAULT_TOLERANT_ENUMS)
             args.addIfEnabled(
                 sealedInterfacesForOneOf,
                 ARG_MODEL_OPTS,

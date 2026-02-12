@@ -158,6 +158,11 @@ class FabriktArgumentsTest : StringSpec({
                         ModelCodeGenOptionType.NON_NULL_MAP_VALUES
                     )
                     cliArgs.shouldContainOptionally(
+                        faultTolerantEnums,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.FAULT_TOLERANT_ENUMS
+                    )
+                    cliArgs.shouldContainOptionally(
                         suffix,
                         ARG_MODEL_SUFFIX
                     )

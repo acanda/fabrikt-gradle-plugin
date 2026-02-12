@@ -52,6 +52,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.micronautSerdeable.set(Arb.boolean().orNull(0.2).bind())
         model.includeCompanionObject.set(Arb.boolean().orNull(0.2).bind())
         model.nonNullMapValues.set(Arb.boolean().orNull(0.2).bind())
+        model.faultTolerantEnums.set(Arb.boolean().orNull(0.2).bind())
         model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
         model.suffix.set(Arb.string(0..3).orNull(0.2).bind())
         model.serializationLibrary.set(Arb.of(ISerializationLibraryOption.options).orNull(0.2).bind())
