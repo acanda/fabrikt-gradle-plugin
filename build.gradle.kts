@@ -12,7 +12,7 @@ plugins {
 }
 
 group = "ch.acanda.gradle"
-version = "1.30.0-SNAPSHOT"
+version = "1.29.1"
 
 val generatedSources: Provider<Directory> = project.layout.buildDirectory.dir("generated/src/main/kotlin")
 
