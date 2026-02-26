@@ -148,9 +148,9 @@ class FabriktArgumentsTest : StringSpec({
                         ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT
                     )
                     cliArgs.shouldContainOptionally(
-                        sealedInterfacesForOneOf,
+                        sealedInterfacesForOneOf.map { b -> !b },
                         ARG_MODEL_OPTS,
-                        ModelCodeGenOptionType.SEALED_INTERFACES_FOR_ONE_OF
+                        ModelCodeGenOptionType.DISABLE_SEALED_INTERFACES_FOR_ONE_OF
                     )
                     cliArgs.shouldContainOptionally(
                         nonNullMapValues,

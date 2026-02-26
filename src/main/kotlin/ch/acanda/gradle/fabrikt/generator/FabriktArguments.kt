@@ -156,10 +156,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.addIfEnabled(includeCompanionObject, ARG_MODEL_OPTS, ModelCodeGenOptionType.INCLUDE_COMPANION_OBJECT)
             args.addIfEnabled(nonNullMapValues, ARG_MODEL_OPTS, ModelCodeGenOptionType.NON_NULL_MAP_VALUES)
             args.addIfEnabled(faultTolerantEnums, ARG_MODEL_OPTS, ModelCodeGenOptionType.FAULT_TOLERANT_ENUMS)
-            args.addIfEnabled(
+            args.addIfDisabled(
                 sealedInterfacesForOneOf,
                 ARG_MODEL_OPTS,
-                ModelCodeGenOptionType.SEALED_INTERFACES_FOR_ONE_OF
+                ModelCodeGenOptionType.DISABLE_SEALED_INTERFACES_FOR_ONE_OF
             )
             suffix.orNull?.let {
                 args.add(ARG_MODEL_SUFFIX)
@@ -178,6 +178,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 args.add(library)
             }
         }
+    }
+
+    private fun MutableList<String>.addIfDisabled(provider: Provider<Boolean>, argName: String, argValue: Enum<*>) {
+        addIfEnabled(provider.map { b -> !b }, argName, argValue)
     }
 
     private fun MutableList<String>.addIfEnabled(provider: Provider<Boolean>, argName: String, argValue: Enum<*>) {

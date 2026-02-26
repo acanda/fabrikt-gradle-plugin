@@ -97,7 +97,7 @@ class IgnoreUnknownPropertiesProcessorTest : StringSpec({
             |
             |import com.fasterxml.jackson.`annotation`.JsonIgnoreProperties
             |import com.fasterxml.jackson.`annotation`.JsonProperty
-            |import javax.validation.constraints.NotNull
+            |import jakarta.validation.constraints.NotNull
             |
             |@JsonIgnoreProperties(ignoreUnknown = true)
             |public data class Dog(
