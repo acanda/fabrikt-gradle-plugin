@@ -54,7 +54,7 @@ jobs:
           RELEASE_VERSION=${GITHUB_REF#refs/tags/release/}
           echo "RELEASE_VERSION=$RELEASE_VERSION" >> $GITHUB_ENV
           echo "Release version: $RELEASE_VERSION"
-          FABRIKT_VERSION=$(grep -oP 'fabrikt = \{ group = "com.cjbooms", name = "fabrikt", version = "\K[^"]+' acanda-fabrikt-gradle-plugin/gradle/libs.versions.toml)
+          FABRIKT_VERSION=$(grep -oP 'fabrikt = \{ group = "io.fabrikt", name = "fabrikt", version = "\K[^"]+' acanda-fabrikt-gradle-plugin/gradle/libs.versions.toml)
           echo "FABRIKT_VERSION=$FABRIKT_VERSION" >> $GITHUB_ENV
           echo "Fabrikt version: $FABRIKT_VERSION"
 
