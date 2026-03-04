@@ -18,6 +18,7 @@ fun addIgnoreUnknownPropertiesAnnotation(modelsDirectory: Path) {
         .forEach { addAnnotation(it) }
 }
 
+@Suppress("UnusedPrivateMember")
 private fun addAnnotation(path: Path) {
     // Exclusively lock the file to prevent concurrent writes.
     FileChannel.open(path, StandardOpenOption.READ, StandardOpenOption.WRITE).use { channel ->
@@ -27,6 +28,7 @@ private fun addAnnotation(path: Path) {
     }
 }
 
+@Suppress("UnusedPrivateMember")
 private fun addAnnotation(channel: FileChannel) {
     val import = "import ${JsonIgnoreProperties::class.qualifiedName}".replace("annotation", "`annotation`")
     val annotation =

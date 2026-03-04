@@ -204,6 +204,7 @@ class FabriktArgumentsTest : StringSpec({
             }
         }
 
+        @Suppress("UnusedPrivateMember")
         @JvmName(name = "shouldContainOptionOptionally")
         private fun Array<String>.shouldContainOptionally(
             option: FabriktOption?,
@@ -216,6 +217,7 @@ class FabriktArgumentsTest : StringSpec({
             }
         }
 
+        @Suppress("UnusedPrivateMember")
         @JvmName(name = "shouldContainStringOptionally")
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<out CharSequence>,

@@ -12,12 +12,14 @@ import org.gradle.api.problems.Problems
 import org.gradle.api.problems.Severity
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
+import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
 import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import javax.inject.Inject
 
+@CacheableTask
 abstract class FabriktGenerateTask @Inject constructor(
     private val objects: ObjectFactory
 ) : DefaultTask() {
