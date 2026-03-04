@@ -23,6 +23,8 @@ import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
 import org.gradle.api.tasks.OutputFiles
+import org.gradle.api.tasks.PathSensitive
+import org.gradle.api.tasks.PathSensitivity
 import javax.inject.Inject
 
 private const val CLASS_NAME_SUFFIX = "Configuration"
@@ -52,7 +54,7 @@ private fun buildConfigurations(
     val optionTypes = config.properties.flatMap { (name, property) ->
         spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX) {
             if (!property.isNested(schema.configurations)) {
-                addAnnotation(AnnotationSpec.builder(property.dataflowAnnotation).useSiteTarget(GET).build())
+                addAnnotations(property.dataflowAnnotations)
             }
             if (property.isOptional()) {
                 addAnnotation(AnnotationSpec.builder(Optional::class).useSiteTarget(GET).build())
@@ -116,6 +118,23 @@ private fun TypeSpec.Builder.addNamed() {
             .build()
     )
 }
+
+private val PropertyDefinition.dataflowAnnotations: List<AnnotationSpec>
+    get() {
+        val dataflowAnnotation = dataflowAnnotation
+        return when (dataflowAnnotation) {
+            InputFile::class, InputFiles::class -> listOf(
+                AnnotationSpec.builder(dataflowAnnotation).useSiteTarget(GET).build(),
+                AnnotationSpec
+                    .builder(PathSensitive::class)
+                    .addMember("%T.RELATIVE", PathSensitivity::class)
+                    .useSiteTarget(GET)
+                    .build()
+            )
+
+            else -> listOf(AnnotationSpec.builder(dataflowAnnotation).useSiteTarget(GET).build())
+        }
+    }
 
 private val PropertyDefinition.dataflowAnnotation
     get() = when (type) {
