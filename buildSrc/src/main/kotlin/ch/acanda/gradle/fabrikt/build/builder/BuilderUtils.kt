@@ -17,15 +17,16 @@ import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeName
 import com.squareup.kotlinpoet.TypeSpec
 import com.squareup.kotlinpoet.asClassName
+import com.squareup.kotlinpoet.asTypeName
 import org.gradle.api.Action
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import java.util.*
 import javax.annotation.processing.Generated
+import kotlin.reflect.KClass
 
 internal const val PACKAGE = "ch.acanda.gradle.fabrikt"
 internal const val BOOLEAN = "Boolean"
@@ -35,11 +36,14 @@ internal const val CONFIGURABLE_FILE_COLLECTION = "ConfigurableFileCollection"
 internal const val DIRECTORY_PROPERTY = "DirectoryProperty"
 
 internal fun generated() = AnnotationSpec.builder(Generated::class)
-    .addMember("\"${GeneratePluginClassesTask::class.qualifiedName}\"")
+    .addMember(""""${GeneratePluginClassesTask::class.qualifiedName}"""")
     .build()
 
 internal fun TypeName.nullable(definition: OptionDefinition): TypeName =
     nullable(definition.mapping.any { (_, source) -> source == null })
+
+internal fun <T : Any> KClass<T>.nullable(): TypeName =
+    asTypeName().nullable(true)
 
 internal fun TypeName.nullable(nullable: Boolean = true) =
     if (nullable) {
@@ -176,3 +180,9 @@ internal fun buildBooleanProperty(name: String, initializer: String) =
         .addAnnotation(AnnotationSpec.builder(JvmField::class).build())
         .initializer(initializer)
         .build()
+
+/**
+ * Returns the simple name of a class from its fully qualified name.
+ */
+internal val String.simpleName: String
+    get() = indexOfLast { it == '.' }.let { if (it == -1) this else this.substring(it + 1) }

@@ -10,13 +10,18 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
+import com.squareup.kotlinpoet.STAR
 import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
 import com.squareup.kotlinpoet.asClassName
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.logging.Logging
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import kotlin.reflect.KClass
+
+private val CLASS_NAME = ClassName(PACKAGE, "ConfigurationInitializer")
 
 /**
  * Builds the file ConfigurationInitializer.kt. This file contains the
@@ -24,7 +29,7 @@ import org.gradle.api.provider.Provider
  * extension and defaults.
  */
 internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
-    val spec = FileSpec.builder(PACKAGE, "ConfigurationInitializer")
+    val spec = FileSpec.builder(CLASS_NAME)
     spec.addAnnotation(generated())
     schema.configurations.forEach { name, config ->
         spec.addTypeAlias(initializerTypeAlias(name))
@@ -32,6 +37,7 @@ internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
     }
     spec.addFunction(assignPropertyFunction())
     spec.addFunction(assignConfigurableFileCollectionFunction())
+    spec.addFunction(logDeprecationFunction())
     return spec.build()
 }
 
@@ -89,7 +95,6 @@ private fun buildInitializer(name: String, config: ConfigurationDefinition, sche
         .addCode(buildInitializerCodeBlock(config, schema))
         .build()
 
-
 private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: ConfigurationSchema): CodeBlock {
     val block = CodeBlock.builder()
     block.beginControlFlow("return { source, defaults ->")
@@ -102,7 +107,11 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
                 )
 
             !property.includeInDefaults -> block.addStatement("%1N.set(source.%1N)", name)
-            else -> block.addStatement("%1N.assign(source.%1N, defaults.%1N)", name)
+            else -> block.addStatement(
+                "%1N.assign(%1S, %2T::class, source.%1N, defaults.%1N)",
+                name,
+                property.getClassName(schema, "")
+            )
         }
     }
     block.addStatement("init(this)")
@@ -123,9 +132,14 @@ private fun assignPropertyFunction(): FunSpec =
         .addModifiers(KModifier.PRIVATE)
         .addTypeVariable(TypeVariableName("T", Any::class))
         .receiver(Property::class.asClassName().parameterizedBy(TypeVariableName("T")))
+        .addParameter("name", String::class)
+        .addParameter(
+            "type",
+            KClass::class.asClassName().parameterizedBy(STAR)
+        )
         .addParameter("value", Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")))
         .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")))
-        .addStatement("if (value.isPresent) { set(value.get()) } else { set(defaultValue.orNull) }")
+        .addStatement("if (value.isPresent) { set(logDeprecation(name, type, value.get())) } else { set(logDeprecation(name, type, defaultValue.orNull)) }")
         .build()
 
 /**
@@ -140,8 +154,58 @@ private fun assignConfigurableFileCollectionFunction(): FunSpec =
     FunSpec.builder("assign")
         .addModifiers(KModifier.PRIVATE)
         .receiver(ConfigurableFileCollection::class)
+        .addParameter("name", String::class)
+        .addParameter(
+            "type",
+            KClass::class.asClassName().parameterizedBy(STAR)
+        )
         .addParameter("value", ConfigurableFileCollection::class)
         .addParameter("defaultValue", ConfigurableFileCollection::class)
         .addStatement("if (!value.isEmpty) { setFrom(value) } else { setFrom(defaultValue) }")
         .build()
 
+/**
+ * Builds the function for logging deprecation warnings.
+ * ```kotlin
+ * private fun <T> logDeprecation(propertyName: String, propertyValue: T): T {
+ *   if (propertyValue is Enum<*>) {
+ *     propertyValue::class.java.getField(propertyValue.name)
+ *       .getAnnotation(Deprecated::class.java)?.also { annotation ->
+ *         Logging.getLogger("ConfigurationInitializer").warn("==> " + annotation.message)
+ *       }
+ *   }
+ *   return propertyValue
+ * }
+ * ```
+ */
+private fun logDeprecationFunction(): FunSpec =
+    FunSpec.builder("logDeprecation")
+        .addModifiers(KModifier.PRIVATE)
+        .addTypeVariable(TypeVariableName("T"))
+        .addParameter("propertyName", String::class)
+        .addParameter(
+            "propertyType",
+            KClass::class.asClassName().parameterizedBy(STAR)
+        )
+        .addParameter("propertyValue", TypeVariableName("T"))
+        .addStatement(
+            $$"""
+            |println("==> $propertyName: ${propertyValue?.let { it::class.simpleName }} = $propertyValue")
+            |if (propertyValue is PolymorphicOption) {
+            |  println("    $propertyName is PolymorphicOption, $propertyType")
+            |  val option = propertyValue.getOptionFor(propertyType as KClass<out FabriktOption>)
+            |  println("    >$option<")
+            |  if (option is Enum<*>) {
+            |    option::class.java.getField(option.name).getAnnotation(%1T::class.java)?.also {
+            |      annotation -> %2T.getLogger(%3S).warn("==> $propertyName: " + annotation.message)
+            |    }
+            |  }
+            |}
+            |return propertyValue
+            """.trimMargin(),
+            Deprecated::class,
+            Logging::class,
+            CLASS_NAME.simpleName
+        )
+        .returns(TypeVariableName("T"))
+        .build()

@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.gradle.internal.classpath.DefaultClassPath
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -390,6 +391,39 @@ class GradleTest : StringSpec({
         outputs shouldContain "$basePath/controllers/DogController.kt"
         outputs shouldContain "$resourcePath/reflection-config.json"
     }
+
+    "`gradle fabriktGenerate` with deprecated property value should log warning" {
+        val projectDir = projectDir("deprecation-warning")
+        val basePackage = "ch.acanda"
+        val openapiPath = createSpec(projectDir)
+        projectDir.resolve("build.gradle.kts").writeText(
+            """
+            |plugins {
+            |    id("ch.acanda.gradle.fabrikt")
+            |}
+            |
+            |fabrikt {
+            |  generate("dog") {
+            |    apiFile = file("$openapiPath")
+            |    basePackage = "$basePackage"
+            |    model {
+            |      serializationLibrary = Kotlin
+            |    }
+            |  }
+            |}
+            """.trimMargin()
+        )
+        val result = runGradle(projectDir)
+
+        result.task(":fabriktGenerate")
+            .shouldNotBeNull()
+            .outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldContain
+            // "WARNING: 'Kotlin' as serializationLibrary is deprecated and will be removed in future versions. Please use 'Kotlinx' or 'Jackson' instead."
+            "XXX `SerializationLibrary.Kotlin` is deprecated. Use `Kotlinx` instead."
+    }
+
 
     "`gradle compileKotlin` should run fabrikt" {
         val projectDir = projectDir("compileKotlin")

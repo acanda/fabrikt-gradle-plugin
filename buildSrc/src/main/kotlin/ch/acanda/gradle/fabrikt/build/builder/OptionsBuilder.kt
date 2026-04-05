@@ -26,6 +26,8 @@ import java.io.Serializable
 import java.util.*
 import kotlin.reflect.KClass
 
+internal val FABRIKT_OPTION_INTERFACE_NAME = ClassName(PACKAGE, "FabriktOption")
+
 private const val OPTION_PARAM_NAME = "fabriktOption"
 
 /**
@@ -34,16 +36,23 @@ private const val OPTION_PARAM_NAME = "fabriktOption"
  * respective Fabrikt options.
  */
 internal fun buildOptions(options: OptionDefinitions): FileSpec {
-    val fabriktOptionInterfaceName = ClassName(PACKAGE, "FabriktOption")
+    val polymorphicOptionInterfaceName = ClassName(PACKAGE, "PolymorphicOption")
     val builder = FileSpec.builder(PACKAGE, "FabriktOptions")
         .addAnnotation(generated())
-        .addType(buildOptionInterface(fabriktOptionInterfaceName))
+        .addType(buildOptionInterface(FABRIKT_OPTION_INTERFACE_NAME))
+        .addType(buildPolymorphicOptionSuperInterface(polymorphicOptionInterfaceName, FABRIKT_OPTION_INTERFACE_NAME))
 
     options.forEach { (name, definition) ->
-        builder.addType(buildOption(ClassName(PACKAGE, name), fabriktOptionInterfaceName, definition))
+        builder.addType(
+            buildOption(
+                ClassName(PACKAGE, name),
+                FABRIKT_OPTION_INTERFACE_NAME,
+                definition
+            )
+        )
         val optionInterfaceName = ClassName(PACKAGE, "I$name")
         builder.addType(
-            buildPolymorphicOptionInterface(optionInterfaceName, fabriktOptionInterfaceName, definition, name)
+            buildPolymorphicOptionInterface(optionInterfaceName, polymorphicOptionInterfaceName, definition, name)
         )
         builder.addFunction(
             FunSpec.builder("withOptionName")
@@ -65,7 +74,7 @@ internal fun buildOptions(options: OptionDefinitions): FileSpec {
         )
         builder.addProperty(buildExtensionPropertyOption(name))
     }
-    builder.addTypes(buildPolymorphicOptions(options, fabriktOptionInterfaceName))
+    builder.addTypes(buildPolymorphicOptions(options, FABRIKT_OPTION_INTERFACE_NAME, polymorphicOptionInterfaceName))
     return builder.build()
 }
 
@@ -110,9 +119,7 @@ private fun buildExtensionPropertyOption(name: String) =
  * Builds the interface for the polymorphic option.
 
  * ```kotlin
- * public sealed interface IBinaryOverrideOption {
- *   public fun getOptionFor(type: KClass<out FabriktOption>): FabriktOption
- *
+ * public sealed interface IBinaryOverrideOption: PolymorphicOption {
  *   public companion object {
  *     public val options: List<IBinaryOverrideOption> =
  *         listOf(
@@ -125,13 +132,13 @@ private fun buildExtensionPropertyOption(name: String) =
  */
 private fun buildPolymorphicOptionInterface(
     optionInterfaceName: ClassName,
-    fabriktOptionInterfaceName: ClassName,
+    polymorphicOptionInterfaceName: ClassName,
     definition: OptionDefinition,
     name: String
 ) =
     TypeSpec.interfaceBuilder(optionInterfaceName)
         .addModifiers(KModifier.SEALED)
-        .addFunction(buildGetOptionForFunction(fabriktOptionInterfaceName))
+        .addSuperinterface(polymorphicOptionInterfaceName)
         .addType(buildCompanionForPolymorphicOptionInterface(optionInterfaceName, definition, name))
         .build()
 
@@ -202,6 +209,13 @@ private fun buildOptionInterface(name: ClassName) =
         .addProperty(OPTION_PARAM_NAME, nullableEnumType)
         .build()
 
+private fun buildPolymorphicOptionSuperInterface(name: ClassName, fabriktOptionInterfaceName: ClassName) =
+    TypeSpec
+        .interfaceBuilder(name)
+        .addModifiers(KModifier.SEALED)
+        .addFunction(buildGetOptionForFunction(fabriktOptionInterfaceName))
+        .build()
+
 /** Type `Enum<*>?` */
 private val nullableEnumType: TypeName =
     Enum::class.asTypeName().parameterizedBy(STAR).copy(nullable = true)
@@ -240,7 +254,7 @@ private fun buildOption(name: ClassName, optionInterface: ClassName, definition:
 @Suppress("UNCHECKED_CAST")
 private fun TypeSpec.Builder.addEnumConstants(definition: OptionDefinition) = this.apply {
     definition.mapping.forEach { (optionName, fabriktName) ->
-        addEnumConstant(optionName, enumConstantSpec(optionName,definition.source, fabriktName))
+        addEnumConstant(optionName, enumConstantSpec(optionName, definition.source, fabriktName))
     }
 }
 
@@ -272,7 +286,10 @@ private fun enumValueSpec(enumTypeName: String, enumConstantName: String): TypeS
 private fun TypeSpec.Builder.addAnnotation(enumTypeName: String, enumValueName: String, deprecation: Deprecation) =
     addAnnotation(
         AnnotationSpec.builder(Deprecated::class)
-            .addMember("message = %S", "`$enumTypeName.$enumValueName` is deprecated. Use `${deprecation.replaceWith}` instead.")
+            .addMember(
+                "message = %S",
+                "`${enumTypeName.simpleName}.$enumValueName` is deprecated. Use `${deprecation.replaceWith}` instead."
+            )
             .addMember(
                 "replaceWith = ReplaceWith(%S, imports = [%S])",
                 deprecation.replaceWith,
@@ -301,7 +318,8 @@ private operator fun Class<Enum<*>>.get(name: String): String =
  */
 private fun buildPolymorphicOptions(
     options: OptionDefinitions,
-    fabriktOptionInterfaceName: ClassName
+    fabriktOptionInterfaceName: ClassName,
+    polymorphicOptionInterfaceName: ClassName,
 ) = options
     .flatMap { (option, definition) -> definition.mapping.keys.map { it to option } }
     .groupByTo(TreeMap(), { it.first }, { it.second })
