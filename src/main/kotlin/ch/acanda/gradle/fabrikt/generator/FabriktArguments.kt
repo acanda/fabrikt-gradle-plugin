@@ -134,6 +134,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.CONTROLLERS.name)
             args.addIfEnabled(authentication, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.AUTHENTICATION)
+            args.addIfEnabled(groupByTag, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.GROUP_BY_TAG)
             args.addIfEnabled(suspendModifier, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.SUSPEND_MODIFIER)
             args.addIfEnabled(completionStage, ARG_CONTROLLER_OPTS, ControllerCodeGenOptionType.COMPLETION_STAGE)
             target.withOptionName { controllerTarget ->

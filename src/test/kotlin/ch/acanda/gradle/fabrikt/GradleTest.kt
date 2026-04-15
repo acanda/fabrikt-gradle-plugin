@@ -62,6 +62,7 @@ class GradleTest : StringSpec({
             |    controller {
             |      generate = enabled
             |      authentication = enabled
+            |      groupByTag = enabled
             |      suspendModifier = enabled
             |      completionStage = enabled
             |      target = Ktor
@@ -148,6 +149,7 @@ class GradleTest : StringSpec({
             |    controller {
             |      generate = enabled
             |      authentication = enabled
+            |      groupByTag = enabled
             |      suspendModifier = enabled
             |      completionStage = enabled
             |      target = Micronaut
@@ -349,6 +351,7 @@ class GradleTest : StringSpec({
             |    controller {
             |      generate = enabled
             |      authentication = enabled
+            |      groupByTag = enabled
             |      suspendModifier = enabled
             |      completionStage = enabled
             |      target = Ktor

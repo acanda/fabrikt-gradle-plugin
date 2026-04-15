@@ -41,6 +41,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         client.openFeignClientName.set(Arb.string().orNull(0.2).bind())
         controller.generate.set(Arb.boolean().orNull(0.2).bind())
         controller.authentication.set(Arb.boolean().orNull(0.2).bind())
+        controller.groupByTag.set(Arb.boolean().orNull(0.2).bind())
         controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
         controller.target.set(Arb.of(IControllerTargetOption.options).orNull(0.2).bind())
         model.generate.set(Arb.boolean().orNull(0.2).bind())
