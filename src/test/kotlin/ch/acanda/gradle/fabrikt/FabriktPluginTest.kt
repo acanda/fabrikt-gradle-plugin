@@ -70,6 +70,7 @@ class FabriktPluginTest : WordSpec({
                         generate.set(it.enabled)
                         target.set(Micronaut)
                         authentication.set(it.enabled)
+                        groupByTag.set(it.enabled)
                         suspendModifier.set(it.enabled)
                         completionStage.set(it.enabled)
                     }
@@ -125,6 +126,7 @@ class FabriktPluginTest : WordSpec({
                     with(controller) {
                         generate shouldContain true
                         authentication shouldContain true
+                        groupByTag shouldContain true
                         suspendModifier shouldContain true
                         completionStage shouldContain true
                         target.option shouldBe ControllerTargetOption.Micronaut
@@ -196,6 +198,7 @@ class FabriktPluginTest : WordSpec({
                         generate shouldContain false
                         target.option shouldBe ControllerTargetOption.Spring
                         authentication shouldContain false
+                        groupByTag shouldContain false
                         suspendModifier shouldContain false
                         completionStage shouldContain false
                     }

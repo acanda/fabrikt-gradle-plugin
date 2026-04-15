@@ -114,6 +114,7 @@ fabrikt {
         controller {
             generate = disabled
             authentication = disabled
+            groupByTag = disabled
             suspendModifier = disabled
             completionStage = disabled
             target = Spring
@@ -166,6 +167,7 @@ fabrikt {
 | client.openFeignClientName                   | Specifies the OpenFeign client name for `spring-cloud-starter-openfeign` (only for target `OpenFeign`).                                                                                                                                                                                                                            | `fabrikt-client`                  |
 | controller.generate                          | Enables generating the http controller code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                   | `disabled`                        |
 | controller.authentication                    | Enables adding the authentication parameter to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                             | `disabled`                        |
+| controller.groupByTag                        | Enables grouping controllers based on the first tag rather than paths.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                         | `disabled`                        |
 | controller.suspendModifier                   | Enables adding the suspend modifier to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                     | `disabled`                        |
 | controller.completionStage                   | Enables the generated controller functions to have type CompletionStage (only for target `Spring`).<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                            | `disabled`                        |
 | controller.target                            | The target framework tor the controllers you want to be generated.<br/>Values: `Spring`, `Micronaut`, `Ktor`.                                                                                                                                                                                                                      | `Spring`                          |

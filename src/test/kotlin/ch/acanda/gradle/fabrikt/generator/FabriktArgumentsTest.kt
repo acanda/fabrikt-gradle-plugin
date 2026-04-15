@@ -94,6 +94,11 @@ class FabriktArgumentsTest : StringSpec({
                         ControllerCodeGenOptionType.AUTHENTICATION
                     )
                     cliArgs.shouldContainOptionally(
+                        groupByTag,
+                        ARG_CONTROLLER_OPTS,
+                        ControllerCodeGenOptionType.GROUP_BY_TAG
+                    )
+                    cliArgs.shouldContainOptionally(
                         suspendModifier,
                         ARG_CONTROLLER_OPTS,
                         ControllerCodeGenOptionType.SUSPEND_MODIFIER

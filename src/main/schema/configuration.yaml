@@ -100,6 +100,9 @@ configurations:
       authentication:
         type: Boolean
         default: false
+      groupByTag:
+        type: Boolean
+        default: false
       suspendModifier:
         type: Boolean
         default: false
