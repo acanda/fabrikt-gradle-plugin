@@ -1,5 +1,6 @@
 import ch.acanda.gradle.fabrikt.build.GeneratePluginClassesTask
 import io.gitlab.arturbosch.detekt.Detekt
+import org.gradle.plugin.compatibility.compatibility
 import org.jetbrains.kotlin.gradle.dsl.KotlinJvmProjectExtension
 
 plugins {
@@ -25,9 +26,14 @@ gradlePlugin {
             implementationClass = "$group.fabrikt.FabriktPlugin"
             displayName = "Fabrikt Gradle Plugin"
             description = "The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds. Fabrikt generates" +
-                " Kotlin data classes from an OpenAPI 3.0 or 3.1 specification. It supports advanced features, Spring or" +
-                " Micronaut controllers, Ktor route handlers, and OkHttp or OpenFeign clients."
+                " Kotlin data classes from an OpenAPI 3.0 or 3.1 specification. It supports advanced features," +
+                " Spring or Micronaut controllers, Ktor route handlers, and OkHttp or OpenFeign clients."
             tags = listOf("openapi", "openapi-3.0", "openapi-3.1", "codegen", "kotlin", "fabrikt")
+            compatibility {
+                features {
+                    configurationCache = true
+                }
+            }
         }
     }
 }
