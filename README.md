@@ -1,7 +1,7 @@
 # Fabrikt Gradle Plugin
 
 The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds.
-[Fabrikt](https://github.com/cjbooms/fabrikt) generates Kotlin code from an OpenAPI 3 specification.
+[Fabrikt](https://github.com/fabrikt-io/fabrikt) generates Kotlin code from an OpenAPI 3 specification.
 It supports data classes with advanced features, Spring or Micronaut controllers,
 Ktor route handlers, and OkHttp or OpenFeign clients.
 
