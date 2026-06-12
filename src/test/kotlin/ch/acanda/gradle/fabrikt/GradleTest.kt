@@ -57,6 +57,7 @@ class GradleTest : StringSpec({
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
+            |      groupByTag = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -144,6 +145,7 @@ class GradleTest : StringSpec({
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
+            |      groupByTag = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -346,6 +348,7 @@ class GradleTest : StringSpec({
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
+            |      groupByTag = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
