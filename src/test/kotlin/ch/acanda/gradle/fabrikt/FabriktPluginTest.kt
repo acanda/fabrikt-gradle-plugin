@@ -64,6 +64,7 @@ class FabriktPluginTest : WordSpec({
                         suspendModifier.set(it.enabled)
                         springResponseEntityWrapper.set(it.enabled)
                         springCloudOpenFeignStarterAnnotation.set(it.enabled)
+                        groupByTag.set(it.enabled)
                         openFeignClientName.set("api-client")
                     }
                     with(it.controller) {
@@ -121,6 +122,7 @@ class FabriktPluginTest : WordSpec({
                         suspendModifier shouldContain true
                         springResponseEntityWrapper shouldContain true
                         springCloudOpenFeignStarterAnnotation shouldContain true
+                        groupByTag shouldContain true
                         openFeignClientName shouldContain "api-client"
                     }
                     with(controller) {
@@ -192,6 +194,7 @@ class FabriktPluginTest : WordSpec({
                         suspendModifier shouldContain false
                         springResponseEntityWrapper shouldContain false
                         springCloudOpenFeignStarterAnnotation shouldContain false
+                        groupByTag shouldContain false
                         openFeignClientName shouldContain "fabrikt-client"
                     }
                     with(controller) {

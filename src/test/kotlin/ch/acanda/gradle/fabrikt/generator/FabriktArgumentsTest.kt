@@ -75,6 +75,11 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.SPRING_CLOUD_OPENFEIGN_STARTER_ANNOTATION
                     )
+                    cliArgs.shouldContainOptionally(
+                        groupByTag,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.GROUP_BY_TAG
+                    )
                     cliArgs shouldContainInOrder listOf(
                         ARG_OPENFEIGN_CLIENT_NAME, config.client.openFeignClientName.get().toString()
                     )

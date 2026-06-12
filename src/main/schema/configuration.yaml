@@ -88,6 +88,9 @@ configurations:
       springCloudOpenFeignStarterAnnotation:
         type: Boolean
         default: false
+      groupByTag:
+        type: Boolean
+        default: false
       openFeignClientName:
         type: CharSequence
         default: "fabrikt-client"
