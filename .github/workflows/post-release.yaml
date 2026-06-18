@@ -37,14 +37,14 @@ jobs:
         run: gh repo sync acanda/fabrikt
 
       - name: Checkout acanda/fabrikt
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: acanda/fabrikt
           path: acanda-fabrikt
           token: '${{ secrets.UPDATE_FABRIKT_README_TOKEN }}'
 
       - name: Checkout acanda/fabrikt-gradle-plugin
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           repository: acanda/fabrikt-gradle-plugin
           path: acanda-fabrikt-gradle-plugin
