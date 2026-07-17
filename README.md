@@ -1,9 +1,9 @@
 # Fabrikt Gradle Plugin
 
 The Fabrikt Gradle Plugin integrates Fabrikt into your Gradle builds.
-[Fabrikt](https://github.com/fabrikt-io/fabrikt) generates Kotlin code from an OpenAPI 3 specification.
-It supports data classes with advanced features, Spring or Micronaut controllers,
-Ktor route handlers, and OkHttp or OpenFeign clients.
+[Fabrikt](https://github.com/fabrikt-io/fabrikt) generates Kotlin code from an
+OpenAPI 3 specification. It supports data classes with advanced features, Spring
+or Micronaut controllers, Ktor route handlers, and OkHttp or OpenFeign clients.
 
 This plugin can be permanently integrated into your Gradle build and will ensure
 contract and code always match, even as your APIs evolve in complexity.
@@ -12,8 +12,8 @@ contract and code always match, even as your APIs evolve in complexity.
 
 [![Gradle Plugin Portal Version](https://img.shields.io/gradle-plugin-portal/v/ch.acanda.gradle.fabrikt?style=flat)](https://plugins.gradle.org/plugin/ch.acanda.gradle.fabrikt)
 
-The plugin requires at least Gradle 9.0 and a JRE 21.
-If you are using Gradle 8.x, you can use version 1.18.0 of the plugin.
+The plugin requires at least Gradle 9.0 and a JRE 21. If you are using Gradle
+8.x, you can use version 1.18.0 of the plugin.
 
 To use it with the Kotlin DSL (build.gradle.kts):
 
@@ -67,8 +67,8 @@ The plugin provides the following tasks:
 - `fabriktGenerate[Name]`: generates code for the configuration with the
   specified name. The suffix `[Name]` is derived from the configuration´s name
   by removing non-alphanumeric characters and converting the rest to CamelCase.
-  E.g. the code for the configuration `generate("dog-api") { ... }` can be generated
-  with `gradle fabriktGenerateDogApi`.
+  E.g. the code for the configuration `generate("dog-api") { ... }` can be
+  generated with `gradle fabriktGenerateDogApi`.
 
 ## Configuration
 
