@@ -151,6 +151,9 @@ configurations:
       faultTolerantEnums:
         type: Boolean
         default: false
+      faultTolerantOpenEnums:
+        type: Boolean
+        default: false
       ignoreUnknownProperties:
         type: Boolean
         default: false
