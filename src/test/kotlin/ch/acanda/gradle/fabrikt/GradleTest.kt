@@ -80,6 +80,7 @@ class GradleTest : StringSpec({
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      faultTolerantEnums = enabled
+            |      faultTolerantOpenEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
@@ -168,6 +169,7 @@ class GradleTest : StringSpec({
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      faultTolerantEnums = enabled
+            |      faultTolerantOpenEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx
@@ -371,6 +373,7 @@ class GradleTest : StringSpec({
             |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      faultTolerantEnums = enabled
+            |      faultTolerantOpenEnums = enabled
             |      ignoreUnknownProperties = enabled
             |      suffix = "Dto"
             |      serializationLibrary = Kotlinx

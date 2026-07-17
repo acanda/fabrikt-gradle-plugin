@@ -173,6 +173,11 @@ class FabriktArgumentsTest : StringSpec({
                         ModelCodeGenOptionType.FAULT_TOLERANT_ENUMS
                     )
                     cliArgs.shouldContainOptionally(
+                        faultTolerantOpenEnums,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.FAULT_TOLERANT_OPEN_ENUMS
+                    )
+                    cliArgs.shouldContainOptionally(
                         suffix,
                         ARG_MODEL_SUFFIX
                     )
