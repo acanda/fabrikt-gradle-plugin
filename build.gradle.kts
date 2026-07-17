@@ -114,12 +114,14 @@ tasks {
             project.extensions.getByType<KotlinJvmProjectExtension>().target.compilations.getByName("test")
         classpath.setFrom(compilation.output.classesDirs, compilation.compileDependencyFiles)
 
+        basePath = projectDir.absolutePath
+
         reports {
             xml.required.set(false)
             html.required.set(false)
             txt.required.set(false)
-            sarif.required.set(false)
-            md.required.set(true)
+            sarif.required.set(true)
+            md.required.set(false)
         }
 
         doFirst {
