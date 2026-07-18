@@ -22,7 +22,6 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
-import org.gradle.api.tasks.Internal
 import org.gradle.api.tasks.Nested
 import java.util.*
 import javax.annotation.processing.Generated
@@ -124,7 +123,11 @@ internal fun FileSpec.Builder.addTypes(types: Iterable<TypeSpec>) =
     types.forEach { this.addType(it) }
 
 internal fun Map<String, OptionDefinition>.buildPolymorphicOptions(): List<PropertySpec> =
-    flatMap { (option, definition) -> definition.mapping.keys.map { it to option } }
+    flatMap { (option, definition) ->
+        definition.mapping.map { (mappingName, mappingValue) ->
+            mappingName to PolymorphicOptionInstance(option, mappingValue?.isDeprecated() == true)
+        }
+    }
         .groupByTo(TreeMap(), { it.first }, { it.second })
         .map { (optionValue, options) -> buildPolymorphicOption(optionValue, options) }
 
@@ -136,14 +139,16 @@ internal fun Map<String, OptionDefinition>.buildPolymorphicOptions(): List<Prope
  *       PolymorphicByteArrayOption(BinaryOverrideOption.ByteArray, ByteOverrideOption.ByteArray)
  * ```
  */
-private fun buildPolymorphicOption(optionValue: String, options: Iterable<String>): PropertySpec =
+private fun buildPolymorphicOption(optionValue: String, options: Iterable<PolymorphicOptionInstance>): PropertySpec =
     PropertySpec
         .builder(optionValue, polymorphicOptionName(optionValue))
         .addAnnotation(AnnotationSpec.builder(JvmField::class).build())
         .initializer(
             "%T(%L)",
             polymorphicOptionName(optionValue),
-            options.joinToString(", ") { "${it}.$optionValue" }
+            options.joinToString(", ") {
+                "${if (it.isDeprecated) """@Suppress("DEPRECATION") """ else ""}${it.name}.$optionValue"
+            }
         )
         .build()
 
@@ -176,3 +181,5 @@ internal fun buildBooleanProperty(name: String, initializer: String) =
         .addAnnotation(AnnotationSpec.builder(JvmField::class).build())
         .initializer(initializer)
         .build()
+
+private data class PolymorphicOptionInstance(val name: String, val isDeprecated: Boolean) {}

@@ -172,9 +172,14 @@ private fun buildCompanionForPolymorphicOptionInterface(
                 )
                 .initializer(
                     "listOf(%L)",
-                    definition.mapping.keys.joinToString(", ") { key ->
-                        "${polymorphicOptionName(key).simpleName}(${name}.${key})"
-                    }
+                    definition.mapping.map { (mappingKey, mappingValue) ->
+                        val deprecation = if (mappingValue?.isDeprecated() == true) {
+                            """@Suppress("DEPRECATION") """
+                        } else {
+                            ""
+                        }
+                        "${polymorphicOptionName(mappingKey).simpleName}($deprecation$name.$mappingKey)"
+                    }.joinToString(", ")
                 )
                 .build()
         )
