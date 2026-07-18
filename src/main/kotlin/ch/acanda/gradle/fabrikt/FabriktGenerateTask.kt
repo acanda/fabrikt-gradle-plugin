@@ -9,7 +9,6 @@ import org.gradle.api.problems.ProblemGroup
 import org.gradle.api.problems.ProblemId
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
-import org.gradle.api.problems.Severity
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.CacheableTask
@@ -69,7 +68,6 @@ abstract class FabriktGenerateTask @Inject constructor(
         problem
             .contextualLabel("Fabrikt failed to generate code for configuration $name.")
             .details("Fabrikt failed to generate code for the OpenAPI specification ${e.apiFile}.")
-            .severity(Severity.ERROR)
     }
 
 }

@@ -6,9 +6,9 @@ import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.orNull
+import io.kotest.property.arbitrary.pattern
 import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.string
-import io.kotest.property.arbitrary.stringPattern
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 import java.nio.file.Paths
@@ -19,10 +19,10 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         apiFile.set(pathGen.bind())
         apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
         externalReferenceResolution.set(Arb.of(IExternalReferencesResolutionOption.options).orNull(0.2).bind())
-        basePackage.set(Arb.stringPattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
+        basePackage.set(Arb.pattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
         outputDirectory.set(pathGen.bind())
-        sourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
-        resourcesPath.set(Arb.stringPattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
+        sourcesPath.set(Arb.pattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
+        resourcesPath.set(Arb.pattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         quarkusReflectionConfig.set(Arb.boolean().orNull(0.2).bind())
         addFileDisclaimer.set(Arb.boolean().orNull(0.2).bind())
         typeOverrides.datetime.set(Arb.of(IDateTimeOverrideOption.options).orNull(0.2).bind())
@@ -74,5 +74,5 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = generateTas
 }
 
 private val pathGen: Arb<File> = arbitrary {
-    Paths.get(Arb.stringPattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
+    Paths.get(Arb.pattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
 }
