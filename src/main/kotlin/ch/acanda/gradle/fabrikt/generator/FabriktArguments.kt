@@ -100,6 +100,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_TYPE_OVERRIDES)
             args.add(override)
         }
+        untyped.withOptionName { override ->
+            args.add(ARG_TYPE_OVERRIDES)
+            args.add(override)
+        }
     }
 
     private fun GenerateTaskConfiguration.addClientArgs(args: MutableList<String>) = with(client) {

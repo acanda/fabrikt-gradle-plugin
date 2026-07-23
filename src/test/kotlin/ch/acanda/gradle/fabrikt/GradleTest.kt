@@ -49,6 +49,7 @@ class GradleTest : StringSpec({
             |      binary = InputStream
             |      byte = String
             |      datetime = Instant
+            |      untyped = JsonElement
             |    }
             |    client {
             |      generate = enabled
@@ -138,6 +139,7 @@ class GradleTest : StringSpec({
             |      uri = String
             |      uuid = String
             |      date = String
+            |      untyped = Any
             |    }
             |    client {
             |      generate = enabled
@@ -342,6 +344,7 @@ class GradleTest : StringSpec({
             |      binary = owner.InputStream
             |      owner.'byte' = owner.String
             |      datetime = owner.Instant
+            |      untyped = Any
             |    }
             |    client {
             |      generate = enabled

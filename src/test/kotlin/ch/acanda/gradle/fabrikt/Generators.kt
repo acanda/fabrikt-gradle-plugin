@@ -31,6 +31,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         typeOverrides.uri.set(Arb.of(IUriOverrideOption.options).orNull(0.2).bind())
         typeOverrides.uuid.set(Arb.of(IUuidOverrideOption.options).orNull(0.2).bind())
         typeOverrides.date.set(Arb.of(IDateOverrideOption.options).orNull(0.2).bind())
+        typeOverrides.untyped.set(Arb.of(IUntypedOverrideOption.options).orNull(0.2).bind())
         validationLibrary.set(Arb.of(IValidationLibraryOption.options).orNull(0.2).bind())
         client.generate.set(Arb.boolean().orNull(0.2).bind())
         client.target.set(Arb.of(IClientTargetOption.options).orNull(0.2).bind())

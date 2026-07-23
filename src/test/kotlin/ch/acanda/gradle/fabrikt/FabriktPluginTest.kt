@@ -55,7 +55,12 @@ class FabriktPluginTest : WordSpec({
                     it.addFileDisclaimer.set(it.enabled)
                     with(it.typeOverrides) {
                         datetime.set(Instant)
+                        byte.set(String)
                         binary.set(InputStream)
+                        uri.set(String)
+                        uuid.set(String)
+                        date.set(String)
+                        untyped.set(JsonElement)
                     }
                     with(it.client) {
                         generate.set(it.enabled)
@@ -113,7 +118,12 @@ class FabriktPluginTest : WordSpec({
                     this.addFileDisclaimer shouldContain true
                     with(typeOverrides) {
                         datetime.option shouldBe DateTimeOverrideOption.Instant
+                        byte.option shouldBe ByteOverrideOption.String
                         binary.option shouldBe BinaryOverrideOption.InputStream
+                        uri.option shouldBe UriOverrideOption.String
+                        uuid.option shouldBe UuidOverrideOption.String
+                        date.option shouldBe DateOverrideOption.String
+                        untyped.option shouldBe UntypedOverrideOption.JsonElement
                     }
                     with(client) {
                         generate shouldContain true
@@ -185,7 +195,12 @@ class FabriktPluginTest : WordSpec({
                     this.addFileDisclaimer shouldContain false
                     with(typeOverrides) {
                         datetime.option shouldBe DateTimeOverrideOption.OffsetDateTime
+                        byte.option shouldBe ByteOverrideOption.ByteArray
                         binary.option shouldBe BinaryOverrideOption.ByteArray
+                        uri.option shouldBe UriOverrideOption.URI
+                        uuid.option shouldBe UuidOverrideOption.UUID
+                        date.option shouldBe DateOverrideOption.LocalDate
+                        untyped.option shouldBe UntypedOverrideOption.Any
                     }
                     with(client) {
                         generate shouldContain false
