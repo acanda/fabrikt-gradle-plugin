@@ -67,6 +67,9 @@ configurations:
       date:
         type: DateOverrideOption
         default: LocalDate
+      untyped:
+        type: UntypedOverrideOption
+        default: Any
 
   GenerateClient:
     properties:
@@ -216,6 +219,12 @@ options:
     mapping:
       LocalDate: null
       String: DATE_AS_STRING
+
+  UntypedOverrideOption:
+    source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
+    mapping:
+      Any: null
+      JsonElement: ANY_AS_JSONELEMENT
 
   ValidationLibraryOption:
     source: com.cjbooms.fabrikt.cli.ValidationLibrary
