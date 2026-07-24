@@ -1,3 +1,4 @@
+import ch.acanda.gradle.fabrikt.build.CheckReadmeTask
 import ch.acanda.gradle.fabrikt.build.GeneratePluginClassesTask
 import io.gitlab.arturbosch.detekt.Detekt
 import org.gradle.plugin.compatibility.compatibility
@@ -92,10 +93,12 @@ signing {
 
 tasks {
 
+    val configurationSchema = file("src/main/schema/configuration.yaml")
+
     val generatePluginClasses = register<GeneratePluginClassesTask>("generatePluginClasses") {
         group = LifecycleBasePlugin.BUILD_GROUP
         description = "Generates classes for the Fabrikt Gradle plugin."
-        schema = file("src/main/schema/configuration.yaml")
+        schema = configurationSchema
         outputDirectory = generatedSources
     }
 
@@ -133,6 +136,14 @@ tasks {
                 )
             }
         }
+    }
+
+    val checkReadme = register<CheckReadmeTask>("checkReadme") {
+        schema = configurationSchema
+    }
+
+    build {
+        dependsOn(checkReadme)
     }
 
 }
