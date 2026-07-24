@@ -75,7 +75,7 @@ detekt {
 testing {
     suites {
         @Suppress("unused")
-        val test by getting(JvmTestSuite::class) {
+        getByName("test", JvmTestSuite::class) {
             useJUnitJupiter(libs.versions.junit)
             dependencies {
                 implementation(libs.kotest.runner.junit5)
@@ -92,7 +92,9 @@ signing {
 
 tasks {
 
-    val generatePluginClasses by registering(GeneratePluginClassesTask::class) {
+    val generatePluginClasses = register<GeneratePluginClassesTask>("generatePluginClasses") {
+        group = LifecycleBasePlugin.BUILD_GROUP
+        description = "Generates classes for the Fabrikt Gradle plugin."
         schema = file("src/main/schema/configuration.yaml")
         outputDirectory = generatedSources
     }
