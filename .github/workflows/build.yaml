@@ -28,14 +28,21 @@ jobs:
         uses: gradle/actions/setup-gradle@v6
       - name: Run Build with Gradle Wrapper
         run: ./gradlew build --console=plain
-      - name: Upload test report
+      - name: Upload Test Report
         uses: actions/upload-artifact@v7
         if: ${{ failure() && hashFiles('build/reports/tests/test/index.html') != '' }}
         with:
           name: test-report
           path: build/reports/tests/test/
-      - name: Upload SARIF
+      - name: Upload Detekt SARIF Report
         uses: github/codeql-action/upload-sarif@v4
         if: ${{ (success() || failure()) && hashFiles('build/reports/detekt/detekt.sarif') != '' }}
         with:
           sarif_file: build/reports/detekt/detekt.sarif
+          category: detekt
+      - name: Upload Plugin SARIF Report
+        uses: github/codeql-action/upload-sarif@v4
+        if: ${{ (success() || failure()) && hashFiles('build/reports/fabrikt-gradle-plugin/report.sarif') != '' }}
+        with:
+          sarif_file: build/reports/fabrikt-gradle-plugin/report.sarif
+          category: fabrikt-gradle-plugin
