@@ -16,6 +16,7 @@ dependencies {
     implementation(libs.fabrikt)
     implementation(libs.kotlinpoet)
     implementation(libs.bundles.jackson)
+    implementation(libs.sarif4k)
     detektPlugins(libs.detekt.formatting)
 }
 
