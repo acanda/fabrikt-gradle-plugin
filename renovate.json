@@ -13,5 +13,18 @@
         "io.gitlab.arturbosch.detekt:*"
       ]
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "fileMatch": [
+        "gradle/libs.versions.toml"
+      ],
+      "matchStrings": [
+        "gradle\\s*=\\s*\"(?<currentValue>\\d+(\\.\\d+)*?)\""
+      ],
+      "depNameTemplate": "gradle",
+      "datasourceTemplate": "gradle-version"
+    }
   ]
 }
