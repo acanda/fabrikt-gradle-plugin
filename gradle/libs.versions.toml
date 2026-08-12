@@ -6,7 +6,7 @@ gradle = "9.7.0"
 kotlin = "2.4.0"
 detekt = "1.23.8"
 jackson = "2.22.1"
-kotest = "6.2.3"
+kotest = "6.2.4"
 junit = "5.10.0"
 
 [libraries]
