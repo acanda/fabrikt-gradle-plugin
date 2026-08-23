@@ -15,7 +15,7 @@ class FabriktPlugin : Plugin<Project> {
         @Suppress("MaxLineLength")
         /**
          * We use the same task group name as the
-         * [OpenAPI Generator Gradle Plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/src/main/kotlin/org/openapitools/generator/gradle/plugin/OpenApiGeneratorPlugin.kt#L162),
+         * [OpenAPI Generator Gradle Plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/src/main/kotlin/org/openapitools/generator/gradle/plugin/OpenApiGeneratorPlugin.kt#L197),
          * so the tasks of this plugin are available in the same group as the
          * tasks of the OpenAPI Generator Gradle Plugin.
          */
