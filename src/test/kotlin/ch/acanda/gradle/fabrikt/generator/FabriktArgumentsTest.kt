@@ -1,7 +1,11 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.FabriktOption
+import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
+import ch.acanda.gradle.fabrikt.GenerateTaskDefaults
+import ch.acanda.gradle.fabrikt.GenerateTaskExtension
 import ch.acanda.gradle.fabrikt.generateTaskConfigGen
+import ch.acanda.gradle.fabrikt.initializeGenerateTaskConfiguration
 import ch.acanda.gradle.fabrikt.option
 import com.cjbooms.fabrikt.cli.ClientCodeGenOptionType
 import com.cjbooms.fabrikt.cli.CodeGenerationType
@@ -21,6 +25,8 @@ import io.kotest.matchers.should
 import io.kotest.matchers.shouldNot
 import io.kotest.property.checkAll
 import org.gradle.api.provider.Provider
+import org.gradle.testfixtures.ProjectBuilder
+import java.io.File
 
 class FabriktArgumentsTest : StringSpec({
 
@@ -200,6 +206,25 @@ class FabriktArgumentsTest : StringSpec({
                 }
             }
         }
+    }
+
+    "should pass Jackson 3 as serialization library" {
+        val project = ProjectBuilder.builder().build()
+        val extension = project.objects.newInstance(GenerateTaskExtension::class.java, "api").apply {
+            apiFile.set(File("openapi.yaml"))
+            basePackage.set("com.example")
+            with(model) {
+                serializationLibrary.set(Jackson3)
+            }
+        }
+        val config = project.objects.newInstance(GenerateTaskConfiguration::class.java, "api")
+        val defaults = project.objects.newInstance(GenerateTaskDefaults::class.java)
+        initializeGenerateTaskConfiguration().invoke(config, extension, defaults)
+
+        FabriktArguments(config).getCliArgs() shouldContainInOrder listOf(
+            ARG_MODEL_SERIALIZATION_LIB,
+            "JACKSON_3"
+        )
     }
 
 }) {
