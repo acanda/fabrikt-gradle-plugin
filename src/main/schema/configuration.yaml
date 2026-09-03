@@ -251,7 +251,12 @@ options:
   SerializationLibraryOption:
     source: com.cjbooms.fabrikt.cli.SerializationLibrary
     mapping:
-      Jackson: JACKSON
+      Jackson2: JACKSON
+      Jackson3: JACKSON_3
+      Jackson:
+        value: JACKSON
+        deprecated:
+          replaceWith: Jackson2
       Kotlinx: KOTLINX_SERIALIZATION
       Kotlin:
         value: KOTLINX_SERIALIZATION
