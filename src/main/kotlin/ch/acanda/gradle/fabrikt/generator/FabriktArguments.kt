@@ -127,6 +127,11 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 ClientCodeGenOptionType.SPRING_CLOUD_OPENFEIGN_STARTER_ANNOTATION
             )
             args.addIfEnabled(groupByTag, ARG_CLIENT_OPTS, ClientCodeGenOptionType.GROUP_BY_TAG)
+            args.addIfEnabled(
+                okHttpNonNullResponsePayloads,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.OKHTTP_NON_NULL_RESPONSE_PAYLOADS
+            )
             openFeignClientName.orNull?.let {
                 args.add(ARG_OPENFEIGN_CLIENT_NAME)
                 args.add(it.toString())

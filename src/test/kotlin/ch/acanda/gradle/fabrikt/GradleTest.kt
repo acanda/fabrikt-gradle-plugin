@@ -59,6 +59,7 @@ class GradleTest : StringSpec({
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
+            |      okHttpNonNullResponsePayloads = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -149,6 +150,7 @@ class GradleTest : StringSpec({
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
+            |      okHttpNonNullResponsePayloads = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -354,6 +356,7 @@ class GradleTest : StringSpec({
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
+            |      okHttpNonNullResponsePayloads = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
