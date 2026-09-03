@@ -23,7 +23,7 @@ import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Nested
-import java.util.*
+import java.util.TreeMap
 import javax.annotation.processing.Generated
 
 internal const val PACKAGE = "ch.acanda.gradle.fabrikt"
