@@ -81,6 +81,11 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.GROUP_BY_TAG
                     )
+                    cliArgs.shouldContainOptionally(
+                        okHttpNonNullResponsePayloads,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.OKHTTP_NON_NULL_RESPONSE_PAYLOADS
+                    )
                     cliArgs shouldContainInOrder listOf(
                         ARG_OPENFEIGN_CLIENT_NAME, config.client.openFeignClientName.get().toString()
                     )
