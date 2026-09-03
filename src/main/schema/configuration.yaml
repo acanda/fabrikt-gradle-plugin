@@ -94,6 +94,9 @@ configurations:
       groupByTag:
         type: Boolean
         default: false
+      okHttpNonNullResponsePayloads:
+        type: Boolean
+        default: false
       openFeignClientName:
         type: CharSequence
         default: "fabrikt-client"
