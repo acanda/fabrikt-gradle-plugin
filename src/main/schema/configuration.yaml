@@ -35,6 +35,8 @@ configurations:
       addFileDisclaimer:
         type: Boolean
         default: false
+      operationIdTransform:
+        type: OperationIdTransform
       typeOverrides:
         type: TypeOverrides
       client:
@@ -46,6 +48,15 @@ configurations:
       skip:
         type: Boolean
         default: false
+
+  OperationIdTransform:
+    properties:
+      regex:
+        type: CharSequence
+        default: null
+      replacement:
+        type: CharSequence
+        default: null
 
   TypeOverrides:
     properties:

@@ -1,5 +1,9 @@
 package ch.acanda.gradle.fabrikt
 
+import ch.acanda.gradle.fabrikt.generator.GeneratorException
+import ch.acanda.gradle.fabrikt.generator.ValidationException
+import ch.acanda.gradle.fabrikt.generator.ValidationProblem
+import ch.acanda.gradle.fabrikt.generator.ValidationSeverity
 import ch.acanda.gradle.fabrikt.generator.generate
 import org.gradle.api.Action
 import org.gradle.api.DefaultTask
@@ -55,19 +59,57 @@ abstract class FabriktGenerateTask @Inject constructor(
                     generate(config)
                 } catch (e: GeneratorException) {
                     progress.fail(apiFile)
-                    val problemReporter = services.get(Problems::class.java).reporter
-                    val group = ProblemGroup.create("fabrikt-code-generation", "Fabrikt Code Generation")
-                    val id = ProblemId.create("generator", "Fabrikt failed to generate code.", group)
-                    problemReporter.throwing(e, id, generatorProblem(e, config.name))
+                    handleGeneratorException(e, apiFile, config.name)
+                } catch (e: ValidationException) {
+                    e.ifContainsError { progress.fail(apiFile) }
+                    handleValidationException(e, config.name)
                 }
             }
         }
     }
 
-    private fun generatorProblem(e: GeneratorException, name: String) = Action { problem: ProblemSpec ->
-        problem
-            .contextualLabel("Fabrikt failed to generate code for configuration $name.")
-            .details("Fabrikt failed to generate code for the OpenAPI specification ${e.apiFile}.")
+    @Suppress("UnstableApiUsage")
+    private fun handleGeneratorException(
+        e: GeneratorException,
+        apiFile: RegularFile,
+        configName: String
+    ) {
+        val problemReporter = services.get(Problems::class.java).reporter
+        val id = ProblemId.create("generator", "Fabrikt failed to generate code.", PROBLEM_GROUP)
+        problemReporter.throwing(e, id, generatorProblem(apiFile, configName))
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun handleValidationException(e: ValidationException, configName: String) {
+        val problemReporter = services.get(Problems::class.java).reporter
+        val id = ProblemId.create("validation", "Invalid value in Fabrikt settings.", PROBLEM_GROUP)
+        e.problems.forEach { problem ->
+            when (problem.severity) {
+                ValidationSeverity.WARNING -> problemReporter.report(id, validationProblem(problem, configName))
+                ValidationSeverity.ERROR -> problemReporter.throwing(e, id, validationProblem(problem, configName))
+            }
+        }
+    }
+
+    @Suppress("UnstableApiUsage")
+    private fun generatorProblem(apiFile: RegularFile, name: String) =
+        Action { problem: ProblemSpec ->
+            problem
+                .contextualLabel("Fabrikt failed to generate code for configuration $name.")
+                .details("Fabrikt failed to generate code for the OpenAPI specification $apiFile.")
+        }
+
+    @Suppress("UnstableApiUsage")
+    private fun validationProblem(e: ValidationProblem, name: String) =
+        Action { problem: ProblemSpec ->
+            problem
+                .contextualLabel("Invalid Fabrikt setting in configuration $name.")
+                .details(e.message.orEmpty())
+        }
+
+    companion object {
+        @Suppress("UnstableApiUsage")
+        private val PROBLEM_GROUP = ProblemGroup.create("fabrikt", "Fabrikt Code Generation")
     }
 
 }

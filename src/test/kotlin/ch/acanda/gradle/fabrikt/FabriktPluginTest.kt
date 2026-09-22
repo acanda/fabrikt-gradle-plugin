@@ -53,6 +53,10 @@ class FabriktPluginTest : WordSpec({
                     it.validationLibrary.set(it.Javax)
                     it.quarkusReflectionConfig.set(it.enabled)
                     it.addFileDisclaimer.set(it.enabled)
+                    with(it.operationIdTransform) {
+                        regex.set(".*_")
+                        replacement.set("")
+                    }
                     with(it.typeOverrides) {
                         datetime.set(Instant)
                         byte.set(String)
@@ -118,6 +122,10 @@ class FabriktPluginTest : WordSpec({
                     this.validationLibrary.option shouldBe ValidationLibraryOption.Javax
                     this.quarkusReflectionConfig shouldContain true
                     this.addFileDisclaimer shouldContain true
+                    with(operationIdTransform) {
+                        regex shouldContainString ".*_"
+                        replacement shouldContainString ""
+                    }
                     with(typeOverrides) {
                         datetime.option shouldBe DateTimeOverrideOption.Instant
                         byte.option shouldBe ByteOverrideOption.String
@@ -197,6 +205,10 @@ class FabriktPluginTest : WordSpec({
                     this.validationLibrary.option shouldBe ValidationLibraryOption.Jakarta
                     this.quarkusReflectionConfig shouldContain false
                     this.addFileDisclaimer shouldContain false
+                    with(operationIdTransform) {
+                        regex shouldContain null
+                        replacement shouldContain null
+                    }
                     with(typeOverrides) {
                         datetime.option shouldBe DateTimeOverrideOption.OffsetDateTime
                         byte.option shouldBe ByteOverrideOption.ByteArray

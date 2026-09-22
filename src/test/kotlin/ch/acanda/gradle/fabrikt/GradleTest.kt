@@ -45,6 +45,10 @@ class GradleTest : StringSpec({
             |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
             |    addFileDisclaimer = enabled
+            |    operationIdTransform {
+            |      regex = ".*_"
+            |      replacement = ""
+            |    }
             |    typeOverrides {
             |      binary = InputStream
             |      byte = String
@@ -134,6 +138,10 @@ class GradleTest : StringSpec({
             |    validationLibrary = Jakarta
             |    quarkusReflectionConfig = enabled
             |    addFileDisclaimer = enabled
+            |    operationIdTransform {
+            |      regex = ".*_"
+            |      replacement = ""
+            |    }
             |    typeOverrides {
             |      datetime = Instant
             |      byte = String
@@ -344,6 +352,10 @@ class GradleTest : StringSpec({
             |    validationLibrary = NoValidation
             |    quarkusReflectionConfig = enabled
             |    addFileDisclaimer = enabled
+            |    operationIdTransform {
+            |      regex = ".*_"
+            |      replacement = ""
+            |    }
             |    typeOverrides {
             |      binary = owner.InputStream
             |      owner.'byte' = owner.String
