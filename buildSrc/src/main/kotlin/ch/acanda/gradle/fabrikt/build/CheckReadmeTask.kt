@@ -149,6 +149,7 @@ abstract class CheckReadmeTask : DefaultTask(), VerificationTask {
     private companion object {
         private val PREFIX = mapOf(
             "GenerateTask" to "",
+            "OperationIdTransform" to "operationIdTransform.",
             "TypeOverrides" to "typeOverrides.",
             "GenerateClient" to "client.",
             "GenerateController" to "controller.",

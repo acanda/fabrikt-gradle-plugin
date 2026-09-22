@@ -12,6 +12,7 @@ import io.kotest.assertions.print.print
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.Matcher
 import io.kotest.matchers.MatcherResult
+import io.kotest.matchers.collections.shouldBeEmpty
 import io.kotest.matchers.collections.shouldContainInOrder
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.collections.shouldNotContainAnyOf
@@ -26,7 +27,9 @@ class FabriktArgumentsTest : StringSpec({
 
     "should handle any combination of arguments" {
         checkAll(generateTaskConfigGen) { config ->
-            val cliArgs = FabriktArguments(config).getCliArgs()
+            val arguments = FabriktArguments(config).getCliArgs()
+            arguments.problems.shouldBeEmpty()
+            val cliArgs = arguments.args
             cliArgs shouldNotContain "null"
             cliArgs shouldContainInOrder listOf(ARG_API_FILE, config.apiFile.asFile.get().absolutePath)
             cliArgs.shouldContainOptionally(config.externalReferenceResolution.option, ARG_EXT_REF_RESOLUTION)
@@ -45,6 +48,14 @@ class FabriktArgumentsTest : StringSpec({
                 ARG_OUTPUT_OPTS,
                 OutputOptionType.ADD_FILE_DISCLAIMER
             )
+            with(config.operationIdTransform) {
+                val value = convertOperationIdTransform()
+                if (value != null) {
+                    cliArgs shouldContainInOrder listOf(ARG_OPERATION_ID_TRANSFORM, value)
+                } else {
+                    cliArgs shouldNotContain ARG_OPERATION_ID_TRANSFORM
+                }
+            }
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }

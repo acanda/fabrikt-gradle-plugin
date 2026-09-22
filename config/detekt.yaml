@@ -6,3 +6,5 @@ formatting:
 style:
   ForbiddenMethodCall:
     active: true
+  ThrowsCount:
+    max: 3

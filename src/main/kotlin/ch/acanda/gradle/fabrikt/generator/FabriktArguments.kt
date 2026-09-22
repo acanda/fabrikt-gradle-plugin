@@ -16,6 +16,7 @@ internal const val ARG_BASE_PACKAGE = "--base-package"
 internal const val ARG_OUT_DIR = "--output-directory"
 internal const val ARG_SRC_PATH = "--src-path"
 internal const val ARG_RESOURCES_PATH = "--resources-path"
+internal const val ARG_OPERATION_ID_TRANSFORM = "--operation-id-transform"
 internal const val ARG_TYPE_OVERRIDES = "--type-overrides"
 internal const val ARG_VALIDATION_LIB = "--validation-library"
 internal const val ARG_TARGETS = "--targets"
@@ -33,7 +34,9 @@ internal const val ARG_OUTPUT_OPTS = "--output-opts"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
-    fun getCliArgs(): Array<String> = with(config) {
+    fun getCliArgs(): Arguments = with(config) {
+        val problems = mutableListOf<ValidationProblem>()
+
         @Suppress("ArgumentListWrapping")
         val args = mutableListOf<String>(
             ARG_API_FILE, apiFile.asFile.get().absolutePath,
@@ -68,11 +71,15 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_OUTPUT_OPTS)
             args.add(OutputOptionType.ADD_FILE_DISCLAIMER.name)
         }
+        operationIdTransform.validate(problems).convertOperationIdTransform()?.let {
+            args.add(ARG_OPERATION_ID_TRANSFORM)
+            args.add(it)
+        }
         addTypeOverridesArgs(args)
         addClientArgs(args)
         addControllerArgs(args)
         addModelArgs(args)
-        return args.toTypedArray()
+        return Arguments(args.toTypedArray(), problems)
     }
 
     private fun GenerateTaskConfiguration.addTypeOverridesArgs(args: MutableList<String>) = with(typeOverrides) {
@@ -204,4 +211,12 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         }
     }
 
+}
+
+internal class Arguments(
+    val args: Array<String>,
+    val problems: List<ValidationProblem>
+) {
+    fun hasValidationProblems(): Boolean = problems.isNotEmpty()
+    fun hasValidationErrors(): Boolean = problems.any { it.severity == ValidationSeverity.ERROR }
 }
