@@ -56,6 +56,15 @@ class FabriktArgumentsTest : StringSpec({
                 cliArgs.shouldContainOptionally(uuid.option, ARG_TYPE_OVERRIDES)
                 cliArgs.shouldContainOptionally(date.option, ARG_TYPE_OVERRIDES)
                 cliArgs.shouldContainOptionally(untyped.option, ARG_TYPE_OVERRIDES)
+                custom.get().forEach { mapping ->
+                    cliArgs shouldContainInOrder listOf(
+                        ARG_CUSTOM_TYPE_MAPPING,
+                        buildString {
+                            append("${mapping.type}:${mapping.format}=${mapping.kotlinType}")
+                            mapping.kotlinxSerializer?.let { append(";kotlinx=$it") }
+                        }
+                    )
+                }
             }
             with(config.client) {
                 if (generate.get()) {

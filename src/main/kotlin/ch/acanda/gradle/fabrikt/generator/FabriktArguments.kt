@@ -30,6 +30,7 @@ internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
 internal const val ARG_MODEL_JACKSON_NULLABILITY_MODE = "--jackson-nullability-mode"
 internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
 internal const val ARG_OUTPUT_OPTS = "--output-opts"
+internal const val ARG_CUSTOM_TYPE_MAPPING = "--custom-type-mapping"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -103,6 +104,17 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         untyped.withOptionName { override ->
             args.add(ARG_TYPE_OVERRIDES)
             args.add(override)
+        }
+        custom.get().forEach { mapping ->
+            args.add(ARG_CUSTOM_TYPE_MAPPING)
+            args.add(buildString {
+                append(mapping.type)
+                append(':')
+                append(mapping.format)
+                append('=')
+                append(mapping.kotlinType)
+                mapping.kotlinxSerializer?.let { append(";kotlinx=$it") }
+            })
         }
     }
 

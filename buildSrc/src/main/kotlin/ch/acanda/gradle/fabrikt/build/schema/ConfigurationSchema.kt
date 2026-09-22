@@ -24,6 +24,7 @@ typealias PropertiesDefinitions = Map<String, PropertyDefinition>
  * definitions (values).
  */
 typealias OptionDefinitions = Map<String, OptionDefinition>
+typealias ValueDefinitions = Map<String, ValueDefinition>
 
 /**
  * Maps the Gradle plugin option names (keys) to their respective Fabrikt option
@@ -37,6 +38,7 @@ enum class Dataflow { Input, Output }
 data class ConfigurationSchema(
     val configurations: ConfigurationDefinitions,
     val options: OptionDefinitions,
+    val values: ValueDefinitions = emptyMap(),
 )
 
 data class ConfigurationDefinition(
@@ -55,6 +57,7 @@ data class PropertyDefinition(
      * or the name of one of the options or configurations.
      */
     val type: String,
+    val elementType: String? = null,
     /**
      * Set to true if this property needs to be specified before the task can
      * be executed.
@@ -80,6 +83,8 @@ data class PropertyDefinition(
      */
     val default: String? = null,
 )
+
+data class ValueDefinition(val properties: PropertiesDefinitions)
 
 data class OptionDefinition(
     /** The fully qualified name of the Fabrikt option enum class. */

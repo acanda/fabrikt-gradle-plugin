@@ -107,6 +107,7 @@ private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, sche
             .filter { (type, _) -> optionTypes.contains(type) }
             .buildPolymorphicOptions()
     )
+    spec.addFunctions(config.buildAddListFunctions(schema))
     if (config.containsBooleanProperty()) {
         spec.addProperty(buildBooleanProperty("enabled", "true"))
         spec.addProperty(buildBooleanProperty("disabled", "false"))

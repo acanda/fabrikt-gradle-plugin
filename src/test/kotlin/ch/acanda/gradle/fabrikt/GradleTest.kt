@@ -50,6 +50,11 @@ class GradleTest : StringSpec({
             |      byte = String
             |      datetime = Instant
             |      untyped = JsonElement
+            |      addCustom {
+            |        type = "string"
+            |        format = "duration"
+            |        kotlinType = "java.time.Duration"
+            |      }
             |    }
             |    client {
             |      generate = enabled
@@ -141,6 +146,11 @@ class GradleTest : StringSpec({
             |      uuid = String
             |      date = String
             |      untyped = Any
+            |      addCustom {
+            |        type = "string"
+            |        format = "duration"
+            |        kotlinType = "java.time.Duration"
+            |      }
             |    }
             |    client {
             |      generate = enabled
@@ -347,6 +357,11 @@ class GradleTest : StringSpec({
             |      owner.'byte' = owner.String
             |      datetime = owner.Instant
             |      untyped = Any
+            |      addCustom {
+            |        type = 'string'
+            |        format = 'duration'
+            |        kotlinType = 'java.time.Duration'
+            |      }
             |    }
             |    client {
             |      generate = enabled

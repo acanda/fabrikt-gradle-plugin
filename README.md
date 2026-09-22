@@ -102,6 +102,12 @@ fabrikt {
             uuid = UUID
             date = LocalDate
             untyped = Any
+            addCustom {
+                type = "string"
+                format = "duration"
+                kotlinType = "java.time.Duration"
+                kotlinxSerializer = "com.example.DurationSerializer"
+            }
         }
         client {
             generate = disabled
@@ -160,6 +166,7 @@ fabrikt {
 | typeOverrides.uuid                           | Specifies the Kotlin type for the OAS type `string` with format `uuid`.<br/>Values: `UUID`, `String`.                                                                                                                                                                                                                              | `UUID`                            |
 | typeOverrides.date                           | Specifies the Kotlin type for the OAS type `string` with format `date`.<br/>Values: `LocalDate`, `String`.                                                                                                                                                                                                                         | `LocalDate`                       |
 | typeOverrides.untyped                        | Specifies the Kotlin type for untyped schemas.<br/>Values: `Any`, `JsonElement` (requires `model.serializationLibrary` to be `Kotlinx`).                                                                                                                                                                                           | `Any`                             |
+| typeOverrides.custom                         | Adds a custom OpenAPI type/format to Kotlin type mapping. Call `addCustom` with `type`, `format`, `kotlinType`, and optional `kotlinxSerializer`.                                                                                                                                                                                   | `[]`                              |
 | validationLibrary                            | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`, `NoValidation`.                                                                                                                                                                                                  | `Jakarta`                         |
 | quarkusReflectionConfig                      | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
 | addFileDisclaimer                            | Enables adding a disclaimer to the generated files.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                            | `disabled`                        |

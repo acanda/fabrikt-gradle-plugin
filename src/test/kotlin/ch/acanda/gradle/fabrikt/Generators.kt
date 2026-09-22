@@ -4,6 +4,7 @@ import io.kotest.property.Arb
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
 import io.kotest.property.arbitrary.map
+import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.orNull
 import io.kotest.property.arbitrary.pattern
@@ -32,6 +33,14 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         typeOverrides.uuid.set(Arb.of(IUuidOverrideOption.options).orNull(0.2).bind())
         typeOverrides.date.set(Arb.of(IDateOverrideOption.options).orNull(0.2).bind())
         typeOverrides.untyped.set(Arb.of(IUntypedOverrideOption.options).orNull(0.2).bind())
+        Arb.list(customTypeMappingGen, 0..3).bind().forEach { customTypeMapping ->
+            typeOverrides.addCustom { mapping ->
+                mapping.type = customTypeMapping.type
+                mapping.format = customTypeMapping.format
+                mapping.kotlinType = customTypeMapping.kotlinType
+                mapping.kotlinxSerializer = customTypeMapping.kotlinxSerializer
+            }
+        }
         validationLibrary.set(Arb.of(IValidationLibraryOption.options).orNull(0.2).bind())
         client.generate.set(Arb.boolean().orNull(0.2).bind())
         client.target.set(Arb.of(IClientTargetOption.options).orNull(0.2).bind())
@@ -77,4 +86,13 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = generateTas
 
 private val pathGen: Arb<File> = arbitrary {
     Paths.get(Arb.pattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
+}
+
+private val customTypeMappingGen: Arb<CustomTypeMapping> = arbitrary {
+    CustomTypeMapping(
+        type = Arb.string().bind(),
+        format = Arb.string().bind(),
+        kotlinType = Arb.string().bind(),
+        kotlinxSerializer = Arb.string().orNull(0.2).bind()
+    )
 }

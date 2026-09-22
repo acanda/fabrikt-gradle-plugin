@@ -11,6 +11,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.AnnotationSpec.UseSiteTarget.GET
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -22,6 +23,7 @@ import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.tasks.Nested
 import java.util.TreeMap
 import javax.annotation.processing.Generated
@@ -32,6 +34,7 @@ internal const val CHAR_SEQUENCE = "CharSequence"
 internal const val REGULAR_FILE_PROPERTY = "RegularFileProperty"
 internal const val CONFIGURABLE_FILE_COLLECTION = "ConfigurableFileCollection"
 internal const val DIRECTORY_PROPERTY = "DirectoryProperty"
+internal const val LIST_PROPERTY = "ListProperty"
 
 internal fun generated() = AnnotationSpec.builder(Generated::class)
     .addMember("\"${GeneratePluginClassesTask::class.qualifiedName}\"")
@@ -81,6 +84,7 @@ internal val nestedAnnotation =
 internal fun PropertyDefinition.getPropertyType(schema: ConfigurationSchema, nestedSuffix: String): TypeName =
     when (type) {
         REGULAR_FILE_PROPERTY, CONFIGURABLE_FILE_COLLECTION, DIRECTORY_PROPERTY -> getClassName(schema, nestedSuffix)
+        LIST_PROPERTY -> ListProperty::class.asClassName().parameterizedBy(getElementClassName(schema))
         else -> Property::class.asClassName().parameterizedBy(getClassName(schema, nestedSuffix))
     }
 
@@ -94,6 +98,12 @@ internal fun PropertyDefinition.getClassName(schema: ConfigurationSchema, nested
     isNested(schema.configurations) -> ClassName(PACKAGE, "$type$nestedSuffix")
     else -> throw IllegalArgumentException("Unknown property type: $type")
 }
+
+internal fun PropertyDefinition.getElementClassName(schema: ConfigurationSchema): ClassName =
+    elementType
+        ?.takeIf(schema.values::containsKey)
+        ?.let { ClassName(PACKAGE, it) }
+        ?: throw IllegalArgumentException("Unknown list element type: $elementType")
 
 internal fun PropertyDefinition.isOption(options: OptionDefinitions): Boolean =
     options.containsKey(type)
@@ -118,6 +128,19 @@ internal fun actionOf(type: TypeName): TypeName =
 
 internal fun ConfigurationDefinition.containsBooleanProperty(): Boolean =
     properties.any { (_, property) -> property.type == BOOLEAN }
+
+internal fun ConfigurationDefinition.buildAddListFunctions(schema: ConfigurationSchema): List<FunSpec> =
+    properties.filter { it.value.type == LIST_PROPERTY }.map { (name, property) ->
+            val element = property.getElementClassName(schema)
+            FunSpec.builder("add${name.pascalCase()}")
+                .addParameter("action", actionOf(ClassName(PACKAGE, "${element.simpleName}Builder")))
+                .addCode(
+                    "val builder = %T()\naction.execute(builder)\n%N.add(builder.build())\n",
+                    ClassName(PACKAGE, "${element.simpleName}Builder"),
+                    name
+                )
+                .build()
+    }
 
 internal fun FileSpec.Builder.addTypes(types: Iterable<TypeSpec>) =
     types.forEach { this.addType(it) }

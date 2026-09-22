@@ -17,6 +17,7 @@ import com.squareup.kotlinpoet.asClassName
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
+import org.gradle.api.provider.ListProperty
 
 /**
  * Builds the file ConfigurationInitializer.kt. This file contains the
@@ -32,6 +33,7 @@ internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
     }
     spec.addFunction(assignPropertyFunction())
     spec.addFunction(assignConfigurableFileCollectionFunction())
+    spec.addFunction(assignListPropertyFunction())
     return spec.build()
 }
 
@@ -145,3 +147,12 @@ private fun assignConfigurableFileCollectionFunction(): FunSpec =
         .addStatement("if (!value.isEmpty) { setFrom(value) } else { setFrom(defaultValue) }")
         .build()
 
+private fun assignListPropertyFunction(): FunSpec =
+    FunSpec.builder("assign")
+        .addModifiers(KModifier.PRIVATE)
+        .addTypeVariable(TypeVariableName("T", Any::class))
+        .receiver(ListProperty::class.asClassName().parameterizedBy(TypeVariableName("T")))
+        .addParameter("value", ListProperty::class.asClassName().parameterizedBy(TypeVariableName("T")))
+        .addParameter("defaultValue", ListProperty::class.asClassName().parameterizedBy(TypeVariableName("T")))
+        .addStatement("set(defaultValue.getOrElse(emptyList()) + value.getOrElse(emptyList()))")
+        .build()

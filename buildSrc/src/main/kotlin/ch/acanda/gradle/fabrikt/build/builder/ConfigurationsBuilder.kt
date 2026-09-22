@@ -79,6 +79,7 @@ private fun buildConfigurations(
             .filter { (type, _) -> optionTypes.contains(type) }
             .buildPolymorphicOptions()
     )
+    spec.addFunctions(config.buildAddListFunctions(schema))
     if (config.containsBooleanProperty()) {
         spec.addProperty(PropertySpec.builder("enabled", Boolean::class).internal().initializer("true").build())
         spec.addProperty(PropertySpec.builder("disabled", Boolean::class).internal().initializer("false").build())

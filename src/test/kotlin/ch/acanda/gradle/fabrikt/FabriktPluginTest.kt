@@ -61,6 +61,11 @@ class FabriktPluginTest : WordSpec({
                         uuid.set(String)
                         date.set(String)
                         untyped.set(JsonElement)
+                        addCustom { mapping ->
+                            mapping.type = "string"
+                            mapping.format = "duration"
+                            mapping.kotlinType = "java.time.Duration"
+                        }
                     }
                     with(it.client) {
                         generate.set(it.enabled)
@@ -124,6 +129,9 @@ class FabriktPluginTest : WordSpec({
                         uuid.option shouldBe UuidOverrideOption.String
                         date.option shouldBe DateOverrideOption.String
                         untyped.option shouldBe UntypedOverrideOption.JsonElement
+                        custom.get() shouldContainAll listOf(
+                            CustomTypeMapping("string", "duration", "java.time.Duration")
+                        )
                     }
                     with(client) {
                         generate shouldContain true

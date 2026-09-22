@@ -5,6 +5,7 @@ import ch.acanda.gradle.fabrikt.build.builder.buildDefaults
 import ch.acanda.gradle.fabrikt.build.builder.buildExtensions
 import ch.acanda.gradle.fabrikt.build.builder.buildOptions
 import ch.acanda.gradle.fabrikt.build.builder.buildInitializers
+import ch.acanda.gradle.fabrikt.build.builder.buildValues
 import ch.acanda.gradle.fabrikt.build.schema.ConfigurationSchema
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
@@ -36,6 +37,7 @@ abstract class GeneratePluginClassesTask : DefaultTask() {
         val schema: ConfigurationSchema =
             ObjectMapper(YAMLFactory()).registerKotlinModule().readValue(schema.get().asFile)
         buildOptions(schema.options).writeTo(outputDir)
+        buildValues(schema).writeTo(outputDir)
         buildConfigurations(schema).writeTo(outputDir)
         buildExtensions(schema).writeTo(outputDir)
         buildDefaults(schema).writeTo(outputDir)
