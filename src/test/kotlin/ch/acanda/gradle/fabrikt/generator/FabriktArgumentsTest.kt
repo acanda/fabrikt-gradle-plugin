@@ -45,6 +45,14 @@ class FabriktArgumentsTest : StringSpec({
                 ARG_OUTPUT_OPTS,
                 OutputOptionType.ADD_FILE_DISCLAIMER
             )
+            val operationIdTransform = config.operationIdTransform
+            val regex = operationIdTransform.regex.orNull
+            val replacement = operationIdTransform.replacement.orNull
+            if (regex != null && replacement != null) {
+                cliArgs shouldContainInOrder listOf(ARG_OPERATION_ID_TRANSFORM, "$regex:$replacement")
+            } else {
+                cliArgs shouldNotContain ARG_OPERATION_ID_TRANSFORM
+            }
             config.apiFragments.forEach { fragment ->
                 cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }

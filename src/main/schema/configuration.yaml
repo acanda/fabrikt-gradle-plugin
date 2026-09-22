@@ -35,6 +35,8 @@ configurations:
       addFileDisclaimer:
         type: Boolean
         default: false
+      operationIdTransform:
+        type: OperationIdTransform
       typeOverrides:
         type: TypeOverrides
       client:
@@ -70,6 +72,15 @@ configurations:
       untyped:
         type: UntypedOverrideOption
         default: Any
+
+  OperationIdTransform:
+    properties:
+      regex:
+        type: CharSequence
+        default: null
+      replacement:
+        type: CharSequence
+        default: null
 
   GenerateClient:
     properties:

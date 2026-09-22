@@ -153,6 +153,7 @@ abstract class CheckReadmeTask : DefaultTask(), VerificationTask {
             "GenerateClient" to "client.",
             "GenerateController" to "controller.",
             "GenerateModel" to "model.",
+            "OperationIdTransform" to "operationIdTransform.",
         )
     }
 

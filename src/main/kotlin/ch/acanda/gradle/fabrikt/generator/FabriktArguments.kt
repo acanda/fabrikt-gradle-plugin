@@ -30,6 +30,7 @@ internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
 internal const val ARG_MODEL_JACKSON_NULLABILITY_MODE = "--jackson-nullability-mode"
 internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
 internal const val ARG_OUTPUT_OPTS = "--output-opts"
+internal const val ARG_OPERATION_ID_TRANSFORM = "--operation-id-transform"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -67,6 +68,12 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (addFileDisclaimer.get()) {
             args.add(ARG_OUTPUT_OPTS)
             args.add(OutputOptionType.ADD_FILE_DISCLAIMER.name)
+        }
+        operationIdTransform.regex.orNull?.let { regex ->
+            operationIdTransform.replacement.orNull?.let { replacement ->
+                args.add(ARG_OPERATION_ID_TRANSFORM)
+                args.add("$regex:$replacement")
+            }
         }
         addTypeOverridesArgs(args)
         addClientArgs(args)
