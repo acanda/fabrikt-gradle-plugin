@@ -97,6 +97,9 @@ configurations:
       okHttpNonNullResponsePayloads:
         type: Boolean
         default: false
+      dynamicBaseUrl:
+        type: Boolean
+        default: false
       openFeignClientName:
         type: CharSequence
         default: "fabrikt-client"

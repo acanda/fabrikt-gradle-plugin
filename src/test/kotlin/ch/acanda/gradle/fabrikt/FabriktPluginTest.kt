@@ -70,6 +70,7 @@ class FabriktPluginTest : WordSpec({
                         springResponseEntityWrapper.set(it.enabled)
                         springCloudOpenFeignStarterAnnotation.set(it.enabled)
                         groupByTag.set(it.enabled)
+                        dynamicBaseUrl.set(it.enabled)
                         openFeignClientName.set("api-client")
                     }
                     with(it.controller) {
@@ -133,6 +134,7 @@ class FabriktPluginTest : WordSpec({
                         springResponseEntityWrapper shouldContain true
                         springCloudOpenFeignStarterAnnotation shouldContain true
                         groupByTag shouldContain true
+                        dynamicBaseUrl shouldContain true
                         openFeignClientName shouldContain "api-client"
                     }
                     with(controller) {
