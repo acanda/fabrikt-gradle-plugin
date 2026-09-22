@@ -81,6 +81,8 @@ configurations:
       untyped:
         type: UntypedOverrideOption
         default: Any
+      custom:
+        type: List<CustomTypeMapping>
 
   GenerateClient:
     properties:
@@ -189,6 +191,20 @@ configurations:
       instantLibrary:
         type: InstantLibraryOption
         default: Kotlinx
+
+  CustomTypeMapping:
+    properties:
+      openApiType:
+        type: CharSequence
+        mandatory: true
+      format:
+        type: CharSequence
+        mandatory: true
+      kotlinType:
+        type: CharSequence
+        mandatory: true
+      kotlinxSerializer:
+        type: CharSequence
 
 options:
 

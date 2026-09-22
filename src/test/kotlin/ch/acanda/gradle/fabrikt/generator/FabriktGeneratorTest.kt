@@ -134,7 +134,7 @@ class FabriktGeneratorTest : WordSpec({
             val taskConfig = project.objects.newInstance(GenerateTaskConfiguration::class.java, "dog")
             val extConfig = project.objects.newInstance(GenerateTaskExtension::class.java, "dog")
             val defaults = project.objects.newInstance(GenerateTaskDefaults::class.java)
-            initializeGenerateTaskConfiguration().invoke(taskConfig, extConfig, defaults)
+            initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, extConfig, defaults)
             return taskConfig
         }
 

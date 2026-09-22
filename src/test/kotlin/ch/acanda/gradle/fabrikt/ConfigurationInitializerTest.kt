@@ -22,7 +22,7 @@ class ConfigurationInitializerTest : StringSpec({
         val config = extension.getGenerateExtensions().get().single()
         val defaults = extension.getDefaults().get()
 
-        initializeGenerateTaskConfiguration().invoke(taskConfig, config, defaults)
+        initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, config, defaults)
 
         taskConfig.sourcesPath shouldContain "src/defaults"
     }
@@ -39,7 +39,7 @@ class ConfigurationInitializerTest : StringSpec({
         val config = extension.getGenerateExtensions().get().single()
         val defaults = extension.getDefaults().get()
 
-        initializeGenerateTaskConfiguration().invoke(taskConfig, config, defaults)
+        initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, config, defaults)
 
         taskConfig.sourcesPath shouldContain "src/main/kotlin"
     }
@@ -57,7 +57,7 @@ class ConfigurationInitializerTest : StringSpec({
         val config = extension.getGenerateExtensions().get().single()
         val defaults = extension.getDefaults().get()
 
-        initializeGenerateTaskConfiguration().invoke(taskConfig, config, defaults)
+        initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, config, defaults)
 
         taskConfig.sourcesPath shouldContain "src/config"
     }
@@ -78,7 +78,7 @@ class ConfigurationInitializerTest : StringSpec({
         val config = extension.getGenerateExtensions().get().single()
         val defaults = extension.getDefaults().get()
 
-        initializeGenerateTaskConfiguration().invoke(taskConfig, config, defaults)
+        initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, config, defaults)
 
         taskConfig.sourcesPath shouldContain "src/config"
     }
@@ -95,7 +95,7 @@ class ConfigurationInitializerTest : StringSpec({
         val config = extension.getGenerateExtensions().get().single()
         val defaults = extension.getDefaults().get()
 
-        initializeGenerateTaskConfiguration { skip.set(true) }.invoke(taskConfig, config, defaults)
+        initializeGenerateTaskConfiguration(project.objects) { skip.set(true) }.invoke(taskConfig, config, defaults)
 
         taskConfig.skip shouldContain true
     }

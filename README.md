@@ -106,6 +106,16 @@ fabrikt {
             uuid = UUID
             date = LocalDate
             untyped = Any
+            custom = emptyList()
+            // Example for a custom type override:
+            // custom = listOf(
+            //     customTypeMapping {
+            //        openApiType = "string"
+            //        format = "duration"
+            //        kotlinType = "java.time.Duration"
+            //        kotlinxSerializer = "com.example.DurationAsIsoStringSerializer"
+            //    }
+            // )
         }
         client {
             generate = disabled
@@ -165,6 +175,11 @@ fabrikt {
 | typeOverrides.uuid                           | Specifies the Kotlin type for the OAS type `string` with format `uuid`.<br/>Values: `UUID`, `String`.                                                                                                                                                                                                                              | `UUID`                            |
 | typeOverrides.date                           | Specifies the Kotlin type for the OAS type `string` with format `date`.<br/>Values: `LocalDate`, `String`.                                                                                                                                                                                                                         | `LocalDate`                       |
 | typeOverrides.untyped                        | Specifies the Kotlin type for untyped schemas.<br/>Values: `Any`, `JsonElement` (requires `model.serializationLibrary` to be `Kotlinx`).                                                                                                                                                                                           | `Any`                             |
+| typeOverrides.custom                         | Specifies custom type mappings. You can specify multiple type mappings with `listOf( customTypeMapping { ... }, customTypeMapping { ... } )`. The mappings in the individual configurations extend rather than replace the mappings in `defaults`.                                                                                 | `emptyList()`                     |
+| typeOverrides.custom.openApiType             | The OpenAPI type, e.g. `string`.                                                                                                                                                                                                                                                                                                   | `null`                            |
+| typeOverrides.custom.format                  | The OpenAPI type format, e.g. `duration`.                                                                                                                                                                                                                                                                                          | `null`                            |
+| typeOverrides.custom.kotlinType              | The fully qualified name of the Kotlin type.                                                                                                                                                                                                                                                                                       | `null`                            |
+| typeOverrides.custom.kotlinxSerializer       | Optional, the fully qualified name of the Kotlinx serializer.                                                                                                                                                                                                                                                                      | `null`                            |
 | validationLibrary                            | Specifies the validation library used for annotations in generated model classes.<br/>Values: `Javax`, `Jakarta`, `NoValidation`.                                                                                                                                                                                                  | `Jakarta`                         |
 | quarkusReflectionConfig                      | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
 | addFileDisclaimer                            | Enables adding a disclaimer to the generated files.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                            | `disabled`                        |

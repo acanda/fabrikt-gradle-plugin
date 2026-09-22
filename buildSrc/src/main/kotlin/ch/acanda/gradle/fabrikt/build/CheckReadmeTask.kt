@@ -63,7 +63,7 @@ abstract class CheckReadmeTask : DefaultTask(), VerificationTask {
             schema.configurations
                 .flatMap { (name, config) ->
                     config.properties
-                        .filter { (_, definition) -> !definition.isNested(schema.configurations) }
+                        .filter { (_, definition) -> !isNested(definition.type, schema.configurations) }
                         .map { (property, _) -> "${PREFIX[name]}$property" }
                 }
                 .filter { property -> !readme.contains("| $property ") }
@@ -151,6 +151,7 @@ abstract class CheckReadmeTask : DefaultTask(), VerificationTask {
             "GenerateTask" to "",
             "OperationIdTransform" to "operationIdTransform.",
             "TypeOverrides" to "typeOverrides.",
+            "CustomTypeMapping" to "typeOverrides.custom.",
             "GenerateClient" to "client.",
             "GenerateController" to "controller.",
             "GenerateModel" to "model.",

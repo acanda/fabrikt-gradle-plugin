@@ -56,6 +56,11 @@ data class PropertyDefinition(
      */
     val type: String,
     /**
+     * The type of the property in the Gradle extension, but not the Gradle task.
+     * By default, this is the same as [type].
+     */
+    val extensionType: String = type,
+    /**
      * Set to true if this property needs to be specified before the task can
      * be executed.
      */

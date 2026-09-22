@@ -19,6 +19,7 @@ import org.gradle.api.tasks.InputDirectory
 import org.gradle.api.tasks.InputFile
 import org.gradle.api.tasks.InputFiles
 import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.Optional
 import org.gradle.api.tasks.OutputDirectory
 import org.gradle.api.tasks.OutputFile
@@ -52,23 +53,26 @@ private fun buildConfigurations(
         spec.addNamed()
     }
     val optionTypes = config.properties.flatMap { (name, property) ->
-        spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX) {
-            if (!property.isNested(schema.configurations)) {
+        val isListProperty = isList(property.type)
+        spec.addProperty(buildProperty(name, property.type, schema, CLASS_NAME_SUFFIX) {
+            if (isListProperty) {
+                addAnnotation(AnnotationSpec.builder(Nested::class).useSiteTarget(GET).build())
+            } else if (!isNested(property.type, schema.configurations)) {
                 addAnnotations(property.dataflowAnnotations)
             }
             if (property.isOptional()) {
                 addAnnotation(AnnotationSpec.builder(Optional::class).useSiteTarget(GET).build())
             }
         })
-        if (property.isNested(schema.configurations)) {
+        if (isNested(property.type, schema.configurations)) {
             spec.addFunction(
                 FunSpec.builder(name)
-                    .addParameter("action", actionOf(property.getClassName(schema, CLASS_NAME_SUFFIX)))
+                    .addParameter("action", actionOf(getClassName(property.type, schema, CLASS_NAME_SUFFIX)))
                     .addCode("action.execute(%N)", name)
                     .build()
             )
         }
-        if (property.isOption(schema.options)) {
+        if (isOption(property.type, schema.options)) {
             listOf(property.type)
         } else {
             emptyList()

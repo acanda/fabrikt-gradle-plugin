@@ -11,6 +11,7 @@ import com.squareup.kotlinpoet.AnnotationSpec
 import com.squareup.kotlinpoet.AnnotationSpec.UseSiteTarget.GET
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.FileSpec
+import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.PropertySpec
@@ -21,6 +22,7 @@ import org.gradle.api.Action
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.RegularFileProperty
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.tasks.Nested
 import java.util.TreeMap
@@ -49,28 +51,28 @@ internal fun TypeName.nullable(nullable: Boolean = true) =
 
 internal fun buildProperty(
     name: String,
-    property: PropertyDefinition,
+    type: String,
     schema: ConfigurationSchema,
     nestedSuffix: String,
     init: PropertySpec.Builder.() -> Unit = {}
 ): PropertySpec =
-    if (property.isNested(schema.configurations)) {
-        buildNestedProperty(name, property, schema, nestedSuffix, init)
+    if (isNested(type, schema.configurations)) {
+        buildNestedProperty(name, type, schema, nestedSuffix, init)
     } else {
         PropertySpec
-            .builder(name, property.getPropertyType(schema, nestedSuffix), KModifier.ABSTRACT)
+            .builder(name, getPropertyType(type, schema, nestedSuffix), KModifier.ABSTRACT)
             .apply { init() }
             .build()
     }
 
 internal fun buildNestedProperty(
     name: String,
-    property: PropertyDefinition,
+    type: String,
     schema: ConfigurationSchema,
     nestedSuffix: String,
     init: PropertySpec.Builder.() -> Unit
 ): PropertySpec =
-    PropertySpec.builder(name, property.getClassName(schema, nestedSuffix), KModifier.ABSTRACT)
+    PropertySpec.builder(name, getClassName(type, schema, nestedSuffix), KModifier.ABSTRACT)
         .addAnnotation(nestedAnnotation)
         .apply { init() }
         .build()
@@ -78,24 +80,38 @@ internal fun buildNestedProperty(
 internal val nestedAnnotation =
     AnnotationSpec.builder(Nested::class).useSiteTarget(GET).build()
 
-internal fun PropertyDefinition.getPropertyType(schema: ConfigurationSchema, nestedSuffix: String): TypeName =
-    when (type) {
-        REGULAR_FILE_PROPERTY, CONFIGURABLE_FILE_COLLECTION, DIRECTORY_PROPERTY -> getClassName(schema, nestedSuffix)
-        else -> Property::class.asClassName().parameterizedBy(getClassName(schema, nestedSuffix))
+internal fun getPropertyType(
+    type: String,
+    schema: ConfigurationSchema,
+    nestedSuffix: String
+): TypeName =
+    when {
+        type == REGULAR_FILE_PROPERTY || type == CONFIGURABLE_FILE_COLLECTION || type == DIRECTORY_PROPERTY ->
+            getClassName(type, schema, nestedSuffix)
+
+        isList(type) -> ListProperty::class.asClassName().parameterizedBy(
+            ClassName(PACKAGE, getListType(type) + nestedSuffix)
+        )
+
+        else -> Property::class.asClassName().parameterizedBy(getClassName(type, schema, nestedSuffix))
     }
 
-internal fun PropertyDefinition.getClassName(schema: ConfigurationSchema, nestedSuffix: String): ClassName = when {
+internal fun getClassName(
+    type: String,
+    schema: ConfigurationSchema,
+    nestedSuffix: String
+): ClassName = when {
     type == BOOLEAN -> Boolean::class.asClassName()
     type == CHAR_SEQUENCE -> CharSequence::class.asClassName()
     type == REGULAR_FILE_PROPERTY -> RegularFileProperty::class.asClassName()
     type == CONFIGURABLE_FILE_COLLECTION -> ConfigurableFileCollection::class.asClassName()
     type == DIRECTORY_PROPERTY -> DirectoryProperty::class.asClassName()
-    isOption(schema.options) -> ClassName(PACKAGE, "I$type")
-    isNested(schema.configurations) -> ClassName(PACKAGE, "$type$nestedSuffix")
+    isOption(type, schema.options) -> ClassName(PACKAGE, "I$type")
+    isNested(type, schema.configurations) -> ClassName(PACKAGE, "$type$nestedSuffix")
     else -> throw IllegalArgumentException("Unknown property type: $type")
 }
 
-internal fun PropertyDefinition.isOption(options: OptionDefinitions): Boolean =
+internal fun isOption(type: String, options: OptionDefinitions): Boolean =
     options.containsKey(type)
 
 internal fun PropertyDefinition.buildOptionProperties(
@@ -110,8 +126,14 @@ internal fun buildOptionProperty(name: String, type: TypeName, init: PropertySpe
         .initializer("%T(X.%N)", type, name)
         .apply { init() }.build()
 
-internal fun PropertyDefinition.isNested(configs: ConfigurationDefinitions): Boolean =
+internal fun isNested(type: String, configs: ConfigurationDefinitions): Boolean =
     configs.containsKey(type)
+
+internal fun isList(type: String): Boolean =
+    type.matches(Regex("List<[^>]+>"))
+
+internal fun getListType(type: String): String =
+    type.substring(type.indexOf('<') + 1, type.lastIndexOf('>')).trim()
 
 internal fun actionOf(type: TypeName): TypeName =
     Action::class.asClassName().parameterizedBy(type)
@@ -181,5 +203,23 @@ internal fun buildBooleanProperty(name: String, initializer: String) =
         .addAnnotation(AnnotationSpec.builder(JvmField::class).build())
         .initializer(initializer)
         .build()
+
+/**
+ * Builds a function that creates a new instance of a list element type and executes the given action on it.
+ * ```kotlin
+ * public fun customTypeMapping(action: Action<CustomTypeMappingExtension>): CustomTypeMappingExtension =
+ *     objects.newInstance(CustomTypeMappingExtension::class.java).apply { action.execute(this) }
+ * ```
+ */
+internal fun buildListElementConstructorFunction(listElementType: String, suffix: String): FunSpec {
+    val listClass = ClassName(PACKAGE, listElementType + suffix)
+    return FunSpec.builder(listElementType.replaceFirstChar(Char::lowercase))
+        .addModifiers(KModifier.PUBLIC)
+        .addParameter("action", actionOf(listClass))
+        .returns(listClass)
+        .addCode("return objects.newInstance(%T::class.java).apply { action.execute(this) }", listClass)
+        .build()
+}
+
 
 private data class PolymorphicOptionInstance(val name: String, val isDeprecated: Boolean) {}

@@ -67,6 +67,14 @@ class FabriktArgumentsTest : StringSpec({
                 cliArgs.shouldContainOptionally(uuid.option, ARG_TYPE_OVERRIDES)
                 cliArgs.shouldContainOptionally(date.option, ARG_TYPE_OVERRIDES)
                 cliArgs.shouldContainOptionally(untyped.option, ARG_TYPE_OVERRIDES)
+                custom.get().forEach { override ->
+                    val value = override.convertCustomTypeMapping()
+                    if (value != null) {
+                        cliArgs shouldContainInOrder listOf(ARG_CUSTOM_TYPE_MAPPING, value)
+                    } else {
+                        cliArgs shouldNotContain ARG_CUSTOM_TYPE_MAPPING
+                    }
+                }
             }
             with(config.client) {
                 if (generate.get()) {
