@@ -8,13 +8,17 @@ import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
 import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
+import com.squareup.kotlinpoet.MemberName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
+import com.squareup.kotlinpoet.WildcardTypeName.Companion.producerOf
 import com.squareup.kotlinpoet.asClassName
 import org.gradle.api.file.ConfigurableFileCollection
+import org.gradle.api.model.ObjectFactory
+import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 import org.gradle.api.provider.Provider
 
@@ -32,6 +36,7 @@ internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
     }
     spec.addFunction(assignPropertyFunction())
     spec.addFunction(assignConfigurableFileCollectionFunction())
+    spec.addFunction(assignListPropertyFunction())
     return spec.build()
 }
 
@@ -72,6 +77,7 @@ private fun initializerTypeAlias(name: String): TypeAliasSpec =
 private fun buildInitializer(name: String, config: ConfigurationDefinition, schema: ConfigurationSchema): FunSpec =
     FunSpec.builder("initialize${name}Configuration")
         .addModifiers(KModifier.INTERNAL)
+        .addParameter("objects", ObjectFactory::class.java)
         .addParameter(
             ParameterSpec
                 .builder(
@@ -95,14 +101,59 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
     block.beginControlFlow("return { source, defaults ->")
 
     config.properties.forEach { (name, property) ->
-        when {
-            property.isNested(schema.configurations) ->
-                block.addStatement(
-                    "initialize%1NConfiguration().invoke(%2N, source.%2N, defaults.%2N)", property.type, name
+        if (isNested(property.type, schema.configurations)) {
+            block.addStatement(
+                "initialize%1NConfiguration(objects).invoke(%2N, source.%2N, defaults.%2N)", property.type, name
+            )
+        } else if (isList(property.type)) {
+            val listType = getListType(property.type)
+            fun mapping(source: String) = schema.configurations[listType]?.let { config ->
+                config.properties.map { (name, _) -> "$name.set($source.$name)" }.joinToString("\n|    ")
+            }
+            block.addStatement(
+                """
+                |val %1NExtensionTransformer: (%2NExtension) -> %2NConfiguration = { extension ->
+                |  objects.newInstance(%2NConfiguration::class.java).apply {
+                |    ${mapping("extension")}
+                |  }
+                |}
+                """.trimMargin(),
+                name,
+                listType
+            )
+            block.addStatement(
+                """
+                |val %1NDefaultsTransformer: (%2NDefaults) -> %2NConfiguration = { defaults -> 
+                |  objects.newInstance(%2NConfiguration::class.java).apply {
+                |    ${mapping("defaults")}
+                |  }
+                |}
+                """.trimMargin(),
+                name,
+                listType
+            )
+            block.addStatement(
+                "%1N.assign(source.%1N, defaults.%1N, %1NExtensionTransformer, %1NDefaultsTransformer)",
+                name
+            )
+        } else {
+            if (property.type == property.extensionType) {
+                if (property.includeInDefaults) {
+                    block.addStatement("%1N.assign(source.%1N, defaults.%1N)", name)
+                } else {
+                    block.addStatement("%1N.set(source.%1N)", name)
+                }
+            } else {
+                val converterFunction = MemberName(
+                    PACKAGE + ".converter",
+                    "as${property.type.replace("<", "").replace(">", "")}"
                 )
-
-            !property.includeInDefaults -> block.addStatement("%1N.set(source.%1N)", name)
-            else -> block.addStatement("%1N.assign(source.%1N, defaults.%1N)", name)
+                if (property.includeInDefaults) {
+                    block.addStatement("%1N.assign(source.%1N.%2M(), defaults.%1N.%2M())", name, converterFunction)
+                } else {
+                    block.addStatement("%1N.set(source.%1N.%2M())", name, converterFunction)
+                }
+            }
         }
     }
     block.addStatement("init(this)")
@@ -145,3 +196,43 @@ private fun assignConfigurableFileCollectionFunction(): FunSpec =
         .addStatement("if (!value.isEmpty) { setFrom(value) } else { setFrom(defaultValue) }")
         .build()
 
+private fun assignListPropertyFunction(): FunSpec {
+    val configTypeVariable = "CONFIG"
+    val extensionTypeVariable = "EXTENSION"
+    val defaultsTypeVariable = "DEFAULTS"
+    val extensionTypeArguments =
+        List::class.asClassName().parameterizedBy(TypeVariableName(extensionTypeVariable))
+    val defaultsTypeArguments =
+        List::class.asClassName().parameterizedBy(TypeVariableName(defaultsTypeVariable))
+    return FunSpec.builder("assign")
+        .addModifiers(KModifier.PRIVATE)
+        .addTypeVariable(TypeVariableName(configTypeVariable, Any::class))
+        .addTypeVariable(TypeVariableName(extensionTypeVariable, Any::class))
+        .addTypeVariable(TypeVariableName(defaultsTypeVariable, Any::class))
+        .receiver(ListProperty::class.asClassName().parameterizedBy(TypeVariableName(configTypeVariable)))
+        .addParameter("value", Provider::class.asClassName().parameterizedBy(extensionTypeArguments))
+        .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(defaultsTypeArguments))
+        .addParameter(
+            "extensionTransformer",
+            LambdaTypeName.get(
+                parameters = listOf(ParameterSpec("it", TypeVariableName(extensionTypeVariable))),
+                returnType = TypeVariableName(configTypeVariable)
+            )
+        )
+        .addParameter(
+            "defaultsTransformer",
+            LambdaTypeName.get(
+                parameters = listOf(ParameterSpec("it", TypeVariableName(defaultsTypeVariable))),
+                returnType = TypeVariableName(configTypeVariable)
+            )
+        )
+        .addStatement(
+            """
+            val extension = value.orElse(emptyList<EXTENSION>()).map { e -> e.map(extensionTransformer) }
+            val defaults = defaultValue.orElse(emptyList<DEFAULTS>()).map { e -> e.map(defaultsTransformer) }
+            set(extension)
+            addAll(defaults)
+            """.trimIndent()
+        )
+        .build()
+}

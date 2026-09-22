@@ -5,6 +5,7 @@ import io.kotest.property.arbitrary.Codepoint
 import io.kotest.property.arbitrary.alphanumeric
 import io.kotest.property.arbitrary.arbitrary
 import io.kotest.property.arbitrary.boolean
+import io.kotest.property.arbitrary.list
 import io.kotest.property.arbitrary.map
 import io.kotest.property.arbitrary.of
 import io.kotest.property.arbitrary.orNull
@@ -37,6 +38,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         typeOverrides.uuid.set(Arb.of(IUuidOverrideOption.options).orNull(0.2).bind())
         typeOverrides.date.set(Arb.of(IDateOverrideOption.options).orNull(0.2).bind())
         typeOverrides.untyped.set(Arb.of(IUntypedOverrideOption.options).orNull(0.2).bind())
+        typeOverrides.custom.set(Arb.list(customTypeOverrideGen, 0..3).orNull(0.2).bind())
         validationLibrary.set(Arb.of(IValidationLibraryOption.options).orNull(0.2).bind())
         client.generate.set(Arb.boolean().orNull(0.2).bind())
         client.target.set(Arb.of(IClientTargetOption.options).orNull(0.2).bind())
@@ -77,10 +79,20 @@ internal val generateTaskConfigGen: Arb<GenerateTaskConfiguration> = generateTas
     val project = ProjectBuilder.builder().build()
     val taskConfig = project.objects.newInstance(GenerateTaskConfiguration::class.java, "api")
     val defaults = project.objects.newInstance(GenerateTaskDefaults::class.java)
-    initializeGenerateTaskConfiguration().invoke(taskConfig, extConfig, defaults)
+    initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, extConfig, defaults)
     taskConfig
 }
 
 private val pathGen: Arb<File> = arbitrary {
     Paths.get(Arb.pattern("[A-Za-z0-9]{1,5}(/[A-Za-z0-9]{1,5}){0,3}").bind()).toFile()
+}
+
+private val customTypeOverrideGen: Arb<CustomTypeMappingExtension> = arbitrary {
+    val project = ProjectBuilder.builder().build()
+    project.objects.newInstance(CustomTypeMappingExtension::class.java).apply {
+        openApiType.set(Arb.pattern("[a-z]{1,5}").bind())
+        format.set(Arb.pattern("[a-z]{1,5}").bind())
+        kotlinType.set(Arb.pattern("[A-Za-z]{1,5}").bind())
+        kotlinxSerializer.set(Arb.pattern("[A-Za-z]{1,5}").orNull(0.2).bind())
+    }
 }

@@ -3,8 +3,6 @@ package ch.acanda.gradle.fabrikt.build.builder
 import ch.acanda.gradle.fabrikt.build.schema.ConfigurationDefinition
 import ch.acanda.gradle.fabrikt.build.schema.ConfigurationSchema
 import ch.acanda.gradle.fabrikt.build.schema.PropertyDefinition
-import com.squareup.kotlinpoet.AnnotationSpec
-import com.squareup.kotlinpoet.AnnotationSpec.UseSiteTarget.GET
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
@@ -13,7 +11,7 @@ import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.PropertySpec
 import com.squareup.kotlinpoet.TypeSpec
 import org.gradle.api.file.ProjectLayout
-import org.gradle.api.tasks.Internal
+import org.gradle.api.model.ObjectFactory
 import javax.inject.Inject
 import kotlin.reflect.KClass
 
@@ -39,6 +37,7 @@ internal fun buildDefaults(schema: ConfigurationSchema): FileSpec {
  * ```kotlin
  * public abstract class GenerateTaskDefaults @Inject constructor(
  *   projectLayout: ProjectLayout,
+ *   objects: ObjectFactory
  * ) {
  *   // properties
  *   public abstract val apiFragments: ConfigurableFileCollection
@@ -69,14 +68,23 @@ internal fun buildDefaults(schema: ConfigurationSchema): FileSpec {
  *     action.execute(typeOverrides)
  *   }
  *
+ *   // functions to add elements to list properties
+ *   public fun customTypeMapping(action: Action<CustomTypeMappingDefaults>): CustomTypeMappingDefaults =
+ *       objects.newInstance(CustomTypeMappingDefaults::class.java).apply { action.execute(this) }
  * }
  * ```
  */
 private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, schema: ConfigurationSchema): TypeSpec {
     val spec = TypeSpec.classBuilder(name).addModifiers(KModifier.ABSTRACT)
-    if (config.injects.isNotEmpty()) {
+    val hasListType = config.properties.any { (_, property) -> isList(property.extensionType) }
+    if (config.injects.isNotEmpty() || hasListType) {
+        val listInjects = if (hasListType) {
+            setOf(Pair("objects", ObjectFactory::class))
+        } else {
+            emptySet()
+        }
         spec.primaryConstructor(
-            config.injects
+            (config.injects + listInjects)
                 .fold(FunSpec.constructorBuilder()) { builder, (name, type) ->
                     builder.addParameter(name, type)
                 }
@@ -84,19 +92,31 @@ private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, sche
                 .build()
         )
     }
+    if (hasListType) {
+        spec.addProperty(
+            PropertySpec.builder("objects", ObjectFactory::class, KModifier.PRIVATE).initializer("objects").build()
+        )
+    }
     val optionTypes = config.properties
         .filter { (_, property) -> property.includeInDefaults == true }
         .flatMap { (name, property) ->
-            spec.addProperty(buildProperty(name, property, schema, CLASS_NAME_SUFFIX))
-            if (property.isNested(schema.configurations)) {
+            spec.addProperty(buildProperty(name, property.extensionType, schema, CLASS_NAME_SUFFIX))
+            if (isNested(property.extensionType, schema.configurations)) {
                 spec.addFunction(
                     FunSpec.builder(name)
-                        .addParameter("action", actionOf(property.getClassName(schema, CLASS_NAME_SUFFIX)))
+                        .addParameter(
+                            "action",
+                            actionOf(getClassName(property.extensionType, schema, CLASS_NAME_SUFFIX))
+                        )
                         .addCode("action.execute(%N)", name)
                         .build()
                 )
             }
-            if (property.isOption(schema.options)) {
+            if (isList(property.extensionType)) {
+                val listType = getListType(property.extensionType)
+                spec.addFunction(buildListElementConstructorFunction(listType, CLASS_NAME_SUFFIX))
+            }
+            if (isOption(property.extensionType, schema.options)) {
                 listOf(property.type)
             } else {
                 emptyList()

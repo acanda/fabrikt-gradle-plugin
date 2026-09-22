@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt.generator
 
+import ch.acanda.gradle.fabrikt.CustomTypeMappingConfiguration
 import ch.acanda.gradle.fabrikt.OperationIdTransformConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.equals.shouldEqual
@@ -41,6 +42,57 @@ class ConvertersTest : WordSpec({
             val result = config.convertOperationIdTransform()
             result shouldBe null
         }
+    }
+
+    "convert CustomTypeMapping" should {
+        "convert custom type mapping when all properties are present" {
+            val config = objects.newInstance(CustomTypeMappingConfiguration::class.java).apply {
+                openApiType.set("string")
+                format.set("duration")
+                kotlinType.set("java.time.Duration")
+                kotlinxSerializer.set("com.example.DurationAsIsoStringSerializer")
+            }
+            val result = config.convertCustomTypeMapping()
+            result shouldEqual "string:duration=java.time.Duration;kotlinx=com.example.DurationAsIsoStringSerializer"
+        }
+
+        "convert custom type mapping when optional kotlinxSerializer is not present" {
+            val config = objects.newInstance(CustomTypeMappingConfiguration::class.java).apply {
+                openApiType.set("string")
+                format.set("duration")
+                kotlinType.set("java.time.Duration")
+            }
+            val result = config.convertCustomTypeMapping()
+            result shouldEqual "string:duration=java.time.Duration"
+        }
+
+        "return null when mandatory property openApiType is not present" {
+            val config = objects.newInstance(CustomTypeMappingConfiguration::class.java).apply {
+                format.set("duration")
+                kotlinType.set("java.time.Duration")
+            }
+            val result = config.convertCustomTypeMapping()
+            result shouldBe null
+        }
+
+        "return null when mandatory property format is not present" {
+            val config = objects.newInstance(CustomTypeMappingConfiguration::class.java).apply {
+                openApiType.set("string")
+                kotlinType.set("java.time.Duration")
+            }
+            val result = config.convertCustomTypeMapping()
+            result shouldBe null
+        }
+
+        "return null when mandatory kotlinType is not present" {
+            val config = objects.newInstance(CustomTypeMappingConfiguration::class.java).apply {
+                openApiType.set("string")
+                format.set("duration")
+            }
+            val result = config.convertCustomTypeMapping()
+            result shouldBe null
+        }
+
     }
 
 })

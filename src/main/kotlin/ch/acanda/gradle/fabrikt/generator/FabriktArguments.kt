@@ -18,6 +18,7 @@ internal const val ARG_SRC_PATH = "--src-path"
 internal const val ARG_RESOURCES_PATH = "--resources-path"
 internal const val ARG_OPERATION_ID_TRANSFORM = "--operation-id-transform"
 internal const val ARG_TYPE_OVERRIDES = "--type-overrides"
+internal const val ARG_CUSTOM_TYPE_MAPPING = "--custom-type-mapping"
 internal const val ARG_VALIDATION_LIB = "--validation-library"
 internal const val ARG_TARGETS = "--targets"
 internal const val ARG_CLIENT_OPTS = "--http-client-opts"
@@ -110,6 +111,12 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         untyped.withOptionName { override ->
             args.add(ARG_TYPE_OVERRIDES)
             args.add(override)
+        }
+        custom.get().forEach { override ->
+            override.convertCustomTypeMapping()?.let { mapping ->
+                args.add(ARG_CUSTOM_TYPE_MAPPING)
+                args.add(mapping)
+            }
         }
     }
 

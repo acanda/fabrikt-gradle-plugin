@@ -50,10 +50,21 @@ class GradleTest : StringSpec({
             |      replacement = ""
             |    }
             |    typeOverrides {
-            |      binary = InputStream
-            |      byte = String
             |      datetime = Instant
+            |      byte = String
+            |      binary = String
+            |      uri = String
+            |      uuid = String
+            |      date = String
             |      untyped = JsonElement
+            |      custom = listOf(
+            |        customTypeMapping {
+            |          openApiType = "string"
+            |          format = "duration"
+            |          kotlinType = "java.time.Duration"
+            |          kotlinxSerializer = "com.example.DurationAsIsoStringSerializer"
+            |        }
+            |      )
             |    }
             |    client {
             |      generate = enabled
@@ -150,6 +161,14 @@ class GradleTest : StringSpec({
             |      uuid = String
             |      date = String
             |      untyped = Any
+            |      custom = listOf(
+            |        customTypeMapping {
+            |          openApiType = "string"
+            |          format = "duration"
+            |          kotlinType = "java.time.Duration"
+            |          kotlinxSerializer = "com.example.DurationAsIsoStringSerializer"
+            |        }
+            |      )
             |    }
             |    client {
             |      generate = enabled
@@ -357,10 +376,21 @@ class GradleTest : StringSpec({
             |      replacement = ""
             |    }
             |    typeOverrides {
-            |      binary = owner.InputStream
-            |      owner.'byte' = owner.String
             |      datetime = owner.Instant
+            |      owner.'byte' = owner.String
+            |      binary = owner.InputStream
+            |      uri = owner.String
+            |      uuid = owner.String
+            |      date = owner.String
             |      untyped = Any
+            |      custom = [
+            |        customTypeMapping {
+            |          openApiType = "string"
+            |          format = "duration"
+            |          kotlinType = "java.time.Duration"
+            |          kotlinxSerializer = "com.example.DurationAsIsoStringSerializer"
+            |        }
+            |      ]
             |    }
             |    client {
             |      generate = enabled
@@ -575,7 +605,7 @@ class GradleTest : StringSpec({
             GradleRunner.create()
                 .withProjectDir(projectDir)
                 .forwardOutput()
-                .withArguments(*(arrayOf("--console=plain", "-i", "--configuration-cache") + arguments))
+                .withArguments(*(arrayOf("--console=plain", "-i", "--configuration-cache", "--stacktrace") + arguments))
                 .withPluginClasspath()
                 .build()
 
