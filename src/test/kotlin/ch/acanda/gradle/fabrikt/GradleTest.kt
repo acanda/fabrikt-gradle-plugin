@@ -60,6 +60,7 @@ class GradleTest : StringSpec({
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
             |      okHttpNonNullResponsePayloads = enabled
+            |      dynamicBaseUrl = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -151,6 +152,7 @@ class GradleTest : StringSpec({
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
             |      okHttpNonNullResponsePayloads = enabled
+            |      dynamicBaseUrl = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -357,6 +359,7 @@ class GradleTest : StringSpec({
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
             |      okHttpNonNullResponsePayloads = enabled
+            |      dynamicBaseUrl = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
