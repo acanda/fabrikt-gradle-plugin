@@ -86,6 +86,11 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.OKHTTP_NON_NULL_RESPONSE_PAYLOADS
                     )
+                    cliArgs.shouldContainOptionally(
+                        dynamicBaseUrl,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.DYNAMIC_BASE_URL
+                    )
                     cliArgs shouldContainInOrder listOf(
                         ARG_OPENFEIGN_CLIENT_NAME, config.client.openFeignClientName.get().toString()
                     )
