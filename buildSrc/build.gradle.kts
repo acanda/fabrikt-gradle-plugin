@@ -38,7 +38,7 @@ detekt {
 testing {
     suites {
         @Suppress("unused")
-        val test by getting(JvmTestSuite::class) {
+        getByName<JvmTestSuite>("test") {
             useJUnitJupiter(libs.versions.junit)
             dependencies {
                 implementation(libs.kotest.runner.junit5)
