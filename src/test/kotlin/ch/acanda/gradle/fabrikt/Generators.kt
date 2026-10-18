@@ -28,6 +28,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         resourcesPath.set(Arb.pattern("[a-z]{1,5}(/[a-z]{1,5}){0,3}").orNull(0.2).bind())
         quarkusReflectionConfig.set(Arb.boolean().orNull(0.2).bind())
         addFileDisclaimer.set(Arb.boolean().orNull(0.2).bind())
+        addGeneratedAnnotation.set(Arb.boolean().orNull(0.2).bind())
         val operationIdTransformRegex = Arb.string(1..5, Codepoint.alphanumeric()).orNull(0.2).bind()
         operationIdTransform.regex.set(operationIdTransformRegex)
         operationIdTransform.replacement.set(if (operationIdTransformRegex != null) Arb.string().bind() else null)

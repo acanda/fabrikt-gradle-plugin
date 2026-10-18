@@ -48,6 +48,11 @@ class FabriktArgumentsTest : StringSpec({
                 ARG_OUTPUT_OPTS,
                 OutputOptionType.ADD_FILE_DISCLAIMER
             )
+            cliArgs.shouldContainOptionally(
+                config.addGeneratedAnnotation,
+                ARG_OUTPUT_OPTS,
+                OutputOptionType.ADD_GENERATED_ANNOTATION
+            )
             with(config.operationIdTransform) {
                 val value = convertOperationIdTransform()
                 if (value != null) {

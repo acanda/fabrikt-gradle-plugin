@@ -72,6 +72,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_OUTPUT_OPTS)
             args.add(OutputOptionType.ADD_FILE_DISCLAIMER.name)
         }
+        if (addGeneratedAnnotation.get()) {
+            args.add(ARG_OUTPUT_OPTS)
+            args.add(OutputOptionType.ADD_GENERATED_ANNOTATION.name)
+        }
         operationIdTransform.validate(problems).convertOperationIdTransform()?.let {
             args.add(ARG_OPERATION_ID_TRANSFORM)
             args.add(it)
