@@ -35,6 +35,9 @@ configurations:
       addFileDisclaimer:
         type: Boolean
         default: false
+      addGeneratedAnnotation:
+        type: Boolean
+        default: false
       operationIdTransform:
         type: OperationIdTransform
       typeOverrides:
