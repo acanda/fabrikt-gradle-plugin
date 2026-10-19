@@ -52,16 +52,16 @@ abstract class FabriktGenerateTask @Inject constructor(
         val configs = configurations.get()
         Progress(progressLoggerFactory, configs.size).use { progress ->
             configs.forEach { config ->
-                val apiFile = config.apiFile.get()
+                val specFile = config.apiFile.orElse(config.jsonSchema.file).get()
                 val skip = config.skip.get()
-                progress.log(apiFile, skip)
+                progress.log(specFile, skip)
                 try {
                     generate(config)
                 } catch (e: GeneratorException) {
-                    progress.fail(apiFile)
-                    handleGeneratorException(e, apiFile, config.name)
+                    progress.fail(specFile)
+                    handleGeneratorException(e, specFile, config.name)
                 } catch (e: ValidationException) {
-                    e.ifContainsError { progress.fail(apiFile) }
+                    e.ifContainsError { progress.fail(specFile) }
                     handleValidationException(e, config.name)
                 }
             }
@@ -71,12 +71,12 @@ abstract class FabriktGenerateTask @Inject constructor(
     @Suppress("UnstableApiUsage")
     private fun handleGeneratorException(
         e: GeneratorException,
-        apiFile: RegularFile,
+        specFile: RegularFile,
         configName: String
     ) {
         val problemReporter = services.get(Problems::class.java).reporter
         val id = ProblemId.create("generator", "Fabrikt failed to generate code.", PROBLEM_GROUP)
-        problemReporter.throwing(e, id, generatorProblem(apiFile, configName))
+        problemReporter.throwing(e, id, generatorProblem(specFile, configName))
     }
 
     @Suppress("UnstableApiUsage")
@@ -92,11 +92,11 @@ abstract class FabriktGenerateTask @Inject constructor(
     }
 
     @Suppress("UnstableApiUsage")
-    private fun generatorProblem(apiFile: RegularFile, name: String) =
+    private fun generatorProblem(specFile: RegularFile, name: String) =
         Action { problem: ProblemSpec ->
             problem
                 .contextualLabel("Fabrikt failed to generate code for configuration $name.")
-                .details("Fabrikt failed to generate code for the OpenAPI specification $apiFile.")
+                .details("Fabrikt failed to generate code for the specification $specFile.")
         }
 
     @Suppress("UnstableApiUsage")
@@ -124,15 +124,15 @@ private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoClo
         progressLogger.start("Generating Kotlin code with Fabrikt", "[0/$total]")
     }
 
-    fun log(apiFile: RegularFile, skip: Boolean) {
+    fun log(specFile: RegularFile, skip: Boolean) {
         count++
         val skipMsg = if (skip) " skip" else ""
-        progressLogger.progress("[$count/$total]$skipMsg generating code for $apiFile...")
+        progressLogger.progress("[$count/$total]$skipMsg generating code for $specFile...")
     }
 
-    fun fail(apiFile: RegularFile) {
+    fun fail(specFile: RegularFile) {
         failed = true
-        progressLogger.progress("[$count/$total] generating code for $apiFile...", true)
+        progressLogger.progress("[$count/$total] generating code for $specFile...", true)
     }
 
     override fun close() {

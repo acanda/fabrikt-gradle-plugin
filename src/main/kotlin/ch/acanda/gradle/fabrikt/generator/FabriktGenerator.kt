@@ -20,7 +20,7 @@ internal fun generate(config: GenerateTaskConfiguration) {
                 processGeneratedSources(config)
             }
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-            val spec = config.apiFile.get().asFile.toPath()
+            val spec = config.apiFile.orElse(config.jsonSchema.file).get().asFile.toPath()
             throw GeneratorException(spec, e)
         }
         if (arguments.hasValidationProblems()) {

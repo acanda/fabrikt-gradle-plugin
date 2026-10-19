@@ -31,7 +31,12 @@ class FabriktArgumentsTest : StringSpec({
             arguments.problems.shouldBeEmpty()
             val cliArgs = arguments.args
             cliArgs shouldNotContain "null"
-            cliArgs shouldContainInOrder listOf(ARG_API_FILE, config.apiFile.asFile.get().absolutePath)
+            cliArgs.shouldContainOptionally(config.apiFile.asFile.map { it.absolutePath }, ARG_API_FILE)
+            config.apiFragments.forEach { fragment ->
+                cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
+            }
+            cliArgs.shouldContainOptionally(config.jsonSchema.convertJsonSchemaFile(), ARG_JSON_SCHEMA_FILE)
+            cliArgs.shouldContainOptionally(config.jsonSchema.rootName, ARG_JSON_SCHEMA_ROOT_NAME)
             cliArgs.shouldContainOptionally(config.externalReferenceResolution.option, ARG_EXT_REF_RESOLUTION)
             cliArgs shouldContainInOrder listOf(ARG_BASE_PACKAGE, config.basePackage.get().toString())
             cliArgs shouldContainInOrder listOf(ARG_OUT_DIR, config.outputDirectory.asFile.get().absolutePath)
@@ -60,9 +65,6 @@ class FabriktArgumentsTest : StringSpec({
                 } else {
                     cliArgs shouldNotContain ARG_OPERATION_ID_TRANSFORM
                 }
-            }
-            config.apiFragments.forEach { fragment ->
-                cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
             }
             with(config.typeOverrides) {
                 cliArgs.shouldContainOptionally(datetime.option, ARG_TYPE_OVERRIDES)
@@ -240,7 +242,7 @@ class FabriktArgumentsTest : StringSpec({
 
     companion object {
 
-        @JvmName(name = "shouldContainBooleanOptionOptionally")
+        @JvmName(name = "shouldContainBooleanProviderOptionOptionally")
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<Boolean>,
             argName: String,
@@ -268,7 +270,7 @@ class FabriktArgumentsTest : StringSpec({
         }
 
         @Suppress("UnusedPrivateMember")
-        @JvmName(name = "shouldContainStringOptionally")
+        @JvmName(name = "shouldContainStringProviderOptionally")
         private fun Array<String>.shouldContainOptionally(
             valueProvider: Provider<out CharSequence>,
             argName: String
@@ -276,6 +278,15 @@ class FabriktArgumentsTest : StringSpec({
             val argValue = valueProvider.orNull
             if (argValue != null) {
                 val containArgument = containsArgument(argName, argValue.toString())
+                this should containArgument
+            }
+        }
+
+        @Suppress("UnusedPrivateMember")
+        @JvmName(name = "shouldContainStringOptionally")
+        private fun Array<String>.shouldContainOptionally(value: CharSequence?, argName: String) {
+            if (value != null) {
+                val containArgument = containsArgument(argName, value.toString())
                 this should containArgument
             }
         }
