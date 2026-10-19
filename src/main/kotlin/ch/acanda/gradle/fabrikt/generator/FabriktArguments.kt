@@ -11,6 +11,8 @@ import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
 internal const val ARG_API_FRAGMENT = "--api-fragment"
+internal const val ARG_JSON_SCHEMA_FILE = "--json-schema-file"
+internal const val ARG_JSON_SCHEMA_ROOT_NAME = "--json-schema-root-name"
 internal const val ARG_EXT_REF_RESOLUTION = "--external-ref-resolution"
 internal const val ARG_BASE_PACKAGE = "--base-package"
 internal const val ARG_OUT_DIR = "--output-directory"
@@ -40,14 +42,18 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
 
         @Suppress("ArgumentListWrapping")
         val args = mutableListOf<String>(
-            ARG_API_FILE, apiFile.asFile.get().absolutePath,
             ARG_BASE_PACKAGE, basePackage.get().toString(),
             ARG_OUT_DIR, outputDirectory.asFile.get().absolutePath,
         )
+        apiFile.asFile.orNull?.let { file ->
+            args.add(ARG_API_FILE)
+            args.add(file.absolutePath)
+        }
         apiFragments.forEach { fragment ->
             args.add(ARG_API_FRAGMENT)
             args.add(fragment.absolutePath)
         }
+        addJsonSchemaArgs(args)
         externalReferenceResolution.withOptionName { resolution ->
             args.add(ARG_EXT_REF_RESOLUTION)
             args.add(resolution)
@@ -85,6 +91,17 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         addControllerArgs(args)
         addModelArgs(args)
         return Arguments(args.toTypedArray(), problems)
+    }
+
+    private fun GenerateTaskConfiguration.addJsonSchemaArgs(args: MutableList<String>) = with(jsonSchema) {
+        convertJsonSchemaFile()?.let { file ->
+            args.add(ARG_JSON_SCHEMA_FILE)
+            args.add(file)
+        }
+        rootName.orNull?.let { name ->
+            args.add(ARG_JSON_SCHEMA_ROOT_NAME)
+            args.add(name.toString())
+        }
     }
 
     private fun GenerateTaskConfiguration.addTypeOverridesArgs(args: MutableList<String>) = with(typeOverrides) {

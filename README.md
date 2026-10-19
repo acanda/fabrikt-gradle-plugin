@@ -83,7 +83,13 @@ plugins {
 fabrikt {
     generate("dog") {
         // mandatory properties
+        // either apiFile or jsonSchema must be specified
         apiFile = file("src/main/openapi/dog.yaml")
+        jsonSchema {
+            file = file("src/main/json-schema/dog.yaml")
+            schemaPointer = "/spec/schemaObject"
+            rootName = "Dog"
+        }
         basePackage = "com.example.dog.api"
         // optional properties with their default values
         apiFragments = files()
@@ -163,6 +169,9 @@ fabrikt {
 |----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
 | apiFile                                      | The path to an Open API v3 specification, interpreted relative to the project directory.                                                                                                                                                                                                                                           |                                   |
 | apiFragments                                 | A set of paths to Open API v3 specification fragments, interpreted relative to the project directory.                                                                                                                                                                                                                              | `files()`                         |
+| jsonSchema.file                              | The path of a JSON Schema document (draft-04 through 2020-12), interpreted relative to the project directory.                                                                                                                                                                                                                      |                                   |
+| jsonSchema.schemaPointer                     | A JSON pointer selecting the schema nested inside a larger resource. If not set, the file must be a JSON schema document.                                                                                                                                                                                                          | `null`                            |
+| jsonSchema.rootName                          | The name of the generated root schema. If not set, it defaults to the schema's `title`, then the resource's `/metadata/name`, then `Schema`.                                                                                                                                                                                       | `null`                            |
 | externalReferenceResolution                  | Specify to which degree referenced schemas from external files are included in model generation. `targeted` generates models only for directly referenced schemas in external API files. `aggressive` triggers generation of every external schema in a file containing a referenced schema.<br/>Values: `targeted`, `aggressive`. | `targeted`                        |
 | basePackage                                  | The base package under which all code is built.                                                                                                                                                                                                                                                                                    |                                   |
 | outputDirectory                              | The directory to which the generated classes are written, interpreted relative to the project directory.                                                                                                                                                                                                                           | `build/generated/sources/fabrikt` |

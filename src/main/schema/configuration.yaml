@@ -6,9 +6,11 @@ configurations:
       apiFile:
         type: RegularFileProperty
         includeInDefaults: false
-        mandatory: true
       apiFragments:
         type: ConfigurableFileCollection
+      jsonSchema:
+        type: JsonSchema
+        includeInDefaults: false
       externalReferenceResolution:
         type: ExternalReferencesResolutionOption
         default: targeted
@@ -51,6 +53,15 @@ configurations:
       skip:
         type: Boolean
         default: false
+
+  JsonSchema:
+    properties:
+      file:
+        type: RegularFileProperty
+      schemaPointer:
+        type: CharSequence
+      rootName:
+        type: CharSequence
 
   OperationIdTransform:
     properties:

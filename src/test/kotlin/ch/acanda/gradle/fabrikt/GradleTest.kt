@@ -238,6 +238,39 @@ class GradleTest : StringSpec({
         outputs shouldContain "$resourcePath/reflection-config.json"
     }
 
+    "`gradle fabriktGenerate` with json schema should run fabrikt" {
+        val projectDir = projectDir("minimal-configuration")
+        val basePackage = "ch.acanda"
+        val jsonSchema = createJsonSchema(projectDir)
+        projectDir.resolve("build.gradle.kts").writeText(
+            """
+            |plugins {
+            |    id("ch.acanda.gradle.fabrikt")
+            |}
+            |
+            |fabrikt {
+            |  generate("dog") {
+            |    jsonSchema {
+            |      file = file("$jsonSchema")
+            |      schemaPointer = "/spec/schemaObject"
+            |      rootName = "Dog"
+            |    }
+            |    basePackage = "$basePackage"
+            |  }
+            |}
+            """.trimMargin()
+        )
+        val result = runGradle(projectDir)
+
+        result.task(":fabriktGenerate")
+            .shouldNotBeNull()
+            .outcome shouldBe TaskOutcome.SUCCESS
+
+        val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+        val files = projectDir.resolve(modelsPath).listFilesRelative()
+        files shouldContain "Dog.kt"
+    }
+
     "`gradle fabriktGenerate` with minimal configuration should run fabrikt" {
         val projectDir = projectDir("minimal-configuration")
         val basePackage = "ch.acanda"
@@ -599,6 +632,39 @@ class GradleTest : StringSpec({
             )
 
             return listOf(securityPath)
+        }
+
+        private fun createJsonSchema(projectDir: File): String {
+            val specPath = "src/main/json-schema/Dog.yaml"
+            val specFile = projectDir.resolve(specPath)
+            specFile.parentFile.mkdirs()
+            specFile.writeText(
+                $$"""
+                |apiVersion: nakadi.zalan.do/v1
+                |kind: EventType
+                |metadata:
+                |  name: pop.offers-config-test
+                |spec:
+                |  owningApplication: pop-offers
+                |  category: data
+                |  schemaObject:
+                |    $schema: 'http://json-schema.org/draft-04/schema#'
+                |    definitions:
+                |      Money:
+                |        type: object
+                |        properties:
+                |          amount:
+                |            type: number
+                |          currency:
+                |            type: string
+                |        required: [amount, currency]
+                |    properties:
+                |      total:
+                |        $ref: '#/definitions/Money'
+                |    required: [total]
+                """.trimMargin()
+            )
+            return specPath
         }
 
         private fun runGradle(

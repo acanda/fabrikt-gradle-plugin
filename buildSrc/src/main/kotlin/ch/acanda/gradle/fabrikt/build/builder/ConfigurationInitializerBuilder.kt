@@ -53,7 +53,7 @@ private fun initializerTypeAlias(name: String): TypeAliasSpec =
             receiver = ClassName(PACKAGE, "${name}Configuration"),
             parameters = listOf(
                 ParameterSpec("source", ClassName(PACKAGE, "${name}Extension")),
-                ParameterSpec("defaults", ClassName(PACKAGE, "${name}Defaults"))
+                ParameterSpec("defaults", ClassName(PACKAGE, "${name}Defaults").nullable())
             ),
             returnType = UNIT
         )
@@ -102,9 +102,15 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
 
     config.properties.forEach { (name, property) ->
         if (isNested(property.type, schema.configurations)) {
-            block.addStatement(
-                "initialize%1NConfiguration(objects).invoke(%2N, source.%2N, defaults.%2N)", property.type, name
-            )
+            if (property.includeInDefaults) {
+                block.addStatement(
+                    "initialize%1NConfiguration(objects).invoke(%2N, source.%2N, defaults?.%2N)", property.type, name
+                )
+            } else {
+                block.addStatement(
+                    "initialize%1NConfiguration(objects).invoke(%2N, source.%2N, null)", property.type, name
+                )
+            }
         } else if (isList(property.type)) {
             val listType = getListType(property.type)
             fun mapping(source: String) = schema.configurations[listType]?.let { config ->
@@ -133,13 +139,13 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
                 listType
             )
             block.addStatement(
-                "%1N.assign(source.%1N, defaults.%1N, %1NExtensionTransformer, %1NDefaultsTransformer)",
+                "%1N.assign(source.%1N, defaults?.%1N, %1NExtensionTransformer, %1NDefaultsTransformer)",
                 name
             )
         } else {
             if (property.type == property.extensionType) {
                 if (property.includeInDefaults) {
-                    block.addStatement("%1N.assign(source.%1N, defaults.%1N)", name)
+                    block.addStatement("%1N.assign(source.%1N, defaults?.%1N)", name)
                 } else {
                     block.addStatement("%1N.set(source.%1N)", name)
                 }
@@ -149,7 +155,7 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
                     "as${property.type.replace("<", "").replace(">", "")}"
                 )
                 if (property.includeInDefaults) {
-                    block.addStatement("%1N.assign(source.%1N.%2M(), defaults.%1N.%2M())", name, converterFunction)
+                    block.addStatement("%1N.assign(source.%1N.%2M(), defaults?.%1N.%2M())", name, converterFunction)
                 } else {
                     block.addStatement("%1N.set(source.%1N.%2M())", name, converterFunction)
                 }
@@ -175,8 +181,11 @@ private fun assignPropertyFunction(): FunSpec =
         .addTypeVariable(TypeVariableName("T", Any::class))
         .receiver(Property::class.asClassName().parameterizedBy(TypeVariableName("T")))
         .addParameter("value", Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")))
-        .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")))
-        .addStatement("if (value.isPresent) { set(value.get()) } else { set(defaultValue.orNull) }")
+        .addParameter(
+            "defaultValue",
+            Provider::class.asClassName().parameterizedBy(TypeVariableName("out T")).nullable()
+        )
+        .addStatement("if (value.isPresent) { set(value.get()) } else { set(defaultValue?.orNull) }")
         .build()
 
 /**
@@ -192,7 +201,7 @@ private fun assignConfigurableFileCollectionFunction(): FunSpec =
         .addModifiers(KModifier.PRIVATE)
         .receiver(ConfigurableFileCollection::class)
         .addParameter("value", ConfigurableFileCollection::class)
-        .addParameter("defaultValue", ConfigurableFileCollection::class)
+        .addParameter("defaultValue", ConfigurableFileCollection::class.asClassName().nullable())
         .addStatement("if (!value.isEmpty) { setFrom(value) } else { setFrom(defaultValue) }")
         .build()
 
@@ -211,7 +220,7 @@ private fun assignListPropertyFunction(): FunSpec {
         .addTypeVariable(TypeVariableName(defaultsTypeVariable, Any::class))
         .receiver(ListProperty::class.asClassName().parameterizedBy(TypeVariableName(configTypeVariable)))
         .addParameter("value", Provider::class.asClassName().parameterizedBy(extensionTypeArguments))
-        .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(defaultsTypeArguments))
+        .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(defaultsTypeArguments).nullable())
         .addParameter(
             "extensionTransformer",
             LambdaTypeName.get(
@@ -228,11 +237,15 @@ private fun assignListPropertyFunction(): FunSpec {
         )
         .addStatement(
             """
-            val extension = value.orElse(emptyList<EXTENSION>()).map { e -> e.map(extensionTransformer) }
-            val defaults = defaultValue.orElse(emptyList<DEFAULTS>()).map { e -> e.map(defaultsTransformer) }
-            set(extension)
-            addAll(defaults)
-            """.trimIndent()
+            |val extension = value.orElse(emptyList<%1L>()).map { e -> e.map(extensionTransformer) }
+            |set(extension)
+            |if (defaultValue != null) {
+            |  val defaults = defaultValue.orElse(emptyList<%2L>()).map { e -> e.map(defaultsTransformer) }
+            |  addAll(defaults)
+            |}
+            """.trimMargin(),
+            extensionTypeVariable,
+            defaultsTypeVariable
         )
         .build()
 }

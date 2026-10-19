@@ -19,8 +19,11 @@ import java.nio.file.Paths
 internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
     val objects = ProjectBuilder.builder().build().objects
     objects.newInstance(GenerateTaskExtension::class.java, "api").apply {
-        apiFile.set(pathGen.bind())
+        apiFile.set(pathGen.orNull(0.2).bind())
         apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
+        jsonSchema.file.set(pathGen.bind())
+        jsonSchema.schemaPointer.set(Arb.string().orNull(0.2).bind())
+        jsonSchema.rootName.set(Arb.string().orNull(0.2).bind())
         externalReferenceResolution.set(Arb.of(IExternalReferencesResolutionOption.options).orNull(0.2).bind())
         basePackage.set(Arb.pattern("[a-z]{1,5}(\\.[a-z]{1,5}){0,3}").bind())
         outputDirectory.set(pathGen.bind())

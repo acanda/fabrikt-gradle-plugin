@@ -1,11 +1,13 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.CustomTypeMappingConfiguration
+import ch.acanda.gradle.fabrikt.JsonSchemaConfiguration
 import ch.acanda.gradle.fabrikt.OperationIdTransformConfiguration
 import io.kotest.core.spec.style.WordSpec
 import io.kotest.matchers.equals.shouldEqual
 import io.kotest.matchers.shouldBe
 import org.gradle.testfixtures.ProjectBuilder
+import java.io.File
 
 class ConvertersTest : WordSpec({
 
@@ -90,6 +92,39 @@ class ConvertersTest : WordSpec({
                 format.set("duration")
             }
             val result = config.convertCustomTypeMapping()
+            result shouldBe null
+        }
+
+    }
+
+    "convert JsonSchema" should {
+
+        "convert schema file with pointer when all properties are present" {
+            val schema = objects.fileProperty()
+            schema.set(File("src/test/resources/json-schema.json"))
+            val config = objects.newInstance(JsonSchemaConfiguration::class.java).apply {
+                file.set(schema)
+                schemaPointer.set("/spec/schemaObject")
+            }
+            val result = config.convertJsonSchemaFile()
+            result shouldEqual "${schema.asFile.get().absolutePath}#/spec/schemaObject"
+        }
+
+        "convert schema file when only file property is present" {
+            val schema = objects.fileProperty()
+            schema.set(File("src/test/resources/json-schema.json"))
+            val config = objects.newInstance(JsonSchemaConfiguration::class.java).apply {
+                file.set(schema)
+            }
+            val result = config.convertJsonSchemaFile()
+            result shouldEqual schema.asFile.get().absolutePath
+        }
+
+        "return null when file is not present" {
+            val config = objects.newInstance(JsonSchemaConfiguration::class.java).apply {
+                schemaPointer.set("/spec/schemaObject")
+            }
+            val result = config.convertJsonSchemaFile()
             result shouldBe null
         }
 
