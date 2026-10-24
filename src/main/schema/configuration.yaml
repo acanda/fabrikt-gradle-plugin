@@ -225,7 +225,7 @@ options:
   DateTimeOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      OffsetDateTime: null
+      OffsetDateTime: DATETIME_AS_OFFSETDATETIME
       Instant: DATETIME_AS_INSTANT
       LocalDateTime: DATETIME_AS_LOCALDATETIME
       String: DATETIME_AS_STRING
@@ -233,38 +233,39 @@ options:
   ByteOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      ByteArray: null
+      ByteArray: BYTE_AS_BYTEARRAY
       String: BYTE_AS_STRING
 
   BinaryOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      ByteArray: null
+      ByteArray: BINARY_AS_BYTEARRAY
       InputStream: BYTEARRAY_AS_INPUTSTREAM
       String: BINARY_AS_STRING
 
   UriOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      URI: null
+      URI: URI_AS_URI
       String: URI_AS_STRING
 
   UuidOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      UUID: null
+      UUID: UUID_AS_UUID
       String: UUID_AS_STRING
 
   DateOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      LocalDate: null
+      LocalDate: DATE_AS_LOCALDATE
+      KotlinxLocalDate: DATE_AS_KOTLINXLOCALDATE
       String: DATE_AS_STRING
 
   UntypedOverrideOption:
     source: com.cjbooms.fabrikt.cli.CodeGenTypeOverride
     mapping:
-      Any: null
+      Any: ANY_AS_ANY
       JsonElement: ANY_AS_JSONELEMENT
 
   ValidationLibraryOption:
