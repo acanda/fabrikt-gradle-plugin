@@ -175,9 +175,6 @@ configurations:
       includeCompanionObject:
         type: Boolean
         default: false
-      sealedInterfacesForOneOf:
-        type: Boolean
-        default: false
       nonNullMapValues:
         type: Boolean
         default: false

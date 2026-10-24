@@ -69,7 +69,6 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.nonNullMapValues.set(Arb.boolean().orNull(0.2).bind())
         model.faultTolerantEnums.set(Arb.boolean().orNull(0.2).bind())
         model.faultTolerantOpenEnums.set(Arb.boolean().orNull(0.2).bind())
-        model.sealedInterfacesForOneOf.set(Arb.boolean().orNull(0.2).bind())
         model.suffix.set(Arb.string(0..3).orNull(0.2).bind())
         model.serializationLibrary.set(Arb.of(ISerializationLibraryOption.options).orNull(0.2).bind())
         model.jacksonNullabilityMode.set(Arb.of(IJacksonNullabilityModeOption.options).orNull(0.2).bind())

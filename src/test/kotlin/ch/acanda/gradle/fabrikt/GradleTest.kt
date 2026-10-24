@@ -95,7 +95,6 @@ class GradleTest : StringSpec({
             |      micronautReflection = enabled
             |      micronautSerdeable = enabled
             |      includeCompanionObject = enabled
-            |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      faultTolerantEnums = enabled
             |      faultTolerantOpenEnums = enabled
@@ -199,7 +198,6 @@ class GradleTest : StringSpec({
             |      micronautReflection = enabled
             |      micronautSerdeable = enabled
             |      includeCompanionObject = enabled
-            |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      faultTolerantEnums = enabled
             |      faultTolerantOpenEnums = enabled
@@ -454,7 +452,6 @@ class GradleTest : StringSpec({
             |      micronautReflection = enabled
             |      micronautSerdeable = enabled
             |      includeCompanionObject = enabled
-            |      sealedInterfacesForOneOf = enabled
             |      nonNullMapValues = enabled
             |      faultTolerantEnums = enabled
             |      faultTolerantOpenEnums = enabled
