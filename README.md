@@ -76,7 +76,10 @@ The plugin provides the following tasks:
 > [!NOTE]
 > Version 2.0.0 of the plugin breaks compatibility with previous versions.
 > - Fabrikt has stopped supporting Resilience4J for OkHttp clients. The property
-    `client.resilience4j` is not available any more.
+    `client.resilience4j` is therefore not available any more.
+> - Sealed interfaces for `oneOf` are now always enabled and Fabrikt removed the
+    option to disable them. The property `model.sealedInterfacesForOneOf` is
+    therefore no longer available.
 >
 > Please refer to Fabrikt's
 > [migration guide](https://github.com/fabrikt-io/fabrikt/blob/28.0.0/MIGRATION.md)
@@ -161,7 +164,6 @@ fabrikt {
             micronautReflection = disabled
             micronautSerdeable = disabled
             includeCompanionObject = disabled
-            sealedInterfacesForOneOf = disabled
             faultTolerantEnums = disabled
             faultTolerantOpenEnums = disabled
             ignoreUnknownProperties = disabled
@@ -227,7 +229,6 @@ fabrikt {
 | model.micronautReflection                    | Enables adding `@ReflectiveAccess` to the generated models.<br/>Requires the dependency `io.micronaut:micronaut-core:+`.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                       | `disabled`                        |
 | model.micronautSerdeable                     | Enables adding `@Serdeable` to the generated models.<br/>Requires the dependency `io.micronaut.serde:micronaut-serde-jackson:+`.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                               | `disabled`                        |
 | model.includeCompanionObject                 | Enables adding a companion object to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                     | `disabled`                        |
-| model.sealedInterfacesForOneOf               | Enables the generation of sealed interfaces for discriminated `oneOf` types.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                   | `disabled`                        |
 | model.nonNullMapValues                       | This option makes map values non-null when enabled. The default is to make map values nullable.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                | `disabled`                        |
 | model.faultTolerantEnums                     | Enables adding an `UNRECOGNIZED` enum entry as a fallback for unmapped values, preventing deserialization exceptions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                          | `disabled`                        |
 | model.faultTolerantOpenEnums                 | Enables converting the "open enum" pattern (an `anyOf` combining a string enum with an open `type: string`) into a fault-tolerant enum, i.e. an enum carrying the declared values plus an `UNRECOGNIZED` fallback, instead of collapsing the type to a plain `String`.<br/>Values: `enabled`, `disabled`, `true`, `false`.         | `disabled`                        |

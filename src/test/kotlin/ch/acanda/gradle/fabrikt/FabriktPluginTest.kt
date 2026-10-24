@@ -94,7 +94,6 @@ class FabriktPluginTest : WordSpec({
                         micronautReflection.set(it.enabled)
                         micronautSerdeable.set(it.enabled)
                         includeCompanionObject.set(it.enabled)
-                        sealedInterfacesForOneOf.set(it.enabled)
                         nonNullMapValues.set(it.enabled)
                         faultTolerantEnums.set(it.enabled)
                         ignoreUnknownProperties.set(it.enabled)
@@ -162,7 +161,6 @@ class FabriktPluginTest : WordSpec({
                         micronautReflection shouldContain true
                         micronautSerdeable shouldContain true
                         includeCompanionObject shouldContain true
-                        sealedInterfacesForOneOf shouldContain true
                         nonNullMapValues shouldContain true
                         faultTolerantEnums shouldContain true
                         ignoreUnknownProperties shouldContain true
@@ -246,7 +244,6 @@ class FabriktPluginTest : WordSpec({
                         includeCompanionObject shouldContain false
                         nonNullMapValues shouldContain false
                         faultTolerantEnums shouldContain false
-                        sealedInterfacesForOneOf shouldContain false
                         suffix shouldContain null
                         serializationLibrary.option shouldBe SerializationLibraryOption.Jackson
                         jacksonNullabilityMode.option shouldBe JacksonNullabilityModeOption.None
