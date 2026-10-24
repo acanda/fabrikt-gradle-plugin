@@ -83,8 +83,7 @@ class IgnoreUnknownPropertiesProcessorTest : StringSpec({
             |  property = "type",
             |  visible = true,
             |)
-            |@JsonSubTypes(JsonSubTypes.Type(value = Dog::class, name = "Dog"),JsonSubTypes.Type(value =
-            |    Cat::class, name = "Cat"))
+            |@JsonSubTypes(JsonSubTypes.Type(value = Dog::class, name = "Dog"),JsonSubTypes.Type(value = Cat::class, name = "Cat"))
             |public sealed class Animal() {
             |  public abstract val type: AnimalDiscriminatorType
             |}
