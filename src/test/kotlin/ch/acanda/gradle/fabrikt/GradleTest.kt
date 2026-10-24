@@ -70,7 +70,6 @@ class GradleTest : StringSpec({
             |    client {
             |      generate = enabled
             |      target = Ktor
-            |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
@@ -175,7 +174,6 @@ class GradleTest : StringSpec({
             |    client {
             |      generate = enabled
             |      target = Ktor
-            |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled
@@ -431,7 +429,6 @@ class GradleTest : StringSpec({
             |    client {
             |      generate = enabled
             |      target = Ktor
-            |      resilience4j = enabled
             |      suspendModifier = enabled
             |      springResponseEntityWrapper = enabled
             |      springCloudOpenFeignStarterAnnotation = enabled

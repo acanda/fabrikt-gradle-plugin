@@ -86,7 +86,6 @@ class FabriktArgumentsTest : StringSpec({
             with(config.client) {
                 if (generate.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.CLIENT.name)
-                    cliArgs.shouldContainOptionally(resilience4j, ARG_CLIENT_OPTS, ClientCodeGenOptionType.RESILIENCE4J)
                     cliArgs.shouldContainOptionally(
                         suspendModifier,
                         ARG_CLIENT_OPTS,
