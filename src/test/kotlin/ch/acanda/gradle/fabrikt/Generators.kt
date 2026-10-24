@@ -46,7 +46,6 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         validationLibrary.set(Arb.of(IValidationLibraryOption.options).orNull(0.2).bind())
         client.generate.set(Arb.boolean().orNull(0.2).bind())
         client.target.set(Arb.of(IClientTargetOption.options).orNull(0.2).bind())
-        client.resilience4j.set(Arb.boolean().orNull(0.2).bind())
         client.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
         client.springResponseEntityWrapper.set(Arb.boolean().orNull(0.2).bind())
         client.springCloudOpenFeignStarterAnnotation.set(Arb.boolean().orNull(0.2).bind())

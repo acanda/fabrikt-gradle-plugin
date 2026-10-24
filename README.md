@@ -45,7 +45,8 @@ fabrikt {
 }
 ```
 
-> Note: some configuration options are reserved words or type names that are
+> [!Note]
+> Some configuration options are reserved words or type names that are
 > imported by Groovy by default, so you have to prefix them with `owner.`.
 > ```groovy
 > typeOverrides {
@@ -71,6 +72,15 @@ The plugin provides the following tasks:
   generated with `gradle fabriktGenerateDogApi`.
 
 ## Configuration
+
+> [!NOTE]
+> Version 2.0.0 of the plugin breaks compatibility with previous versions.
+> - Fabrikt has stopped supporting Resilience4J for OkHttp clients. The property
+    `client.resilience4j` is not available any more.
+>
+> Please refer to Fabrikt's
+> [migration guide](https://github.com/fabrikt-io/fabrikt/blob/28.0.0/MIGRATION.md)
+> for more information.
 
 ```kotlin
 plugins {
@@ -126,7 +136,6 @@ fabrikt {
         client {
             generate = disabled
             target = OkHttp
-            resilience4j = disabled
             suspendModifier = disabled
             springResponseEntityWrapper = disabled
             springCloudOpenFeignStarterAnnotation = disabled
@@ -197,7 +206,6 @@ fabrikt {
 | operationIdTransform.replacement             | Replacement used with `operationIdTransform.regex`.                                                                                                                                                                                                                                                                                | `null`                            |
 | client.generate                              | Enables generating the http client code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                       | `disabled`                        |
 | client.target                                | The type of client you want to be generated.<br/>`OkHttp`, `OpenFeign`, `SpringHttpInterface`, `Ktor`.                                                                                                                                                                                                                             | `OkHttp`                          |
-| client.resilience4j                          | Generates a fault tolerance service for the client using the following library "io.github.resilience4j:resilience4j-all:+". Only for OkHttp clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                           | `disabled`                        |
 | client.suspendModifier                       | Enables adding the suspend modifier to the generated client functions. Only for OpenFeign clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                             | `disabled`                        |
 | client.springResponseEntityWrapper           | Enables adding the Spring-ResponseEntity generic around the response to be able to get response headers and status (only for target `OpenFeign`).<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                              | `disabled`                        |
 | client.springCloudOpenFeignStarterAnnotation | Enables adding the the `@FeignClient` annotation to generated client interface (only for target `OpenFeign`).<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                  | `disabled`                        |

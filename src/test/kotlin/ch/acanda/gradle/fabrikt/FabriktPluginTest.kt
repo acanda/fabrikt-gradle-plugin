@@ -69,7 +69,6 @@ class FabriktPluginTest : WordSpec({
                     with(it.client) {
                         generate.set(it.enabled)
                         target.set(Ktor)
-                        resilience4j.set(it.enabled)
                         suspendModifier.set(it.enabled)
                         springResponseEntityWrapper.set(it.enabled)
                         springCloudOpenFeignStarterAnnotation.set(it.enabled)
@@ -138,7 +137,6 @@ class FabriktPluginTest : WordSpec({
                     with(client) {
                         generate shouldContain true
                         target.option shouldBe ClientTargetOption.Ktor
-                        resilience4j shouldContain true
                         suspendModifier shouldContain true
                         springResponseEntityWrapper shouldContain true
                         springCloudOpenFeignStarterAnnotation shouldContain true
@@ -221,7 +219,6 @@ class FabriktPluginTest : WordSpec({
                     with(client) {
                         generate shouldContain false
                         target.option shouldBe ClientTargetOption.OkHttp
-                        resilience4j shouldContain false
                         suspendModifier shouldContain false
                         springResponseEntityWrapper shouldContain false
                         springCloudOpenFeignStarterAnnotation shouldContain false

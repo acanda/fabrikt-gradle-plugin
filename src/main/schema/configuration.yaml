@@ -106,9 +106,6 @@ configurations:
       target:
         type: ClientTargetOption
         default: OkHttp
-      resilience4j:
-        type: Boolean
-        default: false
       suspendModifier:
         type: Boolean
         default: false
