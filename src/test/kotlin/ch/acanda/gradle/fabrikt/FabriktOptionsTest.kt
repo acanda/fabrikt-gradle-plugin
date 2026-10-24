@@ -39,7 +39,7 @@ class FabriktOptionsTest : StringSpec({
     }
 
     "SerializationLibrary" {
-        SerializationLibraryOption::class shouldMatch SerializationLibrary::class
+        SerializationLibraryOption::class.shouldMatchWithout(SerializationLibrary::class, SerializationLibrary.JACKSON)
     }
 
     "JacksonNullabilityMode" {
@@ -73,8 +73,14 @@ class FabriktOptionsTest : StringSpec({
 
     companion object {
         private infix fun KClass<out FabriktOption>.shouldMatch(that: KClass<out Enum<*>>) {
+            this.shouldMatchWithout(that)
+        }
+
+        private fun <T : Enum<*>> KClass<out FabriktOption>.shouldMatchWithout(that: KClass<T>, vararg ignored: T) {
             withClue({ "${this.simpleName} should have the same number of enum values as ${that.simpleName}." }) {
-                this.java.enumConstants.map { it.fabriktOption }.toSet().size shouldBe that.java.enumConstants.size
+                val actual = this.java.enumConstants.map { it.fabriktOption }.toSet().size
+                val expected = that.java.enumConstants.toSet().minus(ignored).size
+                actual shouldBe expected
             }
         }
     }

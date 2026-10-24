@@ -245,7 +245,7 @@ class FabriktPluginTest : WordSpec({
                         nonNullMapValues shouldContain false
                         faultTolerantEnums shouldContain false
                         suffix shouldContain null
-                        serializationLibrary.option shouldBe SerializationLibraryOption.Jackson
+                        serializationLibrary.option shouldBe SerializationLibraryOption.Jackson3
                         jacksonNullabilityMode.option shouldBe JacksonNullabilityModeOption.None
                         instantLibrary.option shouldBe InstantLibraryOption.Kotlinx
                     }

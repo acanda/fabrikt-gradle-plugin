@@ -192,7 +192,7 @@ configurations:
         default: null
       serializationLibrary:
         type: SerializationLibraryOption
-        default: Jackson
+        default: Jackson3
       jacksonNullabilityMode:
         type: JacksonNullabilityModeOption
         default: None
@@ -293,17 +293,9 @@ options:
   SerializationLibraryOption:
     source: com.cjbooms.fabrikt.cli.SerializationLibrary
     mapping:
-      Jackson2: JACKSON
+      Jackson2: JACKSON_2
       Jackson3: JACKSON_3
-      Jackson:
-        value: JACKSON
-        deprecated:
-          replaceWith: Jackson2
       Kotlinx: KOTLINX_SERIALIZATION
-      Kotlin:
-        value: KOTLINX_SERIALIZATION
-        deprecated:
-          replaceWith: Kotlinx
 
   JacksonNullabilityModeOption:
     source: com.cjbooms.fabrikt.cli.JacksonNullabilityMode
