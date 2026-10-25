@@ -157,6 +157,9 @@ configurations:
       generate:
         type: Boolean
         default: true
+      sharedCompositionContracts:
+        type: Boolean
+        default: false
       extensibleEnums:
         type: Boolean
         default: false

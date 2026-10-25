@@ -164,6 +164,11 @@ class FabriktArgumentsTest : StringSpec({
                 if (generate.get()) {
                     cliArgs shouldContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs.shouldContainOptionally(
+                        sharedCompositionContracts,
+                        ARG_MODEL_OPTS,
+                        ModelCodeGenOptionType.SHARED_COMPOSITION_CONTRACTS
+                    )
+                    cliArgs.shouldContainOptionally(
                         extensibleEnums,
                         ARG_MODEL_OPTS,
                         ModelCodeGenOptionType.X_EXTENSIBLE_ENUMS

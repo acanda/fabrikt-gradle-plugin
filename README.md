@@ -161,6 +161,7 @@ fabrikt {
         }
         model {
             generate = enabled
+            sharedCompositionContracts = disabled
             extensibleEnums = disabled
             javaSerialization = disabled
             quarkusReflection = disabled
@@ -227,6 +228,7 @@ fabrikt {
 | controller.completionStage                   | Enables the generated controller functions to have type CompletionStage (only for target `Spring`).<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                            | `disabled`                        |
 | controller.target                            | The target framework tor the controllers you want to be generated.<br/>Values: `Spring`, `Micronaut`, `Ktor`.                                                                                                                                                                                                                      | `Spring`                          |
 | model.generate                               | Enables generating the http model code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                        | `enabled`                         |
+| model.sharedCompositionContracts             | Enables exposing explicitly included object schemas through shared Kotlin interfaces.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                          | `disabled`                        |
 | model.extensibleEnums                        | Enables treating x-extensible-enums as enums.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                  | `disabled`                        |
 | model.javaSerialization                      | Enables adding the Java `Serializable` interface to the generated models.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                      | `disabled`                        |
 | model.quarkusReflection                      | Enables adding `@RegisterForReflection` to the generated models.<br/>Requires the dependency `io.quarkus:quarkus-core:+`.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                      | `disabled`                        |

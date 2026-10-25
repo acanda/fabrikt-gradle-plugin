@@ -198,6 +198,11 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (generate.get()) {
             args.add(ARG_TARGETS)
             args.add(CodeGenerationType.HTTP_MODELS.name)
+            args.addIfEnabled(
+                sharedCompositionContracts,
+                ARG_MODEL_OPTS,
+                ModelCodeGenOptionType.SHARED_COMPOSITION_CONTRACTS
+            )
             args.addIfEnabled(extensibleEnums, ARG_MODEL_OPTS, ModelCodeGenOptionType.X_EXTENSIBLE_ENUMS)
             args.addIfEnabled(javaSerialization, ARG_MODEL_OPTS, ModelCodeGenOptionType.JAVA_SERIALIZATION)
             args.addIfEnabled(quarkusReflection, ARG_MODEL_OPTS, ModelCodeGenOptionType.QUARKUS_REFLECTION)
