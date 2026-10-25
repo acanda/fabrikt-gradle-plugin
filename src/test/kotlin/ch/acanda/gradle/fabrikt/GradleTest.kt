@@ -46,6 +46,7 @@ class GradleTest : StringSpec({
             |    quarkusReflectionConfig = enabled
             |    addFileDisclaimer = enabled
             |    addGeneratedAnnotation = enabled
+            |    visibility = internal
             |    operationIdTransform {
             |      regex = ".*_"
             |      replacement = ""
@@ -151,6 +152,7 @@ class GradleTest : StringSpec({
             |    quarkusReflectionConfig = enabled
             |    addFileDisclaimer = enabled
             |    addGeneratedAnnotation = enabled
+            |    visibility = public
             |    operationIdTransform {
             |      regex = ".*_"
             |      replacement = ""
@@ -407,6 +409,7 @@ class GradleTest : StringSpec({
             |    quarkusReflectionConfig = enabled
             |    addFileDisclaimer = enabled
             |    addGeneratedAnnotation = enabled
+            |    visibility = internal
             |    operationIdTransform {
             |      regex = ".*_"
             |      replacement = ""
