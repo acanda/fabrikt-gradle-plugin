@@ -166,6 +166,11 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 ARG_CLIENT_OPTS,
                 ClientCodeGenOptionType.OKHTTP_NON_NULL_RESPONSE_PAYLOADS
             )
+            args.addIfEnabled(
+                responseMediaTypeFunctions,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.RESPONSE_MEDIA_TYPE_FUNCTIONS
+            )
             args.addIfEnabled(dynamicBaseUrl, ARG_CLIENT_OPTS, ClientCodeGenOptionType.DYNAMIC_BASE_URL)
             openFeignClientName.orNull?.let {
                 args.add(ARG_OPENFEIGN_CLIENT_NAME)

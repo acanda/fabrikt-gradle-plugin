@@ -75,6 +75,7 @@ class GradleTest : StringSpec({
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
             |      okHttpNonNullResponsePayloads = enabled
+            |      responseMediaTypeFunctions = enabled
             |      dynamicBaseUrl = enabled
             |      openFeignClientName = "custom-client"
             |    }
@@ -178,6 +179,7 @@ class GradleTest : StringSpec({
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
             |      okHttpNonNullResponsePayloads = enabled
+            |      responseMediaTypeFunctions = enabled
             |      dynamicBaseUrl = enabled
             |      openFeignClientName = "custom-client"
             |    }
@@ -432,6 +434,7 @@ class GradleTest : StringSpec({
             |      springCloudOpenFeignStarterAnnotation = enabled
             |      groupByTag = enabled
             |      okHttpNonNullResponsePayloads = enabled
+            |      responseMediaTypeFunctions = enabled
             |      dynamicBaseUrl = enabled
             |      openFeignClientName = "custom-client"
             |    }

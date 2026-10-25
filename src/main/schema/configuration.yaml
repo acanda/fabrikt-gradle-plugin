@@ -121,6 +121,9 @@ configurations:
       okHttpNonNullResponsePayloads:
         type: Boolean
         default: false
+      responseMediaTypeFunctions:
+        type: Boolean
+        default: false
       dynamicBaseUrl:
         type: Boolean
         default: false

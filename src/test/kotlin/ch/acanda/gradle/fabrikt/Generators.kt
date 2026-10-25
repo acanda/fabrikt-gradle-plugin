@@ -51,6 +51,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         client.springCloudOpenFeignStarterAnnotation.set(Arb.boolean().orNull(0.2).bind())
         client.groupByTag.set(Arb.boolean().orNull(0.2).bind())
         client.okHttpNonNullResponsePayloads.set(Arb.boolean().orNull(0.2).bind())
+        client.responseMediaTypeFunctions.set(Arb.boolean().orNull(0.2).bind())
         client.dynamicBaseUrl.set(Arb.boolean().orNull(0.2).bind())
         client.openFeignClientName.set(Arb.string().orNull(0.2).bind())
         controller.generate.set(Arb.boolean().orNull(0.2).bind())
