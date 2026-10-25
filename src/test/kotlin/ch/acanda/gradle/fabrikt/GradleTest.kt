@@ -89,6 +89,7 @@ class GradleTest : StringSpec({
             |    }
             |    model {
             |      generate = enabled
+            |      sharedCompositionContracts = enabled
             |      extensibleEnums = enabled
             |      javaSerialization = enabled
             |      quarkusReflection = enabled
@@ -193,6 +194,7 @@ class GradleTest : StringSpec({
             |    }
             |    model {
             |      generate = enabled
+            |      sharedCompositionContracts = enabled
             |      extensibleEnums = enabled
             |      javaSerialization = enabled
             |      quarkusReflection = enabled
@@ -448,6 +450,7 @@ class GradleTest : StringSpec({
             |    }
             |    model {
             |      generate = enabled
+            |      sharedCompositionContracts = enabled
             |      extensibleEnums = enabled
             |      javaSerialization = enabled
             |      quarkusReflection = enabled

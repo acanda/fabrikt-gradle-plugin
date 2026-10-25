@@ -60,6 +60,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         controller.suspendModifier.set(Arb.boolean().orNull(0.2).bind())
         controller.target.set(Arb.of(IControllerTargetOption.options).orNull(0.2).bind())
         model.generate.set(Arb.boolean().orNull(0.2).bind())
+        model.sharedCompositionContracts.set(Arb.boolean().orNull(0.2).bind())
         model.extensibleEnums.set(Arb.boolean().orNull(0.2).bind())
         model.javaSerialization.set(Arb.boolean().orNull(0.2).bind())
         model.quarkusReflection.set(Arb.boolean().orNull(0.2).bind())

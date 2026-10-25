@@ -88,6 +88,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(it.model) {
                         generate.set(it.disabled)
+                        sharedCompositionContracts.set(it.enabled)
                         extensibleEnums.set(it.enabled)
                         javaSerialization.set(it.enabled)
                         quarkusReflection.set(it.enabled)
@@ -156,6 +157,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(model) {
                         generate shouldContain false
+                        sharedCompositionContracts shouldContain true
                         extensibleEnums shouldContain true
                         javaSerialization shouldContain true
                         quarkusReflection shouldContain true
@@ -238,6 +240,7 @@ class FabriktPluginTest : WordSpec({
                     }
                     with(model) {
                         generate shouldContain true
+                        sharedCompositionContracts shouldContain false
                         extensibleEnums shouldContain false
                         javaSerialization shouldContain false
                         quarkusReflection shouldContain false
