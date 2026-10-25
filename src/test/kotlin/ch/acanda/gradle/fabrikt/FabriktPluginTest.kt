@@ -74,6 +74,7 @@ class FabriktPluginTest : WordSpec({
                         springCloudOpenFeignStarterAnnotation.set(it.enabled)
                         groupByTag.set(it.enabled)
                         okHttpNonNullResponsePayloads.set(it.enabled)
+                        responseMediaTypeFunctions.set(it.enabled)
                         dynamicBaseUrl.set(it.enabled)
                         openFeignClientName.set("api-client")
                     }
@@ -141,6 +142,7 @@ class FabriktPluginTest : WordSpec({
                         springCloudOpenFeignStarterAnnotation shouldContain true
                         groupByTag shouldContain true
                         okHttpNonNullResponsePayloads shouldContain true
+                        responseMediaTypeFunctions shouldContain true
                         dynamicBaseUrl shouldContain true
                         openFeignClientName shouldContain "api-client"
                     }
@@ -222,6 +224,7 @@ class FabriktPluginTest : WordSpec({
                         springCloudOpenFeignStarterAnnotation shouldContain false
                         groupByTag shouldContain false
                         okHttpNonNullResponsePayloads shouldContain false
+                        responseMediaTypeFunctions shouldContain false
                         dynamicBaseUrl shouldContain false
                         openFeignClientName shouldContain "fabrikt-client"
                     }

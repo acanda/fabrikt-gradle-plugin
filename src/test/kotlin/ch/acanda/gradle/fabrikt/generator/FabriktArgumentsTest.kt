@@ -112,6 +112,11 @@ class FabriktArgumentsTest : StringSpec({
                         ClientCodeGenOptionType.OKHTTP_NON_NULL_RESPONSE_PAYLOADS
                     )
                     cliArgs.shouldContainOptionally(
+                        responseMediaTypeFunctions,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.RESPONSE_MEDIA_TYPE_FUNCTIONS
+                    )
+                    cliArgs.shouldContainOptionally(
                         dynamicBaseUrl,
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.DYNAMIC_BASE_URL
