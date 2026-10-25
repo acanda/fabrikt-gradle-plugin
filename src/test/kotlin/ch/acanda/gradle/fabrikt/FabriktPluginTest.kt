@@ -53,6 +53,7 @@ class FabriktPluginTest : WordSpec({
                     it.validationLibrary.set(it.Javax)
                     it.quarkusReflectionConfig.set(it.enabled)
                     it.addFileDisclaimer.set(it.enabled)
+                    it.visibility.set(it.internal)
                     with(it.operationIdTransform) {
                         regex.set(".*_")
                         replacement.set("")
@@ -122,6 +123,7 @@ class FabriktPluginTest : WordSpec({
                     this.validationLibrary.option shouldBe ValidationLibraryOption.Javax
                     this.quarkusReflectionConfig shouldContain true
                     this.addFileDisclaimer shouldContain true
+                    this.visibility.option shouldBe VisibilityOption.internal
                     with(operationIdTransform) {
                         regex shouldContainString ".*_"
                         replacement shouldContainString ""
@@ -205,6 +207,7 @@ class FabriktPluginTest : WordSpec({
                     this.validationLibrary.option shouldBe ValidationLibraryOption.Jakarta
                     this.quarkusReflectionConfig shouldContain false
                     this.addFileDisclaimer shouldContain false
+                    this.visibility.option shouldBe VisibilityOption.public
                     with(operationIdTransform) {
                         regex shouldContain null
                         replacement shouldContain null

@@ -40,6 +40,9 @@ configurations:
       addGeneratedAnnotation:
         type: Boolean
         default: false
+      visibility:
+        type: VisibilityOption
+        default: public
       operationIdTransform:
         type: OperationIdTransform
       typeOverrides:
@@ -316,3 +319,9 @@ options:
     mapping:
       Kotlin: KOTLIN_TIME_INSTANT
       Kotlinx: KOTLINX_INSTANT
+
+  VisibilityOption:
+    source: com.cjbooms.fabrikt.cli.GeneratedVisibility
+    mapping:
+      public: PUBLIC
+      internal: INTERNAL

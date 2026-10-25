@@ -34,6 +34,7 @@ internal const val ARG_MODEL_SERIALIZATION_LIB = "--serialization-library"
 internal const val ARG_MODEL_JACKSON_NULLABILITY_MODE = "--jackson-nullability-mode"
 internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
 internal const val ARG_OUTPUT_OPTS = "--output-opts"
+internal const val ARG_VISIBILITY = "--visibility"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -81,6 +82,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         if (addGeneratedAnnotation.get()) {
             args.add(ARG_OUTPUT_OPTS)
             args.add(OutputOptionType.ADD_GENERATED_ANNOTATION.name)
+        }
+        visibility.withOptionName { option ->
+            args.add(ARG_VISIBILITY)
+            args.add(option)
         }
         operationIdTransform.validate(problems).convertOperationIdTransform()?.let {
             args.add(ARG_OPERATION_ID_TRANSFORM)

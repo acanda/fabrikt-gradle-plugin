@@ -116,6 +116,8 @@ fabrikt {
         validationLibrary = Javax
         quarkusReflectionConfig = enabled
         addFileDisclaimer = disabled
+        addGeneratedAnnotation = disabled
+        visibility = public
         operationIdTransform {
             regex = null
             replacement = null
@@ -209,6 +211,7 @@ fabrikt {
 | quarkusReflectionConfig                      | Enables generating the reflection-config.json file for quarkus integration projects.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                           | `enabled`                         |
 | addFileDisclaimer                            | Enables adding a disclaimer to the generated files.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                            | `disabled`                        |
 | addGeneratedAnnotation                       | Enables annotating generated types and top-level functions with `javax.annotation.processing.Generated`.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                       | `disabled`                        |
+| visibility                                   | Visibility of generated models, clients, controllers and supporting declarations.<br/>Values: `public`, `internal`.                                                                                                                                                                                                                | `public`                          |
 | operationIdTransform.regex                   | Regex applied to every operation ID before it becomes a generated client or controller function name.                                                                                                                                                                                                                              | `null`                            |
 | operationIdTransform.replacement             | Replacement used with `operationIdTransform.regex`.                                                                                                                                                                                                                                                                                | `null`                            |
 | client.generate                              | Enables generating the http client code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                       | `disabled`                        |
