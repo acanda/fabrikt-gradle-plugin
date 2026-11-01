@@ -76,6 +76,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         model.serializationLibrary.set(Arb.of(ISerializationLibraryOption.options).orNull(0.2).bind())
         model.jacksonNullabilityMode.set(Arb.of(IJacksonNullabilityModeOption.options).orNull(0.2).bind())
         model.instantLibrary.set(Arb.of(IInstantLibraryOption.options).orNull(0.2).bind())
+        model.allOfInheritance.set(Arb.of(IAllOfInheritanceOption.options).orNull(0.2).bind())
         skip.set(Arb.boolean().orNull(0.2).bind())
     }
 }

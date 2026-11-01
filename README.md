@@ -177,6 +177,7 @@ fabrikt {
             serializationLibrary = Jackson2
             jacksonNullabilityMode = None
             instantLibrary = Kotlinx
+            allOfInheritance = sealed
         }
         skip = false
     }
@@ -247,6 +248,7 @@ fabrikt {
 | model.serializationLibrary                   | Specifies the serialization library to use for annotations in generated model classes.<br/>Values: `Jackson2`, `Jackson3`, `Kotlinx`.                                                                                                                                                                                              | `Jackson3`                        |
 | model.jacksonNullabilityMode                 | Specifies the handling of null values when serializing with Jackson.<br/>Values: `None`, `EnforceOptionalNonNull`, `EnforceRequiredNullable`, `Strict`.                                                                                                                                                                            | `None`                            |
 | model.instantLibrary                         | Specifies the Instant library to use in generated model classes when using the `Kotlinx` serialization library.<br/>Values: `Kotlinx`, `Kotlin`.                                                                                                                                                                                   | `Kotlinx`                         |
+| model.allOfInheritance                       | Specifies whether to generate open or sealed classes for discriminated allOf parents.<br/>Values: `open` (only for Jackson 2 or 3, ignored for kotlinx.serialization), `sealed`.                                                                                                                                                   | `sealed`                          |
 | skip                                         | Skips generating code if set to `true` when running the task `fabriktGenerate`. Tasks generating code for a single configuration, i.e. `fabriktGenerate[Name]`, ignore this setting.<br/>Values: `true`, `false`.                                                                                                                  | `false`                           |
 
 ### Defaults

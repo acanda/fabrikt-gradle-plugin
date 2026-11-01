@@ -208,6 +208,9 @@ configurations:
       instantLibrary:
         type: InstantLibraryOption
         default: Kotlinx
+      allOfInheritance:
+        type: AllOfInheritanceOption
+        default: sealed
 
   CustomTypeMapping:
     properties:
@@ -319,6 +322,12 @@ options:
     mapping:
       Kotlin: KOTLIN_TIME_INSTANT
       Kotlinx: KOTLINX_INSTANT
+
+  AllOfInheritanceOption:
+    source: com.cjbooms.fabrikt.cli.ModelCodeGenOptionType
+    mapping:
+      sealed: SEALED_CLASSES_FOR_ALL_OF
+      open: OPEN_CLASSES_FOR_ALL_OF
 
   VisibilityOption:
     source: com.cjbooms.fabrikt.cli.GeneratedVisibility

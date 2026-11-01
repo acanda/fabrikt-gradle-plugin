@@ -235,6 +235,10 @@ class FabriktArgumentsTest : StringSpec({
                         instantLibrary.option,
                         ARG_MODEL_INSTANT_LIB,
                     )
+                    cliArgs.shouldContainOptionally(
+                        allOfInheritance.option,
+                        ARG_MODEL_OPTS,
+                    )
                 } else {
                     cliArgs shouldNotContainInOrder listOf(ARG_TARGETS, CodeGenerationType.HTTP_MODELS.name)
                     cliArgs shouldNotContain ARG_MODEL_OPTS
