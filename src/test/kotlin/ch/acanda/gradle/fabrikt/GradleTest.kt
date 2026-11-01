@@ -106,6 +106,7 @@ class GradleTest : StringSpec({
             |      serializationLibrary = Kotlinx
             |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
+            |      allOfInheritance = open
             |    }
             |    skip = false
             |  }
@@ -212,6 +213,7 @@ class GradleTest : StringSpec({
             |      serializationLibrary = Kotlinx
             |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
+            |      allOfInheritance = open
             |    }
             |  }
             |
@@ -469,6 +471,7 @@ class GradleTest : StringSpec({
             |      serializationLibrary = Kotlinx
             |      jacksonNullabilityMode = Strict
             |      instantLibrary = Kotlin
+            |      allOfInheritance = open
             |    }
             |    skip = false
             |  }

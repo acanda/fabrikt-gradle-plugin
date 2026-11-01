@@ -104,6 +104,7 @@ class FabriktPluginTest : WordSpec({
                         serializationLibrary.set(Kotlinx)
                         jacksonNullabilityMode.set(Strict)
                         instantLibrary.set(Kotlin)
+                        allOfInheritance.set(open)
                     }
                 }
             }
@@ -174,6 +175,7 @@ class FabriktPluginTest : WordSpec({
                         serializationLibrary.option shouldBe SerializationLibraryOption.Kotlinx
                         jacksonNullabilityMode.option shouldBe JacksonNullabilityModeOption.Strict
                         instantLibrary.option shouldBe InstantLibraryOption.Kotlin
+                        allOfInheritance.option shouldBe AllOfInheritanceOption.open
                     }
                 }
         }
@@ -257,6 +259,7 @@ class FabriktPluginTest : WordSpec({
                         serializationLibrary.option shouldBe SerializationLibraryOption.Jackson3
                         jacksonNullabilityMode.option shouldBe JacksonNullabilityModeOption.None
                         instantLibrary.option shouldBe InstantLibraryOption.Kotlinx
+                        allOfInheritance.option shouldBe AllOfInheritanceOption.sealed
                     }
                 }
         }

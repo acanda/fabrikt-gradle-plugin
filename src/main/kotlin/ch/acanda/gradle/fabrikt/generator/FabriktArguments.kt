@@ -234,6 +234,10 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 args.add(ARG_MODEL_INSTANT_LIB)
                 args.add(library)
             }
+            allOfInheritance.withOptionName { mode ->
+                args.add(ARG_MODEL_OPTS)
+                args.add(mode)
+            }
         }
     }
 
