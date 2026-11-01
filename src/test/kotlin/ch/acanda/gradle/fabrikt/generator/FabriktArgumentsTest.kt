@@ -122,6 +122,21 @@ class FabriktArgumentsTest : StringSpec({
                         ARG_CLIENT_OPTS,
                         ClientCodeGenOptionType.DYNAMIC_BASE_URL
                     )
+                    cliArgs.shouldContainOptionally(
+                        openApiApiKeyAuthentication,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.OPENAPI_API_KEY_AUTHENTICATION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        openApiBearerAuthentication,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.OPENAPI_BEARER_AUTHENTICATION
+                    )
+                    cliArgs.shouldContainOptionally(
+                        openApiOAuth2Authentication,
+                        ARG_CLIENT_OPTS,
+                        ClientCodeGenOptionType.OPENAPI_OAUTH2_AUTHENTICATION
+                    )
                     cliArgs shouldContainInOrder listOf(
                         ARG_OPENFEIGN_CLIENT_NAME, config.client.openFeignClientName.get().toString()
                     )

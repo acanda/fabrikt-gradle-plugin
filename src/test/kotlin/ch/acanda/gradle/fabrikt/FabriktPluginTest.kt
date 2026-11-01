@@ -77,6 +77,9 @@ class FabriktPluginTest : WordSpec({
                         okHttpNonNullResponsePayloads.set(it.enabled)
                         responseMediaTypeFunctions.set(it.enabled)
                         dynamicBaseUrl.set(it.enabled)
+                        openApiApiKeyAuthentication.set(it.enabled)
+                        openApiBearerAuthentication.set(it.enabled)
+                        openApiOAuth2Authentication.set(it.enabled)
                         openFeignClientName.set("api-client")
                     }
                     with(it.controller) {
@@ -148,6 +151,9 @@ class FabriktPluginTest : WordSpec({
                         okHttpNonNullResponsePayloads shouldContain true
                         responseMediaTypeFunctions shouldContain true
                         dynamicBaseUrl shouldContain true
+                        openApiApiKeyAuthentication shouldContain true
+                        openApiBearerAuthentication shouldContain true
+                        openApiOAuth2Authentication shouldContain true
                         openFeignClientName shouldContain "api-client"
                     }
                     with(controller) {
@@ -233,6 +239,9 @@ class FabriktPluginTest : WordSpec({
                         okHttpNonNullResponsePayloads shouldContain false
                         responseMediaTypeFunctions shouldContain false
                         dynamicBaseUrl shouldContain false
+                        openApiApiKeyAuthentication shouldContain false
+                        openApiBearerAuthentication shouldContain false
+                        openApiOAuth2Authentication shouldContain false
                         openFeignClientName shouldContain "fabrikt-client"
                     }
                     with(controller) {

@@ -78,6 +78,9 @@ class GradleTest : StringSpec({
             |      okHttpNonNullResponsePayloads = enabled
             |      responseMediaTypeFunctions = enabled
             |      dynamicBaseUrl = enabled
+            |      openApiApiKeyAuthentication = enabled
+            |      openApiBearerAuthentication = enabled
+            |      openApiOAuth2Authentication = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -185,6 +188,9 @@ class GradleTest : StringSpec({
             |      okHttpNonNullResponsePayloads = enabled
             |      responseMediaTypeFunctions = enabled
             |      dynamicBaseUrl = enabled
+            |      openApiApiKeyAuthentication = enabled
+            |      openApiBearerAuthentication = enabled
+            |      openApiOAuth2Authentication = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
@@ -443,6 +449,9 @@ class GradleTest : StringSpec({
             |      okHttpNonNullResponsePayloads = enabled
             |      responseMediaTypeFunctions = enabled
             |      dynamicBaseUrl = enabled
+            |      openApiApiKeyAuthentication = enabled
+            |      openApiBearerAuthentication = enabled
+            |      openApiOAuth2Authentication = enabled
             |      openFeignClientName = "custom-client"
             |    }
             |    controller {
