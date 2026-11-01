@@ -177,6 +177,21 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
                 ClientCodeGenOptionType.RESPONSE_MEDIA_TYPE_FUNCTIONS
             )
             args.addIfEnabled(dynamicBaseUrl, ARG_CLIENT_OPTS, ClientCodeGenOptionType.DYNAMIC_BASE_URL)
+            args.addIfEnabled(
+                openApiApiKeyAuthentication,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.OPENAPI_API_KEY_AUTHENTICATION
+            )
+            args.addIfEnabled(
+                openApiBearerAuthentication,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.OPENAPI_BEARER_AUTHENTICATION
+            )
+            args.addIfEnabled(
+                openApiOAuth2Authentication,
+                ARG_CLIENT_OPTS,
+                ClientCodeGenOptionType.OPENAPI_OAUTH2_AUTHENTICATION
+            )
             openFeignClientName.orNull?.let {
                 args.add(ARG_OPENFEIGN_CLIENT_NAME)
                 args.add(it.toString())

@@ -130,6 +130,15 @@ configurations:
       dynamicBaseUrl:
         type: Boolean
         default: false
+      openApiApiKeyAuthentication:
+        type: Boolean
+        default: false
+      openApiBearerAuthentication:
+        type: Boolean
+        default: false
+      openApiOAuth2Authentication:
+        type: Boolean
+        default: false
       openFeignClientName:
         type: CharSequence
         default: "fabrikt-client"
