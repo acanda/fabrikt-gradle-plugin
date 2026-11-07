@@ -5,6 +5,7 @@ import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
 import io.kotest.matchers.nulls.shouldNotBeNull
 import io.kotest.matchers.shouldBe
+import io.kotest.matchers.string.shouldContain
 import org.gradle.internal.classpath.DefaultClassPath
 import org.gradle.testkit.runner.BuildResult
 import org.gradle.testkit.runner.GradleRunner
@@ -586,6 +587,38 @@ class GradleTest : StringSpec({
 
     }
 
+    "`gradle fabriktPrintDependencies` should print dependencies for all Fabrikt configurations" {
+        val projectDir = projectDir("print-dependencies")
+        val basePackage = "ch.acanda"
+        val openapiPath = createSpec(projectDir)
+        projectDir.resolve("build.gradle.kts").writeText(
+            """
+            |plugins {
+            |    id("ch.acanda.gradle.fabrikt")
+            |}
+            |
+            |fabrikt {
+            |  generate("dog") {
+            |    apiFile = file("$openapiPath")
+            |    basePackage = "$basePackage"
+            |  }
+            |  generate("cat") {
+            |    apiFile = file("$openapiPath")
+            |    basePackage = "$basePackage"
+            |  }
+            |}
+            """.trimMargin()
+        )
+        val result = runGradle(projectDir, "fabriktPrintDependencies")
+
+        result.task(":fabriktPrintDependencies")
+            .shouldNotBeNull()
+            .outcome shouldBe TaskOutcome.SUCCESS
+
+        result.output shouldContain "\nDependencies for configuration dog:\n  implementation(\""
+        result.output shouldContain "\nDependencies for configuration cat:\n  implementation(\""
+    }
+
 }) {
 
     companion object {
@@ -685,20 +718,29 @@ class GradleTest : StringSpec({
         private fun runGradle(
             projectDir: File,
             vararg arguments: String = arrayOf("fabriktGenerate")
-        ): BuildResult =
-            GradleRunner.create()
-                .withProjectDir(projectDir)
-                .forwardOutput()
-                .withArguments(*(arrayOf("--console=plain", "-i", "--configuration-cache", "--stacktrace") + arguments))
-                .withPluginClasspath()
-                .build()
+        ): BuildResult {
+            projectDir.parentFile.resolve("out.log").writer().use { out ->
+                projectDir.parentFile.resolve("err.log").writer().use { err ->
+                    val args = arrayOf("--console=plain", "--info", "--configuration-cache", "--stacktrace") + arguments
+                    return GradleRunner.create()
+                        .withProjectDir(projectDir)
+                        .forwardStdOutput(out)
+                        .forwardStdError(err)
+                        .withArguments(*args)
+                        .withPluginClasspath()
+                        .build()
+                }
+            }
+        }
 
         private fun projectDir(name: String): File {
             val kotlinVersion = File("gradle/libs.versions.toml").readLines()
                 .mapNotNull { Regex("""kotlin\s*=\s*"([^"]+)"""").find(it)?.groupValues?.get(1) }
                 .single()
-            val projectDir = File("build/gradle-tests/$name")
+            val testDir = File("build/gradle-tests/$name")
+            val projectDir = File(testDir, "project")
             projectDir.deleteRecursivelyExcept(".gradle")
+            testDir.deleteRecursivelyExcept("project")
             projectDir.mkdirs()
             projectDir.resolve("settings.gradle.kts").writeText(
                 """
