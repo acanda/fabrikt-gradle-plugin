@@ -12,13 +12,13 @@ class FabriktPlugin : Plugin<Project> {
     companion object {
         const val PLUGIN_ID = "ch.acanda.gradle.fabrikt"
 
-        @Suppress("MaxLineLength")
         /**
          * We use the same task group name as the
          * [OpenAPI Generator Gradle Plugin](https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/src/main/kotlin/org/openapitools/generator/gradle/plugin/OpenApiGeneratorPlugin.kt#L197),
          * so the tasks of this plugin are available in the same group as the
          * tasks of the OpenAPI Generator Gradle Plugin.
          */
+        @Suppress("MaxLineLength")
         const val TASK_GROUP = "OpenAPI Tools"
 
         /**
@@ -56,6 +56,7 @@ class FabriktPlugin : Plugin<Project> {
         project.registerGenerateNamedTasks()
         project.addCompileKotlinDependsOn(fabriktGenerateTask)
         project.addGeneratedDirectoriesToIdea(extension)
+        project.registerPrintDependenciesTask(extension)
     }
 
     private fun Project.registerGenerateTask(extension: FabriktExtension): TaskProvider<FabriktGenerateTask> =
@@ -148,5 +149,15 @@ class FabriktPlugin : Plugin<Project> {
             }
         }
     }
+
+    private fun Project.registerPrintDependenciesTask(extension: FabriktExtension):
+        TaskProvider<FabriktPrintDependenciesTask> =
+        tasks.register("fabriktPrintDependencies", FabriktPrintDependenciesTask::class.java) { task ->
+            task.group = TASK_GROUP
+            task.description = "Prints the dependencies for all Fabrikt configurations."
+            val configurations = extension.getGenerateExtensions()
+            val defaults = extension.getDefaults()
+            task.addConfigurations(configurations, defaults, initializeGenerateTaskConfiguration(objects))
+        }
 
 }

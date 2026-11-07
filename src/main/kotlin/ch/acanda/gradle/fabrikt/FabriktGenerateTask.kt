@@ -2,23 +2,17 @@ package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.generator.GeneratorException
 import ch.acanda.gradle.fabrikt.generator.ValidationException
-import ch.acanda.gradle.fabrikt.generator.ValidationProblem
-import ch.acanda.gradle.fabrikt.generator.ValidationSeverity
 import ch.acanda.gradle.fabrikt.generator.generate
-import org.gradle.api.Action
+import ch.acanda.gradle.fabrikt.task.Progress
+import ch.acanda.gradle.fabrikt.task.handleGeneratorException
+import ch.acanda.gradle.fabrikt.task.handleValidationException
 import org.gradle.api.DefaultTask
-import org.gradle.api.file.RegularFile
 import org.gradle.api.model.ObjectFactory
-import org.gradle.api.problems.ProblemGroup
-import org.gradle.api.problems.ProblemId
-import org.gradle.api.problems.ProblemSpec
-import org.gradle.api.problems.Problems
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.CacheableTask
 import org.gradle.api.tasks.Nested
 import org.gradle.api.tasks.TaskAction
-import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 import javax.inject.Inject
 
@@ -59,84 +53,13 @@ abstract class FabriktGenerateTask @Inject constructor(
                     generate(config)
                 } catch (e: GeneratorException) {
                     progress.fail(specFile)
-                    handleGeneratorException(e, specFile, config.name)
+                    handleGeneratorException(e, specFile, config.name, services)
                 } catch (e: ValidationException) {
                     e.ifContainsError { progress.fail(specFile) }
-                    handleValidationException(e, config.name)
+                    handleValidationException(e, config.name, services)
                 }
             }
         }
-    }
-
-    @Suppress("UnstableApiUsage")
-    private fun handleGeneratorException(
-        e: GeneratorException,
-        specFile: RegularFile,
-        configName: String
-    ) {
-        val problemReporter = services.get(Problems::class.java).reporter
-        val id = ProblemId.create("generator", "Fabrikt failed to generate code.", PROBLEM_GROUP)
-        problemReporter.throwing(e, id, generatorProblem(specFile, configName))
-    }
-
-    @Suppress("UnstableApiUsage")
-    private fun handleValidationException(e: ValidationException, configName: String) {
-        val problemReporter = services.get(Problems::class.java).reporter
-        val id = ProblemId.create("validation", "Invalid value in Fabrikt settings.", PROBLEM_GROUP)
-        e.problems.forEach { problem ->
-            when (problem.severity) {
-                ValidationSeverity.WARNING -> problemReporter.report(id, validationProblem(problem, configName))
-                ValidationSeverity.ERROR -> problemReporter.throwing(e, id, validationProblem(problem, configName))
-            }
-        }
-    }
-
-    @Suppress("UnstableApiUsage")
-    private fun generatorProblem(specFile: RegularFile, name: String) =
-        Action { problem: ProblemSpec ->
-            problem
-                .contextualLabel("Fabrikt failed to generate code for configuration $name.")
-                .details("Fabrikt failed to generate code for the specification $specFile.")
-        }
-
-    @Suppress("UnstableApiUsage")
-    private fun validationProblem(e: ValidationProblem, name: String) =
-        Action { problem: ProblemSpec ->
-            problem
-                .contextualLabel("Invalid Fabrikt setting in configuration $name.")
-                .details(e.message.orEmpty())
-        }
-
-    companion object {
-        @Suppress("UnstableApiUsage")
-        private val PROBLEM_GROUP = ProblemGroup.create("fabrikt", "Fabrikt Code Generation")
-    }
-
-}
-
-private class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoCloseable {
-
-    private val progressLogger: ProgressLogger = factory.newOperation(FabriktGenerateTask::class.java)
-    private var count = 0
-    private var failed = false
-
-    init {
-        progressLogger.start("Generating Kotlin code with Fabrikt", "[0/$total]")
-    }
-
-    fun log(specFile: RegularFile, skip: Boolean) {
-        count++
-        val skipMsg = if (skip) " skip" else ""
-        progressLogger.progress("[$count/$total]$skipMsg generating code for $specFile...")
-    }
-
-    fun fail(specFile: RegularFile) {
-        failed = true
-        progressLogger.progress("[$count/$total] generating code for $specFile...", true)
-    }
-
-    override fun close() {
-        progressLogger.completed("", failed)
     }
 
 }

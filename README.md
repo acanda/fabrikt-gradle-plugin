@@ -70,6 +70,7 @@ The plugin provides the following tasks:
   by removing non-alphanumeric characters and converting the rest to CamelCase.
   E.g. the code for the configuration `generate("dog-api") { ... }` can be
   generated with `gradle fabriktGenerateDogApi`.
+- `fabriktPrintDependencies`: prints the dependencies of the generated code.
 
 ## Configuration
 

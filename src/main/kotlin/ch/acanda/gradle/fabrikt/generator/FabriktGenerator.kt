@@ -7,7 +7,7 @@ import com.cjbooms.fabrikt.util.ModelNameRegistry
 import org.gradle.api.provider.Property
 import java.io.File
 
-internal fun generate(config: GenerateTaskConfiguration) {
+internal fun generate(config: GenerateTaskConfiguration, vararg additionalArguments: String) {
     if (!config.skip.get()) {
         var arguments: Arguments
         try {
@@ -16,7 +16,7 @@ internal fun generate(config: GenerateTaskConfiguration) {
             ModelNameRegistry.clear()
             arguments = FabriktArguments(config).getCliArgs()
             if (!arguments.hasValidationErrors()) {
-                CodeGen.main(arguments.args)
+                CodeGen.main(arguments.args + additionalArguments)
                 processGeneratedSources(config)
             }
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
