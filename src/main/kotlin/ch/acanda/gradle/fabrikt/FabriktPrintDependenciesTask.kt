@@ -10,6 +10,7 @@ import org.gradle.api.DefaultTask
 import org.gradle.api.file.Directory
 import org.gradle.api.file.ProjectLayout
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.problems.Problems
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.Nested
@@ -22,7 +23,8 @@ import javax.inject.Inject
 @DisableCachingByDefault
 abstract class FabriktPrintDependenciesTask @Inject constructor(
     private val objects: ObjectFactory,
-    private val layout: ProjectLayout
+    private val layout: ProjectLayout,
+    private val problems: Problems
 ) : DefaultTask() {
 
     @get:Nested
@@ -67,10 +69,10 @@ abstract class FabriktPrintDependenciesTask @Inject constructor(
                 printDependencies(config, config.outputDirectory.get())
             } catch (e: GeneratorException) {
                 progress.fail(specFile)
-                handleGeneratorException(e, specFile, config.name, services)
+                handleGeneratorException(e, specFile, config.name, problems)
             } catch (e: ValidationException) {
                 e.ifContainsError { progress.fail(specFile) }
-                handleValidationException(e, config.name, services)
+                handleValidationException(e, config.name, problems)
             } finally {
                 Logger.getGlobal().filter = loggerFilter
             }
