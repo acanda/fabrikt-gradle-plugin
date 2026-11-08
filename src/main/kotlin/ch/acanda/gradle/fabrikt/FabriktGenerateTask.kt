@@ -8,6 +8,7 @@ import ch.acanda.gradle.fabrikt.task.handleGeneratorException
 import ch.acanda.gradle.fabrikt.task.handleValidationException
 import org.gradle.api.DefaultTask
 import org.gradle.api.model.ObjectFactory
+import org.gradle.api.problems.Problems
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.CacheableTask
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @CacheableTask
 abstract class FabriktGenerateTask @Inject constructor(
-    private val objects: ObjectFactory
+    private val objects: ObjectFactory,
+    private val problems: Problems
 ) : DefaultTask() {
 
     @get:Nested
@@ -53,10 +55,10 @@ abstract class FabriktGenerateTask @Inject constructor(
                     generate(config)
                 } catch (e: GeneratorException) {
                     progress.fail(specFile)
-                    handleGeneratorException(e, specFile, config.name, services)
+                    handleGeneratorException(e, specFile, config.name, problems)
                 } catch (e: ValidationException) {
                     e.ifContainsError { progress.fail(specFile) }
-                    handleValidationException(e, config.name, services)
+                    handleValidationException(e, config.name, problems)
                 }
             }
         }

@@ -6,35 +6,29 @@ import ch.acanda.gradle.fabrikt.generator.ValidationProblem
 import ch.acanda.gradle.fabrikt.generator.ValidationSeverity
 import org.gradle.api.Action
 import org.gradle.api.file.RegularFile
-import org.gradle.api.problems.ProblemGroup
-import org.gradle.api.problems.ProblemId
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
-import org.gradle.internal.service.ServiceRegistry
-
-@Suppress("UnstableApiUsage")
-private val PROBLEM_GROUP = ProblemGroup.create("fabrikt", "Fabrikt Code Generation")
 
 @Suppress("UnstableApiUsage")
 fun handleGeneratorException(
     e: GeneratorException,
     specFile: RegularFile,
     configName: String,
-    services: ServiceRegistry
+    problems: Problems
 ) {
-    val problemReporter = services.get(Problems::class.java).reporter
-    val id = ProblemId.create("generator", "Fabrikt failed to generate code.", PROBLEM_GROUP)
-    problemReporter.throwing(e, id, generatorProblem(specFile, configName))
+    val group = problems.groups.transformation
+    val id = group.codeTransformation.problemId("Fabrikt failed to generate code.")
+    problems.reporter.throwing(e, id, generatorProblem(specFile, configName))
 }
 
 @Suppress("UnstableApiUsage")
-fun handleValidationException(e: ValidationException, configName: String, services: ServiceRegistry) {
-    val problemReporter = services.get(Problems::class.java).reporter
-    val id = ProblemId.create("validation", "Invalid value in Fabrikt settings.", PROBLEM_GROUP)
+fun handleValidationException(e: ValidationException, configName: String, problems: Problems) {
+    val group = problems.groups.gradle.pluginValidation
+    val id = group.problemId("Invalid value in Fabrikt settings.")
     e.problems.forEach { problem ->
         when (problem.severity) {
-            ValidationSeverity.WARNING -> problemReporter.report(id, validationProblem(problem, configName))
-            ValidationSeverity.ERROR -> problemReporter.throwing(e, id, validationProblem(problem, configName))
+            ValidationSeverity.WARNING -> problems.reporter.report(id, validationProblem(problem, configName))
+            ValidationSeverity.ERROR -> problems.reporter.throwing(e, id, validationProblem(problem, configName))
         }
     }
 }
