@@ -77,13 +77,19 @@ The plugin provides the following tasks:
 > [!NOTE]
 > Version 2.0.0 of the plugin breaks compatibility with previous versions.
 > - Fabrikt has stopped supporting Resilience4J for OkHttp clients. The property
+
     `client.resilience4j` is therefore not available any more.
+
 > - Sealed interfaces for `oneOf` are now always enabled and Fabrikt removed the
+
     option to disable them. The property `model.sealedInterfacesForOneOf` is
     therefore no longer available.
+
 > - The default for `model.serializationLibrary` has changed from `Jackson2` to
+
     `Jackson3`. The deprecated options `Jackson` and `Kotlin` have been removed.
     Use `Jackson2` or `Jackson3`, and `Kotlinx` instead.
+
 >
 > Please refer to Fabrikt's
 > [migration guide](https://github.com/fabrikt-io/fabrikt/blob/28.0.0/MIGRATION.md)
@@ -152,6 +158,7 @@ fabrikt {
             okHttpNonNullResponsePayloads = disabled
             dynamicBaseUrl = disabled
             responseMediaTypeFunctions = disabled
+            openApiSecurity = disabled
             openFeignClientName = "fabrikt-client"
         }
         controller {
@@ -225,9 +232,7 @@ fabrikt {
 | client.okHttpNonNullResponsePayloads         | Enables making `ApiResponse.data` non-null. Only for OkHttp clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                           | `disabled`                        |
 | client.responseMediaTypeFunctions            | Enables generating one function per media type for operations with different schemas per media type. Only for OkHttp, OpenFeign and Spring HTTP Interface clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                             | `disabled`                        |
 | client.dynamicBaseUrl                        | Enables making `ApiConfiguration.basePath` empty, allowing you to set the base URL at runtime. Only for Ktor clients.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                          | `disabled`                        |
-| client.openApiApiKeyAuthentication           | Enables adding header API-key helpers and complete security alternatives with enabled Bearer and OAuth2 schemes.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                               | `disabled`                        |
-| client.openApiBearerAuthentication           | Enables adding operation-specific Bearer token helpers for OpenAPI HTTP Bearer security schemes.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                               | `disabled`                        |
-| client.openApiOAuth2Authentication           | Enables adding operation-specific OAuth2 access-token helpers that pass required scopes to a caller-provided token provider.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                   | `disabled`                        |
+| client.openApiSecurity                       | Enables emitting a scheme-agnostic security declaration (scheme dictionary, per-operation requirements) and a single header resolver.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                          | `disabled`                        |
 | client.openFeignClientName                   | Specifies the OpenFeign client name for `spring-cloud-starter-openfeign` (only for target `OpenFeign`).                                                                                                                                                                                                                            | `fabrikt-client`                  |
 | controller.generate                          | Enables generating the http controller code.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                                                                   | `disabled`                        |
 | controller.authentication                    | Enables adding the authentication parameter to the generated controller functions.<br/>Values: `enabled`, `disabled`, `true`, `false`.                                                                                                                                                                                             | `disabled`                        |
