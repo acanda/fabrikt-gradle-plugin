@@ -77,19 +77,13 @@ The plugin provides the following tasks:
 > [!NOTE]
 > Version 2.0.0 of the plugin breaks compatibility with previous versions.
 > - Fabrikt has stopped supporting Resilience4J for OkHttp clients. The property
-
     `client.resilience4j` is therefore not available any more.
-
 > - Sealed interfaces for `oneOf` are now always enabled and Fabrikt removed the
-
     option to disable them. The property `model.sealedInterfacesForOneOf` is
     therefore no longer available.
-
 > - The default for `model.serializationLibrary` has changed from `Jackson2` to
-
     `Jackson3`. The deprecated options `Jackson` and `Kotlin` have been removed.
     Use `Jackson2` or `Jackson3`, and `Kotlinx` instead.
-
 >
 > Please refer to Fabrikt's
 > [migration guide](https://github.com/fabrikt-io/fabrikt/blob/28.0.0/MIGRATION.md)
