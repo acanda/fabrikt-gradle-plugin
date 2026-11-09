@@ -130,13 +130,7 @@ configurations:
       dynamicBaseUrl:
         type: Boolean
         default: false
-      openApiApiKeyAuthentication:
-        type: Boolean
-        default: false
-      openApiBearerAuthentication:
-        type: Boolean
-        default: false
-      openApiOAuth2Authentication:
+      openApiSecurity:
         type: Boolean
         default: false
       openFeignClientName:
