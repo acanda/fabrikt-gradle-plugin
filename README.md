@@ -19,7 +19,7 @@ To use it with the Kotlin DSL (build.gradle.kts):
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "2.2.0"
+    id("ch.acanda.gradle.fabrikt") version "2.2.1"
 }
 
 fabrikt {
@@ -34,7 +34,7 @@ To use it with the Groovy DSL (build.gradle):
 
 ```groovy
 plugins {
-    id 'ch.acanda.gradle.fabrikt' version '2.2.0'
+    id 'ch.acanda.gradle.fabrikt' version '2.2.1'
 }
 
 fabrikt {
@@ -77,13 +77,19 @@ The plugin provides the following tasks:
 > [!NOTE]
 > Version 2.0.0 of the plugin breaks compatibility with previous versions.
 > - Fabrikt has stopped supporting Resilience4J for OkHttp clients. The property
+
     `client.resilience4j` is therefore not available any more.
+
 > - Sealed interfaces for `oneOf` are now always enabled and Fabrikt removed the
+
     option to disable them. The property `model.sealedInterfacesForOneOf` is
     therefore no longer available.
+
 > - The default for `model.serializationLibrary` has changed from `Jackson2` to
+
     `Jackson3`. The deprecated options `Jackson` and `Kotlin` have been removed.
     Use `Jackson2` or `Jackson3`, and `Kotlinx` instead.
+
 >
 > Please refer to Fabrikt's
 > [migration guide](https://github.com/fabrikt-io/fabrikt/blob/28.0.0/MIGRATION.md)
@@ -91,7 +97,7 @@ The plugin provides the following tasks:
 
 ```kotlin
 plugins {
-    id("ch.acanda.gradle.fabrikt") version "2.2.0"
+    id("ch.acanda.gradle.fabrikt") version "2.2.1"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
     // output directory as a generated sources directory.
     idea
