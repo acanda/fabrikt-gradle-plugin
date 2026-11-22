@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt
 
+import com.cjbooms.fabrikt.cli.AdditionalPropertiesMode
 import com.cjbooms.fabrikt.cli.ClientCodeGenTargetType
 import com.cjbooms.fabrikt.cli.CodeGenTypeOverride
 import com.cjbooms.fabrikt.cli.ControllerCodeGenTargetType
@@ -36,6 +37,10 @@ class FabriktOptionsTest : StringSpec({
 
     "ControllerTarget" {
         ControllerTargetOption::class shouldMatch ControllerCodeGenTargetType::class
+    }
+
+    "AdditionalProperties" {
+        AdditionalPropertiesOption::class shouldMatch AdditionalPropertiesMode::class
     }
 
     "SerializationLibrary" {

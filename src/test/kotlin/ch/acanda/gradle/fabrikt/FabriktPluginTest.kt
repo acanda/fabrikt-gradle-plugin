@@ -54,6 +54,7 @@ class FabriktPluginTest : WordSpec({
                     it.quarkusReflectionConfig.set(it.enabled)
                     it.addFileDisclaimer.set(it.enabled)
                     it.visibility.set(it.internal)
+                    it.additionalProperties.set(it.unlessExplicitlyDisabled)
                     with(it.operationIdTransform) {
                         regex.set(".*_")
                         replacement.set("")
@@ -126,6 +127,7 @@ class FabriktPluginTest : WordSpec({
                     this.quarkusReflectionConfig shouldContain true
                     this.addFileDisclaimer shouldContain true
                     this.visibility.option shouldBe VisibilityOption.internal
+                    this.additionalProperties.option shouldBe AdditionalPropertiesOption.unlessExplicitlyDisabled
                     with(operationIdTransform) {
                         regex shouldContainString ".*_"
                         replacement shouldContainString ""
@@ -212,6 +214,7 @@ class FabriktPluginTest : WordSpec({
                     this.quarkusReflectionConfig shouldContain false
                     this.addFileDisclaimer shouldContain false
                     this.visibility.option shouldBe VisibilityOption.public
+                    this.additionalProperties.option shouldBe AdditionalPropertiesOption.onlyWhenRequested
                     with(operationIdTransform) {
                         regex shouldContain null
                         replacement shouldContain null

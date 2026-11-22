@@ -48,6 +48,7 @@ class GradleTest : StringSpec({
             |    addFileDisclaimer = enabled
             |    addGeneratedAnnotation = enabled
             |    visibility = internal
+            |    additionalProperties = unlessExplicitlyDisabled
             |    operationIdTransform {
             |      regex = ".*_"
             |      replacement = ""
@@ -156,6 +157,7 @@ class GradleTest : StringSpec({
             |    addFileDisclaimer = enabled
             |    addGeneratedAnnotation = enabled
             |    visibility = public
+            |    additionalProperties = unlessExplicitlyDisabled
             |    operationIdTransform {
             |      regex = ".*_"
             |      replacement = ""
@@ -415,6 +417,7 @@ class GradleTest : StringSpec({
             |    addFileDisclaimer = enabled
             |    addGeneratedAnnotation = enabled
             |    visibility = internal
+            |    additionalProperties = unlessExplicitlyDisabled
             |    operationIdTransform {
             |      regex = ".*_"
             |      replacement = ""

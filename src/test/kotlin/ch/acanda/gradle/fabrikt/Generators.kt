@@ -33,6 +33,7 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
         addFileDisclaimer.set(Arb.boolean().orNull(0.2).bind())
         addGeneratedAnnotation.set(Arb.boolean().orNull(0.2).bind())
         visibility.set(Arb.of(IVisibilityOption.options).bind())
+        additionalProperties.set(Arb.of(IAdditionalPropertiesOption.options).bind())
         val operationIdTransformRegex = Arb.string(1..5, Codepoint.alphanumeric()).orNull(0.2).bind()
         operationIdTransform.regex.set(operationIdTransformRegex)
         operationIdTransform.replacement.set(if (operationIdTransformRegex != null) Arb.string().bind() else null)

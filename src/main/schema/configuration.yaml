@@ -43,6 +43,9 @@ configurations:
       visibility:
         type: VisibilityOption
         default: public
+      additionalProperties:
+        type: AdditionalPropertiesOption
+        default: onlyWhenRequested
       operationIdTransform:
         type: OperationIdTransform
       typeOverrides:
@@ -337,3 +340,9 @@ options:
     mapping:
       public: PUBLIC
       internal: INTERNAL
+
+  AdditionalPropertiesOption:
+    source: com.cjbooms.fabrikt.cli.AdditionalPropertiesMode
+    mapping:
+      onlyWhenRequested: ONLY_WHEN_REQUESTED
+      unlessExplicitlyDisabled: UNLESS_EXPLICITLY_DISABLED
