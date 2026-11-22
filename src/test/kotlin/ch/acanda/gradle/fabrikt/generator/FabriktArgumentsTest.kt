@@ -59,6 +59,7 @@ class FabriktArgumentsTest : StringSpec({
                 OutputOptionType.ADD_GENERATED_ANNOTATION
             )
             cliArgs.shouldContainOptionally(config.visibility.option, ARG_VISIBILITY)
+            cliArgs.shouldContainOptionally(config.additionalProperties.option, ARG_ADDITIONAL_PROPERTIES)
             with(config.operationIdTransform) {
                 val value = convertOperationIdTransform()
                 if (value != null) {

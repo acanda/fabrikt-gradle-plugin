@@ -35,6 +35,7 @@ internal const val ARG_MODEL_JACKSON_NULLABILITY_MODE = "--jackson-nullability-m
 internal const val ARG_MODEL_INSTANT_LIB = "--instant-library"
 internal const val ARG_OUTPUT_OPTS = "--output-opts"
 internal const val ARG_VISIBILITY = "--visibility"
+internal const val ARG_ADDITIONAL_PROPERTIES = "--additional-properties"
 
 internal data class FabriktArguments(private val config: GenerateTaskConfiguration) {
 
@@ -71,20 +72,15 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_VALIDATION_LIB)
             args.add(library)
         }
-        if (quarkusReflectionConfig.get()) {
-            args.add(ARG_TARGETS)
-            args.add(CodeGenerationType.QUARKUS_REFLECTION_CONFIG.name)
-        }
-        if (addFileDisclaimer.get()) {
-            args.add(ARG_OUTPUT_OPTS)
-            args.add(OutputOptionType.ADD_FILE_DISCLAIMER.name)
-        }
-        if (addGeneratedAnnotation.get()) {
-            args.add(ARG_OUTPUT_OPTS)
-            args.add(OutputOptionType.ADD_GENERATED_ANNOTATION.name)
-        }
+        args.addIfEnabled(quarkusReflectionConfig, ARG_TARGETS, CodeGenerationType.QUARKUS_REFLECTION_CONFIG)
+        args.addIfEnabled(addFileDisclaimer, ARG_OUTPUT_OPTS, OutputOptionType.ADD_FILE_DISCLAIMER)
+        args.addIfEnabled(addGeneratedAnnotation, ARG_OUTPUT_OPTS, OutputOptionType.ADD_GENERATED_ANNOTATION)
         visibility.withOptionName { option ->
             args.add(ARG_VISIBILITY)
+            args.add(option)
+        }
+        additionalProperties.withOptionName { option ->
+            args.add(ARG_ADDITIONAL_PROPERTIES)
             args.add(option)
         }
         operationIdTransform.validate(problems).convertOperationIdTransform()?.let {
