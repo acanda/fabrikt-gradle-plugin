@@ -1,5 +1,6 @@
 package ch.acanda.gradle.fabrikt
 
+import com.sun.net.httpserver.HttpServer
 import io.kotest.core.spec.style.StringSpec
 import io.kotest.matchers.collections.shouldContain
 import io.kotest.matchers.collections.shouldNotContain
@@ -16,8 +17,11 @@ import org.gradle.tooling.ProjectConnection
 import org.gradle.tooling.internal.consumer.DefaultModelBuilder
 import org.gradle.tooling.model.idea.IdeaProject
 import java.io.File
+import java.net.InetSocketAddress
+import java.net.URI
 import kotlin.reflect.KClass
 
+@Suppress("LargeClass")
 class GradleTest : StringSpec({
 
     "`gradle fabriktGenerate` with full configuration should run fabrikt" {
@@ -245,8 +249,44 @@ class GradleTest : StringSpec({
         outputs shouldContain "$resourcePath/reflection-config.json"
     }
 
+    "`gradle fabriktGenerate` with remote api specification should run fabrikt" {
+        val projectDir = projectDir("remote-api")
+        val basePackage = "ch.acanda"
+        val spec = createSpec()
+        withServer(spec) { specUri ->
+            projectDir.resolve("build.gradle.kts").writeText(
+                """
+                |import java.net.URI
+                |
+                |plugins {
+                |    id("ch.acanda.gradle.fabrikt")
+                |}
+                |
+                |fabrikt {
+                |  generate("dog") {
+                |    remoteApiFile {
+                |      apiFile = URI("$specUri")
+                |      apiFragments = listOf()
+                |      auth = listOf("Authorization: Bearer test-token")
+                |    }
+                |    basePackage = "$basePackage"
+                |  }
+                |}
+                """.trimMargin()
+            )
+            val result = runGradle(projectDir)
+            result.task(":fabriktGenerate")
+                .shouldNotBeNull()
+                .outcome shouldBe TaskOutcome.SUCCESS
+
+            val modelsPath = "build/generated/sources/fabrikt/src/main/kotlin/${basePackage.packageToPath()}/models"
+            val files = projectDir.resolve(modelsPath).listFilesRelative()
+            files shouldContain "Dog.kt"
+        }
+    }
+
     "`gradle fabriktGenerate` with json schema should run fabrikt" {
-        val projectDir = projectDir("minimal-configuration")
+        val projectDir = projectDir("json-schema")
         val basePackage = "ch.acanda"
         val jsonSchema = createJsonSchema(projectDir)
         projectDir.resolve("build.gradle.kts").writeText(
@@ -617,37 +657,38 @@ class GradleTest : StringSpec({
 
     companion object {
 
+        private fun createSpec(name: String = "Dog"): String =
+            """
+            |openapi: 3.0.3
+            |info:
+            |  title: Test $name API
+            |  version: "1.0"
+            |paths:
+            |  /${name.lowercase()}:
+            |    get:
+            |      responses:
+            |        200:
+            |          description: get $name
+            |          content:
+            |            application/json:
+            |              schema:
+            |                ${'$'}ref: "#/components/schemas/$name"
+            |
+            |components:
+            |  schemas: 
+            |    $name:
+            |      type: object
+            |      properties:
+            |        isGoodBoy:
+            |          type: boolean
+            |          default: true
+            """.trimMargin()
+
         private fun createSpec(projectDir: File, name: String = "Dog"): String {
             val specPath = "src/main/openapi/$name.yaml"
             val specFile = projectDir.resolve(specPath)
             specFile.parentFile.mkdirs()
-            specFile.writeText(
-                """
-                |openapi: 3.0.3
-                |info:
-                |  title: Test $name API
-                |  version: "1.0"
-                |paths:
-                |  /${name.lowercase()}:
-                |    get:
-                |      responses:
-                |        200:
-                |          description: get $name
-                |          content:
-                |            application/json:
-                |              schema:
-                |                ${'$'}ref: "#/components/schemas/$name"
-                |
-                |components:
-                |  schemas: 
-                |    $name:
-                |      type: object
-                |      properties:
-                |        isGoodBoy:
-                |          type: boolean
-                |          default: true
-                """.trimMargin()
-            )
+            specFile.writeText(createSpec(name))
             return specPath
         }
 
@@ -758,6 +799,24 @@ class GradleTest : StringSpec({
             return (model(modelClass.java) as DefaultModelBuilder)
                 .withInjectedClassPath(classpath)
                 .get()
+        }
+
+        private fun withServer(spec: String, block: (spec: URI) -> Unit) {
+            val server = HttpServer.create(InetSocketAddress("127.0.0.1", 0), 0)
+            server.createContext("/") { exchange ->
+                println("==> Serving spec for path ${exchange.requestURI}")
+                println("$spec")
+                val body = spec.toByteArray()
+                exchange.responseHeaders["Content-Type"] = "application/yaml"
+                exchange.sendResponseHeaders(200, body.size.toLong())
+                exchange.responseBody.use { it.write(body) }
+            }
+            try {
+                server.start()
+                block(URI.create("http://127.0.0.1:${server.address.port}/dog.yaml"))
+            } finally {
+                server.stop(0)
+            }
         }
 
     }

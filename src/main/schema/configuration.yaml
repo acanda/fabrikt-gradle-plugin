@@ -8,6 +8,8 @@ configurations:
         includeInDefaults: false
       apiFragments:
         type: ConfigurableFileCollection
+      remoteApiFile:
+        type: RemoteApiFile
       jsonSchema:
         type: JsonSchema
         includeInDefaults: false
@@ -56,6 +58,16 @@ configurations:
       skip:
         type: Boolean
         default: false
+
+  RemoteApiFile:
+    properties:
+      apiFile:
+        type: URI
+        includeInDefaults: false
+      apiFragments:
+        type: List<URI>
+      auth:
+        type: List<CharSequence>
 
   JsonSchema:
     properties:

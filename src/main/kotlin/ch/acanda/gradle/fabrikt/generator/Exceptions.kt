@@ -1,11 +1,9 @@
 package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.FabriktPluginException
-import java.nio.file.Path
-import kotlin.io.path.absolutePathString
 
-class GeneratorException(val apiFile: Path, cause: Throwable?) :
-    FabriktPluginException("Failed to generate code for specification ${apiFile.absolutePathString()}.", cause)
+class GeneratorException(val specFile: String, cause: Throwable?) :
+    FabriktPluginException("Failed to generate code for specification $specFile.", cause)
 
 class ValidationException(val problems: List<ValidationProblem>) :
     FabriktPluginException(problems.joinToString("\n") { "[${it.severity}] ${it.message}" }) {

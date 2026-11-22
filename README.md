@@ -96,6 +96,8 @@ The plugin provides the following tasks:
 > for more information.
 
 ```kotlin
+import java.net.URI
+
 plugins {
     id("ch.acanda.gradle.fabrikt") version "2.2.1"
     // If you are using IntelliJ IDEA, the plugin will automatically add the
@@ -106,8 +108,13 @@ plugins {
 fabrikt {
     generate("dog") {
         // mandatory properties
-        // either apiFile or jsonSchema must be specified
+        // specify exactly one of apiFile, remoteApiFile, or jsonSchema
         apiFile = file("src/main/openapi/dog.yaml")
+        remoteApiFile {
+            apiFile = URI("https://example.com/openapi/dog.yaml")
+            apiFragments = emptyList()
+            auth = emptyList()
+        }
         jsonSchema {
             file = file("src/main/json-schema/dog.yaml")
             schemaPointer = "/spec/schemaObject"
@@ -196,6 +203,9 @@ fabrikt {
 |----------------------------------------------|------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------------------|
 | apiFile                                      | The path to an Open API v3 specification, interpreted relative to the project directory.                                                                                                                                                                                                                                           |                                   |
 | apiFragments                                 | A set of paths to Open API v3 specification fragments, interpreted relative to the project directory.                                                                                                                                                                                                                              | `files()`                         |
+| remoteApiFile.apiFile                        | The URI of a remote Open API v3 specification.                                                                                                                                                                                                                                                                                     |                                   |
+| remoteApiFile.apiFragments                   | A set of URIs to Open API v3 specification fragments.                                                                                                                                                                                                                                                                              | `emptyList()`                     |
+| remoteApiFile.auth                           | Authorization headers sent when fetching an URI. See [Fabrikt's configuration options](https://github.com/fabrikt-io/fabrikt#configuration-options) for more details.                                                                                                                                                              | `emptyList()`                     |
 | jsonSchema.file                              | The path of a JSON Schema document (draft-04 through 2020-12), interpreted relative to the project directory.                                                                                                                                                                                                                      |                                   |
 | jsonSchema.schemaPointer                     | A JSON pointer selecting the schema nested inside a larger resource. If not set, the file must be a JSON schema document.                                                                                                                                                                                                          | `null`                            |
 | jsonSchema.rootName                          | The name of the generated root schema. If not set, it defaults to the schema's `title`, then the resource's `/metadata/name`, then `Schema`.                                                                                                                                                                                       | `null`                            |
@@ -263,8 +273,10 @@ fabrikt {
 ### Defaults
 
 If you have many OpenAPI specifications with nearly the same configuration, you
-can set the common values in the `defaults`. All properties except `apiFile` and
-`basePackage` can be configured with default values.
+can set the common values in the `defaults`. All properties except `apiFile`,
+`remoteApiFile.apiFile`, jsonSchema, and `basePackage` can be configured with
+default values. For properties with list values, the items from the `defaults`
+are appended to those in the individual configuration.
 
 > Note: The `defaults` block is only supported in the Kotlin DSL and not in the
 > Groovy DSL.

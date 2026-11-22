@@ -67,8 +67,9 @@ private fun buildExtensions(name: ClassName, config: ConfigurationDefinition, sc
         spec.addSuperinterface(Named::class.asClassName())
         spec.primaryConstructor(FunSpec.constructorBuilder().addAnnotation(Inject::class).build())
     }
-    val hasListType = config.properties.any { (_, property) -> isList(property.extensionType) }
-    if (hasListType) {
+    val hasListWithNestedType =
+        config.properties.any { (_, property) -> isListWithNestedType(property.extensionType, schema.configurations) }
+    if (hasListWithNestedType) {
         spec.primaryConstructor(
             FunSpec.constructorBuilder()
                 .addAnnotation(Inject::class)
@@ -93,7 +94,7 @@ private fun buildExtensions(name: ClassName, config: ConfigurationDefinition, sc
                         .build()
                 )
             }
-            if (isList(property.extensionType)) {
+            if (isListWithNestedType(property.extensionType, schema.configurations)) {
                 val listType = getListType(property.extensionType)
                 spec.addFunction(buildListElementConstructorFunction(listType, CLASS_NAME_SUFFIX))
             }

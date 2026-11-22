@@ -53,7 +53,7 @@ private fun buildConfigurations(
         spec.addNamed()
     }
     val optionTypes = config.properties.flatMap { (name, property) ->
-        val isListProperty = isList(property.type)
+        val isListProperty = isListWithNestedType(property.type, schema.configurations)
         spec.addProperty(buildProperty(name, property.type, schema, CLASS_NAME_SUFFIX) {
             if (isListProperty) {
                 addAnnotation(AnnotationSpec.builder(Nested::class).useSiteTarget(GET).build())

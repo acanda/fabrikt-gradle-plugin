@@ -14,7 +14,6 @@ import com.squareup.kotlinpoet.ParameterizedTypeName.Companion.parameterizedBy
 import com.squareup.kotlinpoet.TypeAliasSpec
 import com.squareup.kotlinpoet.TypeVariableName
 import com.squareup.kotlinpoet.UNIT
-import com.squareup.kotlinpoet.WildcardTypeName.Companion.producerOf
 import com.squareup.kotlinpoet.asClassName
 import org.gradle.api.file.ConfigurableFileCollection
 import org.gradle.api.model.ObjectFactory
@@ -37,6 +36,7 @@ internal fun buildInitializers(schema: ConfigurationSchema): FileSpec {
     spec.addFunction(assignPropertyFunction())
     spec.addFunction(assignConfigurableFileCollectionFunction())
     spec.addFunction(assignListPropertyFunction())
+    spec.addFunction(assignListNestedPropertyFunction())
     return spec.build()
 }
 
@@ -111,7 +111,7 @@ private fun buildInitializerCodeBlock(config: ConfigurationDefinition, schema: C
                     "initialize%1NConfiguration(objects).invoke(%2N, source.%2N, null)", property.type, name
                 )
             }
-        } else if (isList(property.type)) {
+        } else if (isListWithNestedType(property.type, schema.configurations)) {
             val listType = getListType(property.type)
             fun mapping(source: String) = schema.configurations[listType]?.let { config ->
                 config.properties.map { (name, _) -> "$name.set($source.$name)" }.joinToString("\n|    ")
@@ -206,6 +206,29 @@ private fun assignConfigurableFileCollectionFunction(): FunSpec =
         .build()
 
 private fun assignListPropertyFunction(): FunSpec {
+    val typeVar = TypeVariableName("T")
+    val listTypeVar = List::class.asClassName().parameterizedBy(typeVar)
+    return FunSpec.builder("assign")
+        .addModifiers(KModifier.PRIVATE)
+        .addTypeVariable(TypeVariableName(typeVar.name, Any::class))
+        .receiver(ListProperty::class.asClassName().parameterizedBy(typeVar))
+        .addParameter("value", Provider::class.asClassName().parameterizedBy(listTypeVar))
+        .addParameter("defaultValue", Provider::class.asClassName().parameterizedBy(listTypeVar).nullable())
+        .addStatement(
+            """
+            |val extension = value.orElse(emptyList<%1L>())
+            |set(extension)
+            |if (defaultValue != null) {
+            |  val defaults = defaultValue.orElse(emptyList<%1L>())
+            |  addAll(defaults)
+            |}
+            """.trimMargin(),
+            typeVar
+        )
+        .build()
+}
+
+private fun assignListNestedPropertyFunction(): FunSpec {
     val configTypeVariable = "CONFIG"
     val extensionTypeVariable = "EXTENSION"
     val defaultsTypeVariable = "DEFAULTS"
