@@ -291,11 +291,10 @@ class FabriktPluginTest : WordSpec({
 
             project.evaluate()
 
-            val relativeApiFile = apiFile.relativeTo(project.projectDir)
             with(project.tasks) {
                 names shouldContainAll listOf("fabriktGenerate", "fabriktGenerateDog", "fabriktGenerateCat")
                 named("fabriktGenerateDog", FabriktGenerateTask::class.java).get().apply {
-                    description shouldBe "Generates the classes for $relativeApiFile."
+                    description shouldBe "Generates the classes for the configuration \"dog\"."
                     configurations.get().apply {
                         this shouldHaveSize 1
                         first().skip.get() shouldBe false
@@ -309,7 +308,7 @@ class FabriktPluginTest : WordSpec({
                     }
                 }
                 named("fabriktGenerateCat", FabriktGenerateTask::class.java).get().apply {
-                    description shouldBe "Generates the classes for $relativeApiFile."
+                    description shouldBe "Generates the classes for the configuration \"cat\"."
                     configurations.get().apply {
                         this shouldHaveSize 1
                         first().skip.get() shouldBe false

@@ -4,6 +4,7 @@ import ch.acanda.gradle.fabrikt.generator.GeneratorException
 import ch.acanda.gradle.fabrikt.generator.ValidationException
 import ch.acanda.gradle.fabrikt.generator.generate
 import ch.acanda.gradle.fabrikt.task.Progress
+import ch.acanda.gradle.fabrikt.task.getSpecName
 import ch.acanda.gradle.fabrikt.task.handleGeneratorException
 import ch.acanda.gradle.fabrikt.task.handleValidationException
 import org.gradle.api.DefaultTask
@@ -22,6 +23,13 @@ abstract class FabriktGenerateTask @Inject constructor(
     private val objects: ObjectFactory,
     private val problems: Problems
 ) : DefaultTask() {
+
+    init {
+        outputs.upToDateWhen { configurations.get().none { it.hasRemoteInputs() } }
+        outputs.doNotCacheIf("Remote API inputs can change without their URIs changing") {
+            configurations.get().any { it.hasRemoteInputs() }
+        }
+    }
 
     @get:Nested
     abstract val configurations: ListProperty<GenerateTaskConfiguration>
@@ -48,20 +56,23 @@ abstract class FabriktGenerateTask @Inject constructor(
         val configs = configurations.get()
         Progress(progressLoggerFactory, configs.size).use { progress ->
             configs.forEach { config ->
-                val specFile = config.apiFile.orElse(config.jsonSchema.file).get()
+                val specName = config.getSpecName()
                 val skip = config.skip.get()
-                progress.log(specFile, skip)
+                progress.log(specName, skip)
                 try {
                     generate(config)
                 } catch (e: GeneratorException) {
-                    progress.fail(specFile)
-                    handleGeneratorException(e, specFile, config.name, problems)
+                    progress.fail(specName)
+                    handleGeneratorException(e, specName, config.name, problems)
                 } catch (e: ValidationException) {
-                    e.ifContainsError { progress.fail(specFile) }
+                    e.ifContainsError { progress.fail(specName) }
                     handleValidationException(e, config.name, problems)
                 }
             }
         }
     }
+
+    private fun GenerateTaskConfiguration.hasRemoteInputs(): Boolean =
+        !skip.get() && (remoteApiFile.apiFile.isPresent || remoteApiFile.apiFragments.get().isNotEmpty())
 
 }

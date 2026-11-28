@@ -31,6 +31,7 @@ import javax.annotation.processing.Generated
 internal const val PACKAGE = "ch.acanda.gradle.fabrikt"
 internal const val BOOLEAN = "Boolean"
 internal const val CHAR_SEQUENCE = "CharSequence"
+internal const val URI = "URI"
 internal const val REGULAR_FILE_PROPERTY = "RegularFileProperty"
 internal const val CONFIGURABLE_FILE_COLLECTION = "ConfigurableFileCollection"
 internal const val DIRECTORY_PROPERTY = "DirectoryProperty"
@@ -89,9 +90,8 @@ internal fun getPropertyType(
         type == REGULAR_FILE_PROPERTY || type == CONFIGURABLE_FILE_COLLECTION || type == DIRECTORY_PROPERTY ->
             getClassName(type, schema, nestedSuffix)
 
-        isList(type) -> ListProperty::class.asClassName().parameterizedBy(
-            ClassName(PACKAGE, getListType(type) + nestedSuffix)
-        )
+        isList(type) ->
+            ListProperty::class.asClassName().parameterizedBy(getClassName(getListType(type), schema, nestedSuffix))
 
         else -> Property::class.asClassName().parameterizedBy(getClassName(type, schema, nestedSuffix))
     }
@@ -103,6 +103,7 @@ internal fun getClassName(
 ): ClassName = when {
     type == BOOLEAN -> Boolean::class.asClassName()
     type == CHAR_SEQUENCE -> CharSequence::class.asClassName()
+    type == URI -> java.net.URI::class.asClassName()
     type == REGULAR_FILE_PROPERTY -> RegularFileProperty::class.asClassName()
     type == CONFIGURABLE_FILE_COLLECTION -> ConfigurableFileCollection::class.asClassName()
     type == DIRECTORY_PROPERTY -> DirectoryProperty::class.asClassName()
@@ -134,6 +135,9 @@ internal fun isList(type: String): Boolean =
 
 internal fun getListType(type: String): String =
     type.substring(type.indexOf('<') + 1, type.lastIndexOf('>')).trim()
+
+internal fun isListWithNestedType(type: String, configs: ConfigurationDefinitions): Boolean =
+    isList(type) && isNested(getListType(type), configs)
 
 internal fun actionOf(type: TypeName): TypeName =
     Action::class.asClassName().parameterizedBy(type)

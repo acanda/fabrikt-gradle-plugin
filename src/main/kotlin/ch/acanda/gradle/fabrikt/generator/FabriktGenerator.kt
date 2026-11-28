@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt.generator
 
 import ch.acanda.gradle.fabrikt.GenerateTaskConfiguration
 import ch.acanda.gradle.fabrikt.processor.processGeneratedSources
+import ch.acanda.gradle.fabrikt.task.getSpecName
 import com.cjbooms.fabrikt.cli.CodeGen
 import com.cjbooms.fabrikt.util.ModelNameRegistry
 import org.gradle.api.provider.Property
@@ -13,15 +14,14 @@ internal fun generate(config: GenerateTaskConfiguration, vararg additionalArgume
         try {
             config.sourcesDir().deleteRecursively()
             config.resourcesDir().deleteRecursively()
-            ModelNameRegistry.clear()
             arguments = FabriktArguments(config).getCliArgs()
             if (!arguments.hasValidationErrors()) {
+                ModelNameRegistry.clear()
                 CodeGen.main(arguments.args + additionalArguments)
                 processGeneratedSources(config)
             }
         } catch (@Suppress("TooGenericExceptionCaught") e: Exception) {
-            val spec = config.apiFile.orElse(config.jsonSchema.file).get().asFile.toPath()
-            throw GeneratorException(spec, e)
+            throw GeneratorException(config.getSpecName(), e)
         }
         if (arguments.hasValidationProblems()) {
             throw ValidationException(arguments.problems)

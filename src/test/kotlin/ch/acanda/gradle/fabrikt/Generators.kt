@@ -14,6 +14,7 @@ import io.kotest.property.arbitrary.set
 import io.kotest.property.arbitrary.string
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
+import java.net.URI
 import java.nio.file.Paths
 
 internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
@@ -21,6 +22,9 @@ internal val generateTaskExtGen: Arb<GenerateTaskExtension> = arbitrary {
     objects.newInstance(GenerateTaskExtension::class.java, "api").apply {
         apiFile.set(pathGen.orNull(0.2).bind())
         apiFragments.setFrom(Arb.set(pathGen, 0..3).bind())
+        remoteApiFile.apiFile.set(uriGen.orNull(0.2).bind())
+        remoteApiFile.apiFragments.set(Arb.list(uriGen, 0..2).bind())
+        remoteApiFile.auth.set(Arb.list(Arb.pattern("[a-z]{5,7}: [a-z]{1,5}"), 0..2).bind())
         jsonSchema.file.set(pathGen.bind())
         jsonSchema.schemaPointer.set(Arb.string().orNull(0.2).bind())
         jsonSchema.rootName.set(Arb.string().orNull(0.2).bind())
@@ -103,4 +107,8 @@ private val customTypeOverrideGen: Arb<CustomTypeMappingExtension> = arbitrary {
         kotlinType.set(Arb.pattern("[A-Za-z]{1,5}").bind())
         kotlinxSerializer.set(Arb.pattern("[A-Za-z]{1,5}").orNull(0.2).bind())
     }
+}
+
+private val uriGen: Arb<URI> = arbitrary {
+    URI(Arb.pattern("https?://[a-z]{1,5}(\\.[a-z]{1,5}){0,3}(/[a-z]{1,5}){0,3}").bind())
 }

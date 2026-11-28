@@ -4,6 +4,7 @@ import ch.acanda.gradle.fabrikt.generator.GeneratorException
 import ch.acanda.gradle.fabrikt.generator.ValidationException
 import ch.acanda.gradle.fabrikt.generator.generate
 import ch.acanda.gradle.fabrikt.task.Progress
+import ch.acanda.gradle.fabrikt.task.getSpecName
 import ch.acanda.gradle.fabrikt.task.handleGeneratorException
 import ch.acanda.gradle.fabrikt.task.handleValidationException
 import org.gradle.api.DefaultTask
@@ -57,9 +58,9 @@ abstract class FabriktPrintDependenciesTask @Inject constructor(
     }
 
     private fun generate(config: GenerateTaskConfiguration, progress: Progress) {
-        val specFile = config.apiFile.orElse(config.jsonSchema.file).get()
+        val specName = config.getSpecName()
         val skip = config.skip.get()
-        progress.log(specFile, skip)
+        progress.log(specName, skip)
         if (!skip) {
             val loggerFilter = Logger.getGlobal().filter
             try {
@@ -68,10 +69,10 @@ abstract class FabriktPrintDependenciesTask @Inject constructor(
                 generate(config, "--dependencies-generation-mode", "GRADLE_NOTATION")
                 printDependencies(config, config.outputDirectory.get())
             } catch (e: GeneratorException) {
-                progress.fail(specFile)
-                handleGeneratorException(e, specFile, config.name, problems)
+                progress.fail(specName)
+                handleGeneratorException(e, specName, config.name, problems)
             } catch (e: ValidationException) {
-                e.ifContainsError { progress.fail(specFile) }
+                e.ifContainsError { progress.fail(specName) }
                 handleValidationException(e, config.name, problems)
             } finally {
                 Logger.getGlobal().filter = loggerFilter

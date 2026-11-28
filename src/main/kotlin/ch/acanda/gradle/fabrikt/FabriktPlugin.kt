@@ -77,15 +77,10 @@ class FabriktPlugin : Plugin<Project> {
                     if (suffix.isNotBlank()) {
                         tasks.register("fabriktGenerate$suffix", FabriktGenerateTask::class.java) { task ->
                             task.group = TASK_GROUP
-                            val configurations =
-                                extension.getGenerateExtension(name).map { listOf(it) }
-                            val apiFile = configurations.get().first().apiFile.get().asFile
-                                .relativeTo(project.layout.projectDirectory.asFile)
-                            task.description = "Generates the classes for $apiFile."
-                            val defaults = extension.getDefaults()
+                            task.description = "Generates the classes for the configuration \"$name\"."
                             task.addConfigurations(
-                                configurations,
-                                defaults,
+                                extension.getGenerateExtension(name).map { listOf(it) },
+                                extension.getDefaults(),
                                 initializeGenerateTaskConfiguration(objects) { skip.set(false) }
                             )
                             project.addOutputDirectoryToKotlinSourceSet(extension)

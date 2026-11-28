@@ -5,20 +5,19 @@ import ch.acanda.gradle.fabrikt.generator.ValidationException
 import ch.acanda.gradle.fabrikt.generator.ValidationProblem
 import ch.acanda.gradle.fabrikt.generator.ValidationSeverity
 import org.gradle.api.Action
-import org.gradle.api.file.RegularFile
 import org.gradle.api.problems.ProblemSpec
 import org.gradle.api.problems.Problems
 
 @Suppress("UnstableApiUsage")
 fun handleGeneratorException(
     e: GeneratorException,
-    specFile: RegularFile,
+    specName: String,
     configName: String,
     problems: Problems
 ) {
     val group = problems.groups.transformation
     val id = group.codeTransformation.problemId("Fabrikt failed to generate code.")
-    problems.reporter.throwing(e, id, generatorProblem(specFile, configName))
+    problems.reporter.throwing(e, id, generatorProblem(specName, configName))
 }
 
 @Suppress("UnstableApiUsage")
@@ -34,11 +33,11 @@ fun handleValidationException(e: ValidationException, configName: String, proble
 }
 
 @Suppress("UnstableApiUsage")
-private fun generatorProblem(specFile: RegularFile, name: String) =
+private fun generatorProblem(specName: String, name: String) =
     Action { problem: ProblemSpec ->
         problem
             .contextualLabel("Fabrikt failed to generate code for configuration $name.")
-            .details("Fabrikt failed to generate code for the specification $specFile.")
+            .details("Fabrikt failed to generate code for the specification $specName.")
     }
 
 @Suppress("UnstableApiUsage")

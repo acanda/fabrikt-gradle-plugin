@@ -2,6 +2,7 @@ package ch.acanda.gradle.fabrikt
 
 import ch.acanda.gradle.fabrikt.matchers.shouldContain
 import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.collections.shouldContainExactly
 import org.gradle.testfixtures.ProjectBuilder
 import java.io.File
 
@@ -81,6 +82,25 @@ class ConfigurationInitializerTest : StringSpec({
         initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, config, defaults)
 
         taskConfig.sourcesPath shouldContain "src/config"
+    }
+
+    "should append config when both default and config of a list property are set" {
+        val project = ProjectBuilder.builder().build()
+        val extension = FabriktExtension(project)
+        extension.defaults {
+            it.remoteApiFile.auth.set(listOf("A"))
+        }
+        extension.generate("dog") {
+            it.remoteApiFile.auth.set(listOf("B"))
+        }
+
+        val taskConfig = project.objects.newInstance(GenerateTaskConfiguration::class.java, "Dog")
+        val config = extension.getGenerateExtensions().get().single()
+        val defaults = extension.getDefaults().get()
+
+        initializeGenerateTaskConfiguration(project.objects).invoke(taskConfig, config, defaults)
+
+        taskConfig.remoteApiFile.auth.get() shouldContainExactly listOf("B", "A")
     }
 
     "should apply initializer block" {

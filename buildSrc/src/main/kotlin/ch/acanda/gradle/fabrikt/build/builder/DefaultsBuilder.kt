@@ -76,7 +76,8 @@ internal fun buildDefaults(schema: ConfigurationSchema): FileSpec {
  */
 private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, schema: ConfigurationSchema): TypeSpec {
     val spec = TypeSpec.classBuilder(name).addModifiers(KModifier.ABSTRACT)
-    val hasListType = config.properties.any { (_, property) -> isList(property.extensionType) }
+    val hasListType =
+        config.properties.any { (_, property) -> isListWithNestedType(property.extensionType, schema.configurations) }
     if (config.injects.isNotEmpty() || hasListType) {
         val listInjects = if (hasListType) {
             setOf(Pair("objects", ObjectFactory::class))
@@ -112,7 +113,7 @@ private fun buildDefaults(name: ClassName, config: ConfigurationDefinition, sche
                         .build()
                 )
             }
-            if (isList(property.extensionType)) {
+            if (isListWithNestedType(property.extensionType, schema.configurations)) {
                 val listType = getListType(property.extensionType)
                 spec.addFunction(buildListElementConstructorFunction(listType, CLASS_NAME_SUFFIX))
             }

@@ -11,6 +11,7 @@ import org.gradle.api.provider.Provider
 
 internal const val ARG_API_FILE = "--api-file"
 internal const val ARG_API_FRAGMENT = "--api-fragment"
+internal const val ARG_AUTH = "--auth"
 internal const val ARG_JSON_SCHEMA_FILE = "--json-schema-file"
 internal const val ARG_JSON_SCHEMA_ROOT_NAME = "--json-schema-root-name"
 internal const val ARG_EXT_REF_RESOLUTION = "--external-ref-resolution"
@@ -55,6 +56,7 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
             args.add(ARG_API_FRAGMENT)
             args.add(fragment.absolutePath)
         }
+        addRemoteApiArgs(args)
         addJsonSchemaArgs(args)
         externalReferenceResolution.withOptionName { resolution ->
             args.add(ARG_EXT_REF_RESOLUTION)
@@ -92,6 +94,21 @@ internal data class FabriktArguments(private val config: GenerateTaskConfigurati
         addControllerArgs(args)
         addModelArgs(args)
         return Arguments(args.toTypedArray(), problems)
+    }
+
+    private fun GenerateTaskConfiguration.addRemoteApiArgs(args: MutableList<String>) = with(remoteApiFile) {
+        apiFile.orNull?.let { uri ->
+            args.add(ARG_API_FILE)
+            args.add(uri.toString())
+        }
+        apiFragments.get().forEach { uri ->
+            args.add(ARG_API_FRAGMENT)
+            args.add(uri.toString())
+        }
+        auth.get().forEach { auth ->
+            args.add(ARG_AUTH)
+            args.add(auth.toString())
+        }
     }
 
     private fun GenerateTaskConfiguration.addJsonSchemaArgs(args: MutableList<String>) = with(jsonSchema) {

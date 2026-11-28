@@ -33,7 +33,14 @@ class FabriktArgumentsTest : StringSpec({
             cliArgs shouldNotContain "null"
             cliArgs.shouldContainOptionally(config.apiFile.asFile.map { it.absolutePath }, ARG_API_FILE)
             config.apiFragments.forEach { fragment ->
-                cliArgs shouldContainInOrder listOf("--api-fragment", fragment.absolutePath)
+                cliArgs shouldContainInOrder listOf(ARG_API_FRAGMENT, fragment.absolutePath)
+            }
+            cliArgs.shouldContainOptionally(config.remoteApiFile.apiFile.map { it.toString() }, ARG_API_FILE)
+            config.remoteApiFile.apiFragments.get().forEach { fragment ->
+                cliArgs shouldContainInOrder listOf(ARG_API_FRAGMENT, fragment.toString())
+            }
+            config.remoteApiFile.auth.get().forEach { auth ->
+                cliArgs shouldContainInOrder listOf(ARG_AUTH, auth.toString())
             }
             cliArgs.shouldContainOptionally(config.jsonSchema.convertJsonSchemaFile(), ARG_JSON_SCHEMA_FILE)
             cliArgs.shouldContainOptionally(config.jsonSchema.rootName, ARG_JSON_SCHEMA_ROOT_NAME)

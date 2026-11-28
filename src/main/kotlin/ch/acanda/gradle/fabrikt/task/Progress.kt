@@ -1,7 +1,6 @@
 package ch.acanda.gradle.fabrikt.task
 
 import ch.acanda.gradle.fabrikt.FabriktPrintDependenciesTask
-import org.gradle.api.file.RegularFile
 import org.gradle.internal.logging.progress.ProgressLogger
 import org.gradle.internal.logging.progress.ProgressLoggerFactory
 
@@ -15,15 +14,15 @@ class Progress(factory: ProgressLoggerFactory, val total: Int) : AutoCloseable {
         progressLogger.start("Generating Kotlin code with Fabrikt", "[0/$total]")
     }
 
-    fun log(specFile: RegularFile, skip: Boolean) {
+    fun log(specName: String, skip: Boolean) {
         count++
         val skipMsg = if (skip) " skip" else ""
-        progressLogger.progress("[$count/$total]$skipMsg generating code for $specFile...")
+        progressLogger.progress("[$count/$total]$skipMsg generating code for $specName...")
     }
 
-    fun fail(specFile: RegularFile) {
+    fun fail(specName: String) {
         failed = true
-        progressLogger.progress("[$count/$total] generating code for $specFile...", true)
+        progressLogger.progress("[$count/$total] generating code for $specName...", true)
     }
 
     override fun close() {
